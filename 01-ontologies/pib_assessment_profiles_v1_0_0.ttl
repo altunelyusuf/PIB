@@ -1,0 +1,313 @@
+@prefix asmt: <http://purl.org/pib/assessment#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix iif: <http://purl.org/pib/integration-interface#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pib: <http://purl.org/pib/profile#> .
+@prefix pibprov: <http://purl.org/pib/prov#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://purl.org/pib/assessment> a owl:Ontology ;
+    rdfs:label "PIB assessment profiles — HUB-published canonical set"@en ;
+    dcterms:created "2026-06-09"^^xsd:date ;
+    dcterms:creator pibprov:Agent_YusufAltunel,
+        "Yusuf Altunel" ;
+    dcterms:description "Canonical assessment profiles materialized by the HUB. OBAF retired: assessment is PAMG made ontology-native and profile-driven, riding on OEE's measurement facets; ontology-development assessment belongs to OEE. Each pib:Profile pins one reproducible WiringVariant (VariationCapacity recorded), validated against the pinned VAF; every participating interface carries a G3 self-coverage attestation recording its real on-disk result. ZeroTime deferred (ZT4SWE unresolved)."@en ;
+    dcterms:identifier "assessment" ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-06-09"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:versionIRI <http://purl.org/pib/assessment/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    prov:wasAttributedTo pibprov:Agent_YusufAltunel ;
+    prov:wasGeneratedBy pibprov:authoring .
+
+asmt:Op_Dependency a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Dependency operator"@en .
+
+asmt:Op_Exclusive a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Exclusive operator"@en .
+
+asmt:Op_Optional a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Optional operator"@en .
+
+asmt:Op_Or a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Or operator"@en .
+
+asmt:variationCapacity a owl:DatatypeProperty ;
+    rdfs:label "variation capacity"@en .
+
+iif:hasEdge a owl:ObjectProperty .
+
+asmt:CoreSoftwareDevelopment a pib:ArtifactCategory,
+        owl:NamedIndividual ;
+    rdfs:label "Core software development project"@en .
+
+asmt:Edge_CoreSoftwareDevelopment_0 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "O4SDLC_if->RADAR_if [AnalysisDesignVocabulary]"@en ;
+    iif:edgeCapability asmt:AnalysisDesignVocabulary ;
+    iif:edgeSource asmt:O4SDLC_if ;
+    iif:edgeTarget asmt:RADAR_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_CoreSoftwareDevelopment_1 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "RADAR_if->PAMG_if [AdequacyMeasurement]"@en ;
+    iif:edgeCapability asmt:AdequacyMeasurement ;
+    iif:edgeSource asmt:RADAR_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_Gamification_0 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "GamOnt_if->PAMG_if [GamificationModel]"@en ;
+    iif:edgeCapability asmt:GamificationModel ;
+    iif:edgeSource asmt:GamOnt_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyBased_0 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "O4SDLC_if->RADAR_if [AnalysisDesignVocabulary]"@en ;
+    iif:edgeCapability asmt:AnalysisDesignVocabulary ;
+    iif:edgeSource asmt:O4SDLC_if ;
+    iif:edgeTarget asmt:RADAR_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyBased_1 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "RADAR_if->PAMG_if [AdequacyMeasurement]"@en ;
+    iif:edgeCapability asmt:AdequacyMeasurement ;
+    iif:edgeSource asmt:RADAR_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyBased_2 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "OEE_if->PAMG_if [OntologyQualityMeasurement]"@en ;
+    iif:edgeCapability asmt:OntologyQualityMeasurement ;
+    iif:edgeSource asmt:OEE_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyDevelopment_0 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "O4SDLC_if->RADAR_if [AnalysisDesignVocabulary]"@en ;
+    iif:edgeCapability asmt:AnalysisDesignVocabulary ;
+    iif:edgeSource asmt:O4SDLC_if ;
+    iif:edgeTarget asmt:RADAR_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyDevelopment_1 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "RADAR_if->PAMG_if [AdequacyMeasurement]"@en ;
+    iif:edgeCapability asmt:AdequacyMeasurement ;
+    iif:edgeSource asmt:RADAR_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyDevelopment_2 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "OEE_if->PAMG_if [OntologyQualityMeasurement]"@en ;
+    iif:edgeCapability asmt:OntologyQualityMeasurement ;
+    iif:edgeSource asmt:OEE_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:GamOnt_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "GamOnt_if"@en ;
+    iif:hasSelfCoverage asmt:SelfCov_GamOnt ;
+    iif:produces asmt:GamificationModel .
+
+asmt:GamificationProject a pib:ArtifactCategory,
+        owl:NamedIndividual ;
+    rdfs:label "Educational gamification project"@en .
+
+asmt:HasAnalysisDesignModel a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "contains an Analysis & Design model"@en .
+
+asmt:HasCodeMeasurement a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "has code measurement"@en .
+
+asmt:HasGroundingOntology a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "grounded in a published ontology"@en .
+
+asmt:HasPlayEvidence a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "grounded in real game/play results"@en .
+
+asmt:HasThesisFidelity a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "proposal↔implementation fidelity demonstrated"@en .
+
+asmt:InstitutionalGrade a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Institutional grade (PAMG, computed in-ontology)"@en .
+
+asmt:OntologyBasedSystem a pib:ArtifactCategory,
+        owl:NamedIndividual ;
+    rdfs:label "Ontology-based system (uses an ontology at runtime)"@en .
+
+asmt:OntologyDeliverable a pib:ArtifactCategory,
+        owl:NamedIndividual ;
+    rdfs:label "Ontology-development deliverable (the ontology is the product)"@en .
+
+asmt:Profile_CoreSoftwareDevelopment a pib:Profile,
+        owl:NamedIndividual ;
+    rdfs:label "CoreSoftwareDevelopment profile"@en ;
+    pib:hasCategory asmt:CoreSoftwareDevelopment ;
+    pib:hasSharedCriterion asmt:HasCodeMeasurement ;
+    pib:selectsWiring asmt:Wiring_CoreSoftwareDevelopment .
+
+asmt:Profile_Gamification a pib:Profile,
+        owl:NamedIndividual ;
+    rdfs:label "Gamification profile"@en ;
+    pib:hasCategory asmt:GamificationProject ;
+    pib:hasSharedCriterion asmt:HasPlayEvidence,
+        asmt:HasThesisFidelity ;
+    pib:selectsWiring asmt:Wiring_Gamification .
+
+asmt:Profile_OntologyBased a pib:Profile,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyBased profile"@en ;
+    pib:hasCategory asmt:OntologyBasedSystem ;
+    pib:hasSharedCriterion asmt:HasGroundingOntology,
+        asmt:HasOntologyQuality ;
+    pib:selectsWiring asmt:Wiring_OntologyBased .
+
+asmt:Profile_OntologyDevelopment a pib:Profile,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyDevelopment profile"@en ;
+    pib:hasCategory asmt:OntologyDeliverable ;
+    pib:hasSharedCriterion asmt:HasAnalysisDesignModel,
+        asmt:HasOntologyQuality ;
+    pib:selectsWiring asmt:Wiring_OntologyDevelopment .
+
+asmt:SelfCov_GamOnt a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for GamOnt (gamont_tbox_v1_1_0.ttl)"@en ;
+    dcterms:source "sha256:9996f9077c8eaec0d9153fb9127131ea969dc929c92e0bfc104bc0371e00eceb" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:SelfCov_O4SDLC a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for O4SDLC (o4sdlc_interface_contribution_v1_0_0.ttl)"@en ;
+    dcterms:source "sha256:c2d4ce934d8691fa017002d278c647c3f0e143bc259ea916273d37e12e2f84d1" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:SelfCov_OEE a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for OEE (measurement_tbox_v2_8_0.ttl)"@en ;
+    dcterms:source "sha256:1069f7c2f389aaeb85a0ca346925d51f3e4331e3f2c1155c7bdf082f2b4e2eb0" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:SelfCov_PAMG a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for PAMG (pamg_interface_contribution_v1_0_0.ttl)"@en ;
+    dcterms:source "sha256:8f1e2bc1302c8b4115218cac017d2dcb742d47af6f757178e235ea8a812cfeba" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:SelfCov_RADAR a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for RADAR (radar_interface_contribution_v1_0_0.ttl)"@en ;
+    dcterms:source "sha256:c226b671eb8570dbe6c45f00e4d763f9efa01c04befd94cd60689fb25ce8d950" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:Wiring_CoreSoftwareDevelopment a iif:WiringVariant,
+        owl:NamedIndividual ;
+    rdfs:label "CoreSoftwareDevelopment wiring"@en ;
+    asmt:variationCapacity 1 ;
+    iif:forProfile asmt:Profile_CoreSoftwareDevelopment ;
+    iif:hasEdge asmt:Edge_CoreSoftwareDevelopment_0,
+        asmt:Edge_CoreSoftwareDevelopment_1 .
+
+asmt:Wiring_Gamification a iif:WiringVariant,
+        owl:NamedIndividual ;
+    rdfs:label "Gamification wiring"@en ;
+    asmt:variationCapacity 1 ;
+    iif:forProfile asmt:Profile_Gamification ;
+    iif:hasEdge asmt:Edge_Gamification_0 .
+
+asmt:Wiring_OntologyBased a iif:WiringVariant,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyBased wiring"@en ;
+    asmt:variationCapacity 1 ;
+    iif:forProfile asmt:Profile_OntologyBased ;
+    iif:hasEdge asmt:Edge_OntologyBased_0,
+        asmt:Edge_OntologyBased_1,
+        asmt:Edge_OntologyBased_2 .
+
+asmt:Wiring_OntologyDevelopment a iif:WiringVariant,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyDevelopment wiring"@en ;
+    asmt:variationCapacity 1 ;
+    iif:forProfile asmt:Profile_OntologyDevelopment ;
+    iif:hasEdge asmt:Edge_OntologyDevelopment_0,
+        asmt:Edge_OntologyDevelopment_1,
+        asmt:Edge_OntologyDevelopment_2 .
+
+asmt:HasOntologyQuality a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "has ontology-quality measurement"@en .
+
+asmt:OEE_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "OEE_if"@en ;
+    iif:hasSelfCoverage asmt:SelfCov_OEE ;
+    iif:produces asmt:OntologyQualityMeasurement .
+
+asmt:GamificationModel a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Gamification model + fidelity"@en .
+
+asmt:O4SDLC_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "O4SDLC_if"@en ;
+    iif:hasSelfCoverage asmt:SelfCov_O4SDLC ;
+    iif:produces asmt:AnalysisDesignVocabulary .
+
+asmt:OntologyQualityMeasurement a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Ontology-quality measurement (OEE facet)"@en .
+
+asmt:AdequacyMeasurement a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Adequacy/quality measurement"@en .
+
+asmt:AnalysisDesignVocabulary a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Analysis & Design vocabulary"@en .
+
+asmt:PAMG_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "PAMG_if"@en ;
+    iif:consumes asmt:AdequacyMeasurement,
+        asmt:GamificationModel,
+        asmt:OntologyQualityMeasurement ;
+    iif:hasSelfCoverage asmt:SelfCov_PAMG ;
+    iif:produces asmt:InstitutionalGrade .
+
+asmt:RADAR_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "RADAR_if"@en ;
+    iif:consumes asmt:AnalysisDesignVocabulary ;
+    iif:hasSelfCoverage asmt:SelfCov_RADAR ;
+    iif:produces asmt:AdequacyMeasurement .
+
+asmt:Op_Mandatory a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Mandatory operator"@en .
+

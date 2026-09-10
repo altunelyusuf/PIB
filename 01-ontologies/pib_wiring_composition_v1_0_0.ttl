@@ -1,0 +1,58 @@
+@prefix iif:   <http://purl.org/pib/integration-interface#> .
+@prefix pib:   <http://purl.org/pib/profile#> .
+@prefix ex:    <http://purl.org/pib/example#> .
+@prefix comp:  <http://purl.org/pib/composition#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix pibprov: <http://purl.org/pib/prov#> .
+
+# PIB HUB Phase-3 wiring composition v1.0.0 — per-profile WiringVariant + recorded VariationCapacity.
+# Composed by Session 00 (HUB) from the Phase-2 spoke interface contributions (referenced by SHA-256,
+# NOT copied — they are spoke-owned, B1). Variation Capacity computed by the pinned VAF engine
+# (Variant_Algebra_Framework_v1_0_0, pkg SHA 7858339e…) via wiring_validator_v1_0_0.
+
+<http://purl.org/pib/composition>
+    a owl:Ontology ; owl:versionInfo "1.0.0" ;
+    owl:versionIRI <http://purl.org/pib/composition/1.0.0> ;
+    rdfs:label "PIB Phase-3 wiring composition record"@en ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:creator pibprov:Agent_YusufAltunel, "Yusuf Altunel" ;
+    dcterms:created "2026-06-06"^^xsd:date ; dcterms:modified "2026-06-06"^^xsd:date ;
+    dcterms:identifier "composition" ;
+    prov:wasGeneratedBy pibprov:authoring ; prov:wasAttributedTo pibprov:Agent_YusufAltunel .
+
+# Consumed Phase-2 contributions (provenance-as-claim: SHA-256 recorded, verified this session)
+comp:src_o4sdlc a prov:Entity ; rdfs:label "O4SDLC interface contribution v1.0.0"@en ;
+    dcterms:identifier "sha256:c2d4ce934d8691fa017002d278c647c3f0e143bc259ea916273d37e12e2f84d1" .
+comp:src_radar  a prov:Entity ; rdfs:label "RADAR interface contribution v1.0.0"@en ;
+    dcterms:identifier "sha256:c226b671eb8570dbe6c45f00e4d763f9efa01c04befd94cd60689fb25ce8d950" .
+comp:src_pamg   a prov:Entity ; rdfs:label "PAMG interface contribution v1.0.0 (loose, ex:PAMG_if form)"@en ;
+    dcterms:identifier "sha256:8f1e2bc1302c8b4115218cac017d2dcb742d47af6f757178e235ea8a812cfeba" .
+
+# ---- Per-profile composed WiringVariants with recorded Variation Capacity ----
+ex:CapstoneWiring
+    iif:forProfile ex:CapstoneProfile ;
+    comp:variationCapacity "9"^^xsd:integer ;
+    comp:wiringValid true ;
+    comp:engine "Variant_Algebra_Framework_v1_0_0 (pinned BruteForceBackend)" ;
+    comp:publishable true ;
+    rdfs:comment "VC=9 admissible wirings over the contributed O4SDLC->RADAR->PAMG chain; 4/4 collision guards reject as expected. Publishable: wiring valid AND all 3 participating interfaces carry G3 self-coverage; composed graph conforms (0 violations)."@en .
+
+ex:IEEEPaperWiring
+    iif:forProfile ex:IEEEPaperProfile ;
+    comp:variationCapacity "9"^^xsd:integer ;
+    comp:wiringValid true ;
+    comp:engine "Variant_Algebra_Framework_v1_0_0 (pinned BruteForceBackend)" ;
+    comp:publishable true ;
+    rdfs:comment "VC=9. Same variation space as Capstone: RADAR reused the shared HasAnalysisDesignModel criterion over the same chain, so the contributed edge set (hence the capacity) is identical; the profile selects a different reproducible point."@en .
+
+comp:variationCapacity a owl:DatatypeProperty ; rdfs:label "variation capacity (count of admissible wirings)"@en .
+comp:wiringValid a owl:DatatypeProperty ; rdfs:label "VAF reports the wiring space admissible"@en .
+comp:publishable a owl:DatatypeProperty ; rdfs:label "publishable (wiring valid AND interfaces self-cover)"@en .
+comp:engine a owl:DatatypeProperty ; rdfs:label "VAF engine used"@en .

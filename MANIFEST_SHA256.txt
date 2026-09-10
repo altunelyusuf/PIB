@@ -1,0 +1,35 @@
+# Profile + Integration-Interface Blueprint v1.4.0 — SHA-256 Manifest
+# MINOR from v1.3.0 (2026-06-09): HUB materialization of assessment profiles.
+#   - ADD 01-ontologies/pib_assessment_profiles_v1_0_0.ttl (4 canonical pib:Profile published; OBAF retired;
+#     PAMG-as-grader on OEE facets, profile-driven; OntologyDevelopment OEE-based; ZeroTime deferred).
+#   - ADD 04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md (VC per profile, G3 results, gates, propagation).
+#   - README synced to v1.4.0 (L-91).
+#   Gates: 4 profiles pass BOTH (wiring valid VC=1 + guards; G3 self-coverage on real O4SDLC/RADAR/PAMG/GamOnt/OEE);
+#   pib_invariants G1-G5 conform 0 viol. PAMG-ontology-native grading is PAMG's evolution, not built here (B1).
+8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
+c55633f87b790978cbb9a83bd9a174896d06dba59778d314fd1ec80dcd8b1586  01-ontologies/integration_interface_tbox_v1_0_0_1.ttl  (9015b)
+741fbf9639f7656c9d9f1d529b5689f67988b6b925897d71d4ed35353d21de79  01-ontologies/pib_assessment_profiles_v1_0_0.ttl  (13240b)
+7dbc559e2f70b04d285048c99b8bbe0e03c7e4edb8220fda17b9518a499e257c  01-ontologies/pib_wiring_composition_v1_0_0.ttl  (3804b)
+0a578caf116cea7ab61e7ab324daba16ad43a6602de6103f7c24f2a71908a6a1  01-ontologies/profile_tbox_v1_0_0_1.ttl  (5745b)
+4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
+9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
+7b9515f2d36dc74ed3d683bf892ac88d06c6afbc642b5ac2b3167c6e2a1c44da  03-tooling/wiring_validator_v1_0_0.py  (5798b)
+399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
+a32a83adabcde0a513727281e2ddfc8054287168712e388c841040eece31bfda  04-documentation/BLUEPRINT_v1_0_0.md  (6068b)
+46fa7f5262078bed29d9268a721403d3ac8dc2dd21f67079acbb9346382ccebc  04-documentation/PHASE3_COMPOSITION_RECORD_v1_0_0.md  (4984b)
+10b39ee97f897b5f46116bbc86e3fdd743429409069189ff493476d6741d4614  04-documentation/PROPOSAL_DISPOSITION_v1_0_0.md  (1814b)
+35b5daf6d14059a3d9fd0ea68644f49c81836ec73ef55af381c9aa1e40c6a132  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (3351b)
+9f206e016821f8244b542a9089b841d3d729f6a769b5d9cd707ffe1fe589d936  04-documentation/README.md  (4152b)
+22d05f6eafddf17af66ab275b8fe46a56d142ee29fc669fe222701203935ee2e  05-prov-records/prov_v1_1_0.ttl  (1507b)
+edb4f4b676aaac9809c05c8b56c5154c5111e44668e2bcdb9f07f4898c8f1387  06-vaf-engine-pin/VAF_DEPENDENCY_PIN_v1_0_0.md  (1437b)
+0501d71692fc4c9f295aa30555e2bb9fcdf6a2ea84ba57c0c7214291bd68ee10  07-spoke-contributions/VENDORED_PINS_v1_0_0.md  (2026b)
+c2d4ce934d8691fa017002d278c647c3f0e143bc259ea916273d37e12e2f84d1  07-spoke-contributions/o4sdlc_interface_contribution_v1_0_0.ttl  (4873b)
+8f1e2bc1302c8b4115218cac017d2dcb742d47af6f757178e235ea8a812cfeba  07-spoke-contributions/pamg_interface_contribution_v1_0_0.ttl  (5539b)
+c226b671eb8570dbe6c45f00e4d763f9efa01c04befd94cd60689fb25ce8d950  07-spoke-contributions/radar_interface_contribution_v1_0_0.ttl  (7403b)
+574c199f2ece3851e4e7d1a7ed267b2fe03f5ea75a7bdf47942dee01479cd413  08-registration/OEE_to_PIB_registration_contract_v1_0_0.md  (4830b)
+587c1d4db6ce30ef210cf08e19d6962d71213df511fa7611526a48308836b441  08-registration/PIB_ORCP_Phase_G_closure_note_v1_0_0.md  (2177b)
+610e8f000fa62a389078e69d8d7c5145c0668a4c377918476a142f58999b9a89  08-registration/PIB_ORCP_fit_gap_note_v1_0_0.md  (4587b)
+1acebf7ec37f81f8d55bb83b03b0d2d43d7c7f5046a5bc91f75bfc258432c153  08-registration/REGISTRATION_STATUS_v1_0_0.md  (2122b)
+65dc16c3ee8dad23cc09cb671e66ccbdbf5c742e45c989ff3a570e7c6dec1442  08-registration/build_pib_orcp_submission_v1_0_0.py  (4660b)
+f970dc114d77fcb914029965d015e31c18c347c841193d8a7e11720432897dd2  08-registration/pib_orcp_submission_v1_0_0.ttl  (2579b)
+78b591400c56b7b67b8cb3b2b8a8e65e9093897f02ce0878e6b5405c68620fa7  VERSION.txt  (6b)

@@ -1,0 +1,59 @@
+@prefix iif:     <http://purl.org/pib/integration-interface#> .
+@prefix ex:      <http://purl.org/pib/example#> .
+@prefix o4if:    <http://www.zt4swe.io/o4sdlc/pib#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+
+# O4SDLC SPOKE interface contribution v1.0.0 — declared AGAINST the PIB HUB vocabulary
+# (http://purl.org/pib/integration-interface# , http://purl.org/pib/example#), NOT owl:imports.
+# Contribution to the HUB; not an edit to the O4SDLC pack and not an edit to HUB ontologies (B1).
+
+<http://www.zt4swe.io/o4sdlc/pib/interface-contribution> a owl:Ontology ;
+    rdfs:label "O4SDLC PIB interface contribution v1.0.0"@en ;
+    owl:versionInfo "1.0.0" ;
+    owl:versionIRI <http://www.zt4swe.io/o4sdlc/pib/interface-contribution/1.0.0> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:creator <http://www.zt4swe.io/agent/YusufAltunel> ;
+    dcterms:rightsHolder <http://www.zt4swe.io/agent/YusufAltunel> ;
+    dcterms:publisher <http://www.zt4swe.io/agent/YusufAltunel> ;
+    dcterms:rights "Copyright (c) 2026 Yusuf Altunel. Licensed under CC BY 4.0."@en ;
+    rdfs:comment "Declares O4SDLC's OntologyInterface + SelfCoverageAttestation against PIB HUB v1.1.0 (ontology IRIs purl.org/pib/integration-interface and purl.org/pib/profile; capability IRI ex:AnalysisDesignVocabulary — the IRI RADAR_if consumes in the published worked example). Pack: O4SDLC-Pack v1.1.0 (MANIFEST 21/21 OK)."@en .
+
+# spoke-owned annotation vocabulary (DL-clean; in O4SDLC namespace)
+o4if:verdict        a owl:AnnotationProperty ; rdfs:label "self-coverage verdict"@en .
+o4if:pack           a owl:AnnotationProperty ; rdfs:label "attested pack"@en .
+o4if:moduleAttested a owl:AnnotationProperty ; rdfs:label "module attested (file @ sha : result)"@en .
+o4if:groundedBy     a owl:AnnotationProperty ; rdfs:label "L-58 capability grounding"@en .
+o4if:dlMethod       a owl:AnnotationProperty ; rdfs:label "DL-consistency method"@en .
+
+# ---- Deliverable 1: the OntologyInterface (declares produces + the required self-coverage link) ----
+ex:O4SDLC_if a iif:OntologyInterface ;
+    rdfs:label "O4SDLC interface (A&D vocabulary producer)"@en ;
+    iif:produces ex:AnalysisDesignVocabulary ;
+    iif:hasSelfCoverage o4if:O4SDLC_SelfCoverage_v1_0_0 ;
+    o4if:groundedBy "L-58 GROUNDED: AnalysisDesignVocabulary is backed by real O4SDLC content — o4ucm 69 classes/37 props + o4df 114/24 + o4se 507/108 (690C/169P A&D vocabulary); SDLC phase axis o4se:LifecyclePhase + 6 subclasses + o4se:hasPhase; refinement o4sdlc:refinesInto (3 assertions) + o4df isInputTo/hasInputModel/producesArtifact; CRUD canonical o4se DataManagement Create/Read/Update/DeleteOperation + 4 skos:exactMatch. See O4SDLC_L58_capability_grounding_v1_0_0.md."@en .
+
+# ---- Deliverable 3: the SelfCoverageAttestation (satisfies G3) ----
+o4if:O4SDLC_SelfCoverage_v1_0_0 a iif:SelfCoverageAttestation ;
+    rdfs:label "O4SDLC self-coverage attestation v1.0.0"@en ;
+    o4if:pack "O4SDLC-Pack v1.1.0 (internal MANIFEST 21/21 OK)" ;
+    o4if:verdict "SELF-COVERED (PASS): all 5 modules parse and are DL-consistent standalone." ;
+    o4if:dlMethod "DL-consistency verified with DIRECT OWLAPI/HermiT (canonical, BP-D3). The HUB self_coverage_checker --hermit (owlready2 bridge) returned false errors on o4ucm (OwlReadyJavaError) and o4se (attempted network dereference of the ontology IRI); these are bridge artifacts, NOT inconsistencies — see CONTRIBUTION_README, HUB tool-defect note."@en ;
+    o4if:moduleAttested
+        "o4ucm_v1_0_4.ttl @ 9a15734218ee : parse OK; DL-consistent (OWLAPI/HermiT); REDO 2 (documented anonymous-class artifacts)" ,
+        "o4df_v1_0_2.ttl @ 97ad58cadf44 : parse OK; DL-consistent; REDO 0" ,
+        "o4se_merged_v1_0_9.ttl @ 308247af1917 : parse OK; DL-consistent (the historically-inconsistent module now PASSES); REDO 0 (1117 advisory warnings)" ,
+        "o4sdlc_v1_0_1.ttl @ 261fb1b2be07 : parse OK; DL-consistent; REDO 4 C7+ composition artifacts (resolve to 0 when merged with o4df+o4se)" ,
+        "o4sdlc_knowledge_base_abox_v1_0_1.ttl @ a32854006a52 : parse OK; DL-consistent; REDO 18 C7+ composition artifacts (resolve to 0 when merged with OE knowledge_base_tbox)" ;
+    prov:wasGeneratedBy o4if:Activity_SelfCoverage ;
+    prov:wasAttributedTo <http://www.zt4swe.io/agent/YusufAltunel> ;
+    prov:generatedAtTime "2026-06-06"^^xsd:date .
+
+<http://www.zt4swe.io/agent/YusufAltunel> a prov:Agent .
+o4if:Activity_SelfCoverage a prov:Activity ;
+    rdfs:label "O4SDLC self-coverage attestation run"@en ;
+    prov:generatedAtTime "2026-06-06"^^xsd:date ;
+    prov:wasAssociatedWith <http://www.zt4swe.io/agent/YusufAltunel> .

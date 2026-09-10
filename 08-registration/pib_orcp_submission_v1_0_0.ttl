@@ -1,0 +1,53 @@
+@prefix core: <http://example.org/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix orh: <http://example.org/oepack-release-history#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pibreg: <http://purl.org/pib/registration#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+pibreg:Artifact_PIB a core:Artifact,
+        owl:NamedIndividual ;
+    rdfs:label "PIB / HUB — Profile + Integration-Interface Blueprint v1.2.1"@en ;
+    core:hasCriticalityProfile core:Profile_Standard .
+
+pibreg:File_integration_interface_tbox_v1_0_0_1 a orh:OntologyFile,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyFile: integration_interface_tbox_v1_0_0_1.ttl"@en ;
+    orh:belongsToSubject pibreg:Subject_PIB ;
+    orh:hasFileSHA256 "c55633f87b790978cbb9a83bd9a174896d06dba59778d314fd1ec80dcd8b1586" ;
+    orh:hasVersionInfo "1.0.0.1" ;
+    dcterms:source "PIB blueprint v1.2.1 (Phases 1-3 + reproducibility remediation), registrant-emitted for ORCP Phase B." ;
+    prov:generatedAtTime "2026-06-08"^^xsd:date ;
+    prov:wasAttributedTo pibreg:Agent_PIBSession .
+
+pibreg:File_pib_wiring_composition_v1_0_0 a orh:OntologyFile,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyFile: pib_wiring_composition_v1_0_0.ttl"@en ;
+    orh:belongsToSubject pibreg:Subject_PIB ;
+    orh:hasFileSHA256 "7dbc559e2f70b04d285048c99b8bbe0e03c7e4edb8220fda17b9518a499e257c" ;
+    orh:hasVersionInfo "1.0.0" ;
+    dcterms:source "PIB blueprint v1.2.1 (Phases 1-3 + reproducibility remediation), registrant-emitted for ORCP Phase B." ;
+    prov:generatedAtTime "2026-06-08"^^xsd:date ;
+    prov:wasAttributedTo pibreg:Agent_PIBSession .
+
+pibreg:File_profile_tbox_v1_0_0_1 a orh:OntologyFile,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyFile: profile_tbox_v1_0_0_1.ttl"@en ;
+    orh:belongsToSubject pibreg:Subject_PIB ;
+    orh:hasFileSHA256 "0a578caf116cea7ab61e7ab324daba16ad43a6602de6103f7c24f2a71908a6a1" ;
+    orh:hasVersionInfo "1.0.0.1" ;
+    dcterms:source "PIB blueprint v1.2.1 (Phases 1-3 + reproducibility remediation), registrant-emitted for ORCP Phase B." ;
+    prov:generatedAtTime "2026-06-08"^^xsd:date ;
+    prov:wasAttributedTo pibreg:Agent_PIBSession .
+
+pibreg:Agent_PIBSession a owl:NamedIndividual,
+        prov:Agent ;
+    rdfs:label "PIB/HUB registrant session"@en .
+
+pibreg:Subject_PIB a orh:SubjectOntology,
+        owl:NamedIndividual ;
+    rdfs:label "Subject: PIB / HUB integration blueprint"@en ;
+    orh:lifecycleStatus "active" .
+

@@ -1,0 +1,82 @@
+@prefix iif:   <http://purl.org/pib/integration-interface#> .
+@prefix pib:   <http://purl.org/pib/profile#> .
+@prefix ex:    <http://purl.org/pib/example#> .
+@prefix radar: <http://example.org/radar#> .
+@prefix rpib:  <http://example.org/radar/pib#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+
+# RADAR SPOKE interface contribution v1.0.0 — declared AGAINST the PIB HUB v1.1.0 published vocabulary
+# (http://purl.org/pib/integration-interface# , http://purl.org/pib/profile# , http://purl.org/pib/example#),
+# WITHOUT owl:imports ("names referenced, not merged"). A contribution to the HUB; NOT an edit to the
+# HUB ontologies and NOT an edit to RADAR core (B1/L-64). RADAR ecosystem pinned v1.0.0 (loads RDODI
+# v1.19.0 enforcement at runtime).
+
+<http://example.org/radar/pib/interface-contribution> a owl:Ontology ;
+    rdfs:label "RADAR PIB interface contribution v1.0.0"@en ;
+    owl:versionInfo "1.0.0" ;
+    owl:versionIRI <http://example.org/radar/pib/interface-contribution/1.0.0> ;
+    dcterms:creator <http://www.zt4swe.io/agent/YusufAltunel> ;
+    rdfs:comment "Declares RADAR's OntologyInterface (consumes the A&D vocabulary capability O4SDLC produces; produces the adequacy-measurement capability PAMG consumes) + SelfCoverageAttestation (G3), and adds the capstone + IEEE-paper profiles via the shared pib:Profile, binding the shared 'A&D model' criterion to RADAR's actual measurement dimensions. RADAR measures; it does NOT grade (PAMG's seam)."@en .
+
+# spoke-owned vocabulary (DL-clean; RADAR namespace; keeps pib/iif classes OUT of RADAR core, L-64)
+rpib:groundedBy           a owl:AnnotationProperty ; rdfs:label "L-58 capability grounding"@en .
+rpib:verdict              a owl:AnnotationProperty ; rdfs:label "self-coverage verdict"@en .
+rpib:attests              a owl:AnnotationProperty ; rdfs:label "attested ontology (file @ sha : result)"@en .
+rpib:dlMethod             a owl:AnnotationProperty ; rdfs:label "DL-consistency method"@en .
+rpib:bindingNote          a owl:AnnotationProperty ; rdfs:label "criterion->dimension binding note"@en .
+rpib:measuredByDimension  a owl:ObjectProperty ; rdfs:label "shared criterion is measured by this RADAR dimension"@en ;
+    rdfs:domain pib:SharedCriterion ; rdfs:range rpib:MeasurementDimension .
+rpib:MeasurementDimension a owl:Class ; rdfs:label "RADAR measurement dimension"@en ;
+    rdfs:comment "A RADAR-side measurement dimension (one of RADAR's assessors). Lives here, not in RADAR core; attached to the shared Profile/Criterion IRIs (avoids L-64 scope-foreign bloat)."@en .
+
+# ---- Deliverable 1: the RADAR OntologyInterface (produces + consumes + REQUIRED self-coverage link) ----
+ex:RADAR_if a iif:OntologyInterface ;
+    rdfs:label "RADAR interface (A&D adequacy measurer)"@en ;
+    iif:consumes ex:AnalysisDesignVocabulary ;
+    iif:produces ex:AdequacyMeasurement ;
+    iif:hasSelfCoverage rpib:RADAR_SelfCoverage_v1_0_0 ;
+    rpib:groundedBy "L-58 GROUNDED (produces ex:AdequacyMeasurement): backed by real RADAR v1.0.0 assessment content — radar:WholeArtifactAssessment + radar:AssessmentReport compose the tiered adequacy measurement (T1 radar:MeasuredScore rdfs:subClassOf measurement:Score; T2 radar:Proxy indicators; T3 radar:JudgmentItem, never scored); radar:CoverageMeasurement rdfs:subClassOf measurement:CoverageMetric is the covered-vs-intended A&D coverage metric; the SHACL tier guard proves the three tiers are never confused. RADAR produces an honest adequacy MEASUREMENT, not a grade (the institutional grade is PAMG's, Charter 03)."@en ;
+    rpib:groundedBy "L-58 (consumes ex:AnalysisDesignVocabulary): RADAR measures A&D adequacy AGAINST the A&D vocabulary as its reference (the intended-resource set for radar:CoverageMeasurement); consumed pinned + read-only, the way RADAR consumes RDODI enforcement. The capability IRI matches O4SDLC's produced ex:AnalysisDesignVocabulary (contract closes; no dangling consume)."@en .
+
+# ---- Deliverable 4: the SelfCoverageAttestation (satisfies G3; profile-independent) ----
+rpib:RADAR_SelfCoverage_v1_0_0 a iif:SelfCoverageAttestation ;
+    rdfs:label "RADAR self-coverage attestation v1.0.0"@en ;
+    rpib:verdict "SELF-COVERED (PASS): RADAR's assessment TBox parses and is SHACL-conformant standalone (no consumed ontology merged)." ;
+    rpib:dlMethod "Run via the HUB self_coverage_checker_v1.1.0 (parse + standalone SHACL). DL-consistency left as the unrun hook (no HermiT bridge available in this session; blueprint S7 notes the hook). Parse + SHACL standalone: PASS." ;
+    rpib:attests "radar_tbox_v0_3_0.ttl @ 37bb0ec3c636 : parse OK (158 triples); SHACL standalone conforms, 0 violations; self_covered=True. (The assessment ABox ships two by-design R5 negative exemplars that the tier guard is built to flag — a verified test fixture, not a self-coverage failure; the contributed unit is the TBox vocabulary.)" ;
+    prov:wasAttributedTo <http://www.zt4swe.io/agent/YusufAltunel> ;
+    prov:generatedAtTime "2026-06-06"^^xsd:date .
+
+# ---- Deliverable 2: capstone + IEEE-paper profiles via the SHARED pib:Profile (no private concept) ----
+# Capstone: REFERENCE the HUB's published worked profile/criterion (declared in the example abox); do not redefine.
+# Bind the shared 'A&D model' criterion to RADAR's actual measurement dimensions.
+ex:HasAnalysisDesignModel rpib:measuredByDimension rpib:CoverageDimension , rpib:StructuralDimension ;
+    rpib:bindingNote "RADAR measures the 'must contain an A&D model' criterion via coverage (covered-vs-intended A&D elements) and structural completeness (A&D model section present). Measurement, not grading."@en .
+
+# IEEE-paper profile (RADAR adds it via the shared pib:Profile). Wiring declared to satisfy the
+# structural invariant; its VAF wiring-VALIDITY is the HUB Phase-3 composition (not owned/validated here).
+ex:IEEEPaperReport a pib:ArtifactCategory ;
+    rdfs:label "IEEE-format paper"@en .
+ex:IEEEPaperProfile a pib:Profile ;
+    rdfs:label "IEEE Paper Profile"@en ;
+    pib:hasCategory ex:IEEEPaperReport ;
+    pib:hasSharedCriterion ex:HasAnalysisDesignModel ;
+    pib:selectsWiring ex:IEEEPaperWiring .
+ex:IEEEPaperWiring a iif:WiringVariant ;
+    rdfs:label "IEEE paper wiring variant"@en ;
+    iif:forProfile ex:IEEEPaperProfile ;
+    rdfs:comment "DECLARED to satisfy the one-profile/one-wiring invariant. VAF wiring-validity + Variation Capacity are the HUB Phase-3 composition (wiring_validator wraps VAF); NOT validated in this spoke session (mirrors O4SDLC's out-of-scope note)."@en .
+
+# RADAR measurement dimensions (spoke-owned individuals, grounded in RADAR's actual assessors)
+rpib:CoverageDimension a rpib:MeasurementDimension ;
+    rdfs:label "RADAR coverage dimension"@en ;
+    rpib:groundedBy "radar_coverage assessor + radar:CoverageMeasurement (covered-vs-intended ratio; UNSCORABLE without a supplied intended set — never estimated)."@en .
+rpib:StructuralDimension a rpib:MeasurementDimension ;
+    rdfs:label "RADAR structural completeness dimension"@en ;
+    rpib:groundedBy "radar_structural assessor v0.1.1 (required-section presence vs a declared template; UNSCORABLE without a template)."@en .
+
+<http://www.zt4swe.io/agent/YusufAltunel> a prov:Agent .

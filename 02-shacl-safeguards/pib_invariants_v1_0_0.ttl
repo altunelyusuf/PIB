@@ -1,0 +1,50 @@
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix pib:   <http://purl.org/pib/profile#> .
+@prefix iif:   <http://purl.org/pib/integration-interface#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+# PIB invariants v1.0.0 — the gates the blueprint promises, as runnable SHACL.
+
+### G1 — Profile selects EXACTLY ONE wiring (reproducibility / collision-avoidance)
+pib:ProfileShape a sh:NodeShape ;
+    sh:targetClass pib:Profile ;
+    sh:property [ sh:path pib:hasCategory ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A Profile must bind exactly one ArtifactCategory."@en ] ;
+    sh:property [ sh:path pib:selectsWiring ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A Profile must select EXACTLY ONE validated WiringVariant (reproducibility)."@en ] .
+
+### G2 — Every WiringVariant is scoped to a profile (profile-driven wiring)
+iif:WiringVariantShape a sh:NodeShape ;
+    sh:targetClass iif:WiringVariant ;
+    sh:property [ sh:path iif:forProfile ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A WiringVariant must be scoped to exactly one Profile."@en ] .
+
+### G3 — Self-coverage attestation REQUIRED before an interface may participate
+iif:InterfaceSelfCoverageShape a sh:NodeShape ;
+    sh:targetClass iif:OntologyInterface ;
+    sh:property [ sh:path iif:hasSelfCoverage ; sh:minCount 1 ;
+        sh:message "An OntologyInterface must carry a SelfCoverageAttestation before participating in any wiring (profile-independent hard gate)."@en ] .
+
+### G4 — Contract validity: every consumed Capability must be produced by SOME interface
+###      (SPARQL constraint — the produces/consumes contract must close)
+iif:ContractClosureShape a sh:NodeShape ;
+    sh:targetClass iif:Capability ;
+    sh:sparql [ a sh:SPARQLConstraint ;
+        sh:message "Capability is consumed by some interface but produced by none — dangling consume (contract does not close)."@en ;
+        sh:select """
+            PREFIX iif: <http://purl.org/pib/integration-interface#>
+            SELECT $this WHERE {
+              ?consumer iif:consumes $this .
+              FILTER NOT EXISTS { ?producer iif:produces $this . }
+            }
+        """ ] .
+
+### G5 — Edge well-formedness: an IntegrationEdge needs source, target, capability, operator
+iif:IntegrationEdgeShape a sh:NodeShape ;
+    sh:targetClass iif:IntegrationEdge ;
+    sh:property [ sh:path iif:edgeSource ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path iif:edgeTarget ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path iif:edgeCapability ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path iif:governedByOperator ; sh:minCount 1 ;
+        sh:message "Every IntegrationEdge must declare its governing variant-algebra operator."@en ] .

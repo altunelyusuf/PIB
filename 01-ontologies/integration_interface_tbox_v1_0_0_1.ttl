@@ -1,0 +1,119 @@
+@prefix iif:   <http://purl.org/pib/integration-interface#> .
+@prefix pib:   <http://purl.org/pib/profile#> .
+@prefix vaf:   <http://www.variant-algebra.org/ontology#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix pibprov: <http://purl.org/pib/prov#> .
+
+<http://purl.org/pib/integration-interface>
+    a owl:Ontology ;
+    owl:versionInfo "1.0.0.1" ;
+    owl:versionIRI <http://purl.org/pib/integration-interface/1.0.0.1> ;
+    owl:priorVersion <http://purl.org/pib/integration-interface/1.0.0> ;
+    rdfs:label "Integration-Interface Ontology — produces/consumes contracts & the wiring variation space"@en ;
+    dcterms:description "Loose-integration vocabulary for the ontology ecosystem. Each ontology DECLARES its interface (what it produces = public exports; what it consumes = required inputs) WITHOUT owl:imports. Integration is therefore a DECLARED, VALIDATED CONTRACT, not a hard import — preserving each ontology's standalone self-coverage. The set of possible produces→consumes bindings is a variation space whose features are governed by variant-algebra operators (Mandatory/Optional/Exclusive/Or/Dependency/Repetition); a Profile selects one validated WiringVariant from it. Distinct from PROV-O: this is a DESIGN-TIME capability/interface declaration; PROV-O records RUNTIME history. They compose, they are not conflated. PATCH v1.0.0.1: BP-D24 metadata completed (added dcterms:modified, dcterms:identifier, prov:wasAttributedTo, machine-linkable dcterms:creator IRI, and Activity-IRI prov:wasGeneratedBy); no vocabulary change."@en ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:creator pibprov:Agent_YusufAltunel, "Yusuf Altunel" ;
+    dcterms:created "2026-06-05"^^xsd:date ;
+    dcterms:modified "2026-06-06"^^xsd:date ;
+    dcterms:identifier "integration-interface" ;
+    prov:wasGeneratedBy pibprov:authoring ;
+    prov:wasAttributedTo pibprov:Agent_YusufAltunel .
+
+##############################################################################
+# Interface declaration (one per participating ontology/system)
+##############################################################################
+
+iif:OntologyInterface a owl:Class ;
+    rdfs:label "OntologyInterface"@en ;
+    skos:definition "The declared integration interface of one participating ontology or system. Lists the Capabilities it produces and the Capabilities it consumes, plus its self-coverage attestation. Declaring an interface does NOT import the counterpart ontology — names are referenced, not merged."@en .
+
+iif:Capability a owl:Class ;
+    rdfs:label "Capability"@en ;
+    skos:definition "A named, stable unit of meaning that can be produced by one interface and consumed by another (e.g. 'AnalysisAndDesignVocabulary', 'AdequacyMeasurement', 'InstitutionalGrade'). The matchable token of the produces/consumes contract."@en .
+
+iif:SelfCoverageAttestation a owl:Class ;
+    rdfs:label "SelfCoverageAttestation"@en ;
+    skos:definition "A machine-checkable claim that the declaring ontology is DL-consistent AND SHACL-conformant STANDALONE (without any consumed ontology merged in). Self-coverage is a HARD, profile-INDEPENDENT gate: loose integration only works if every node is self-sufficient. The attestation records the reasoner verdict, the SHACL result, and the SHA of the ontology version attested."@en .
+
+##############################################################################
+# The variation space: edges, operators, variants
+##############################################################################
+
+iif:IntegrationEdge a owl:Class ;
+    rdfs:label "IntegrationEdge"@en ;
+    skos:definition "A candidate binding from a produced Capability (source) to a consuming interface (target) for a given Capability. Edges are the FEATURES of the variation space; whether an edge is active in a given wiring is decided by its governing operator and the selected profile."@en .
+
+iif:VariabilityOperator a owl:Class ;
+    rdfs:label "VariabilityOperator"@en ;
+    rdfs:isDefinedBy <http://www.variant-algebra.org/ontology> ;
+    skos:definition "Marker aligning an IntegrationEdge (or edge group) to a Variant Algebra operator. The six operators carry their VAF semantics: Mandatory (edge must be active), Optional (may), Exclusive (exactly one of a group), Or (at least one), Dependency (active edge requires another), Repetition (bounded multiplicity). The formal engine (pinned VAF framework) enumerates and validates configurations under these operators."@en .
+
+iif:WiringVariant a owl:Class ;
+    rdfs:label "WiringVariant"@en ;
+    skos:definition "One configuration of the variation space: a specific set of active IntegrationEdges that (a) satisfies every operator constraint and (b) leaves no active consume without a matching active produce. A WiringVariant is VALID iff the pinned VAF engine reports it admissible AND every participating node passes self-coverage. A Profile selects exactly one valid WiringVariant — the reproducible point."@en .
+
+iif:VariationCapacity a owl:Class ;
+    rdfs:label "VariationCapacity"@en ;
+    skos:definition "The count of valid WiringVariants admissible for an ecosystem integration model (the variant-algebra Variation Capacity metric applied to the wiring space). Computed by the pinned VAF engine; a measure of how much integration variability the ecosystem actually supports."@en .
+
+##############################################################################
+# Properties — the produces/consumes contract
+##############################################################################
+
+iif:produces a owl:ObjectProperty ;
+    rdfs:label "produces"@en ;
+    rdfs:domain iif:OntologyInterface ; rdfs:range iif:Capability ;
+    skos:definition "Declares that the interface EXPORTS the named capability (design-time). The contract validator MUST verify the declaring ontology actually defines vocabulary backing this capability (OE L-58: a declaration blind to content is documentation that lies)."@en .
+
+iif:consumes a owl:ObjectProperty ;
+    rdfs:label "consumes"@en ;
+    rdfs:domain iif:OntologyInterface ; rdfs:range iif:Capability ;
+    skos:definition "Declares that the interface REQUIRES the named capability as input (design-time, no owl:imports). A wiring is valid only if every active consume is matched by an active produce of the same Capability."@en .
+
+iif:hasInterface a owl:ObjectProperty ;
+    rdfs:label "hasInterface"@en ;
+    skos:definition "Links a participating ontology/system IRI to its OntologyInterface declaration."@en .
+
+iif:hasSelfCoverage a owl:ObjectProperty ;
+    rdfs:label "hasSelfCoverage"@en ;
+    rdfs:domain iif:OntologyInterface ; rdfs:range iif:SelfCoverageAttestation ;
+    skos:definition "Attaches the standalone-consistency + SHACL attestation to an interface. Required before the interface may participate in any wiring."@en .
+
+iif:edgeSource a owl:ObjectProperty ;
+    rdfs:label "edgeSource"@en ;
+    rdfs:domain iif:IntegrationEdge ; rdfs:range iif:OntologyInterface ;
+    skos:definition "The producing interface of an integration edge."@en .
+
+iif:edgeTarget a owl:ObjectProperty ;
+    rdfs:label "edgeTarget"@en ;
+    rdfs:domain iif:IntegrationEdge ; rdfs:range iif:OntologyInterface ;
+    skos:definition "The consuming interface of an integration edge."@en .
+
+iif:edgeCapability a owl:ObjectProperty ;
+    rdfs:label "edgeCapability"@en ;
+    rdfs:domain iif:IntegrationEdge ; rdfs:range iif:Capability ;
+    skos:definition "The capability flowing across the edge (must be produced by source and consumed by target)."@en .
+
+iif:governedByOperator a owl:ObjectProperty ;
+    rdfs:label "governedByOperator"@en ;
+    rdfs:domain iif:IntegrationEdge ; rdfs:range iif:VariabilityOperator ;
+    skos:definition "Binds an edge to the variant-algebra operator that governs its presence in a wiring."@en .
+
+iif:forProfile a owl:ObjectProperty ;
+    rdfs:label "forProfile"@en ;
+    rdfs:domain iif:WiringVariant ; rdfs:range pib:Profile ;
+    skos:definition "Profile-scoping: a WiringVariant is valid FOR a specific profile. The same edge may be active under one profile and inactive under another — this is how profile-driven wiring variants and cross-category collision-avoidance are realised at the integration layer."@en .
+
+iif:activeEdge a owl:ObjectProperty ;
+    rdfs:label "activeEdge"@en ;
+    rdfs:domain iif:WiringVariant ; rdfs:range iif:IntegrationEdge ;
+    skos:definition "Lists the edges active in a given wiring variant."@en .

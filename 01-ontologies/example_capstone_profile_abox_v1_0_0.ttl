@@ -1,0 +1,40 @@
+@prefix ex:    <http://purl.org/pib/example#> .
+@prefix pib:   <http://purl.org/pib/profile#> .
+@prefix iif:   <http://purl.org/pib/integration-interface#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# Worked example: the "İKÜ Capstone Report" profile and the integration wiring it selects.
+# This is the SAME wiring verified admissible by the pinned VAF engine (9 valid variants;
+# two-measurers / consume-without-produce / no-A&D-source all correctly rejected).
+
+ex:CapstoneReport a pib:ArtifactCategory ;
+    rdfs:label "İKÜ Capstone Report"@en .
+
+ex:HasAnalysisDesignModel a pib:SharedCriterion ;
+    rdfs:label "must contain an Analysis & Design model"@en ;
+    dcterms:source "İKÜ capstone rubric; shared by RADAR (measures adequacy) and PAMG (grades)." .
+
+ex:CapstoneProfile a pib:Profile ;
+    rdfs:label "Capstone Profile"@en ;
+    pib:hasCategory ex:CapstoneReport ;
+    pib:hasSharedCriterion ex:HasAnalysisDesignModel ;
+    pib:selectsWiring ex:CapstoneWiring .
+
+# Participating interfaces (declared, not imported)
+ex:O4SDLC_if a iif:OntologyInterface ; rdfs:label "O4SDLC interface"@en ;
+    iif:produces ex:AnalysisDesignVocabulary .
+ex:RADAR_if a iif:OntologyInterface ; rdfs:label "RADAR interface"@en ;
+    iif:consumes ex:AnalysisDesignVocabulary ; iif:produces ex:AdequacyMeasurement .
+ex:PAMG_if a iif:OntologyInterface ; rdfs:label "PAMG interface"@en ;
+    iif:consumes ex:AdequacyMeasurement ; iif:produces ex:InstitutionalGrade .
+
+ex:AnalysisDesignVocabulary a iif:Capability ; rdfs:label "Analysis & Design vocabulary"@en .
+ex:AdequacyMeasurement      a iif:Capability ; rdfs:label "Adequacy measurement"@en .
+ex:InstitutionalGrade       a iif:Capability ; rdfs:label "Institutional grade"@en .
+
+ex:CapstoneWiring a iif:WiringVariant ;
+    rdfs:label "Capstone wiring variant"@en ;
+    iif:forProfile ex:CapstoneProfile .

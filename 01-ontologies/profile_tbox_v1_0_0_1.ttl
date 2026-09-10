@@ -1,0 +1,73 @@
+@prefix pib:   <http://purl.org/pib/profile#> .
+@prefix iif:   <http://purl.org/pib/integration-interface#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+@prefix pibprov: <http://purl.org/pib/prov#> .
+
+<http://purl.org/pib/profile>
+    a owl:Ontology ;
+    owl:versionInfo "1.0.0.1" ;
+    owl:versionIRI <http://purl.org/pib/profile/1.0.0.1> ;
+    owl:priorVersion <http://purl.org/pib/profile/1.0.0> ;
+    rdfs:label "Profile Ontology — shared artifact-category & variant-configuration vocabulary"@en ;
+    dcterms:description "Single source of truth for artifact CATEGORY across the generic ontology ecosystem (RDODI generates, RADAR measures, PAMG grades). A Profile binds a category identity, the criteria SHARED across systems, and a selection of one validated integration wiring variant. System-specific behaviour (RDODI generation templates, RADAR measurement dimensions, PAMG grading weights) is NOT modelled here — it is attached by each system to the shared Profile IRI, keeping this vocabulary free of scope-foreign content (OE L-64). PATCH v1.0.0.1: BP-D24 metadata completed (added dcterms:modified, dcterms:identifier, prov:wasAttributedTo, machine-linkable dcterms:creator IRI, and Activity-IRI prov:wasGeneratedBy); no vocabulary change."@en ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:creator pibprov:Agent_YusufAltunel, "Yusuf Altunel" ;
+    dcterms:created "2026-06-05"^^xsd:date ;
+    dcterms:modified "2026-06-06"^^xsd:date ;
+    dcterms:identifier "profile" ;
+    prov:wasGeneratedBy pibprov:authoring ;
+    prov:wasAttributedTo pibprov:Agent_YusufAltunel .
+
+##############################################################################
+# Core classes
+##############################################################################
+
+pib:Profile a owl:Class ;
+    rdfs:label "Profile"@en ;
+    skos:definition "A named configuration that binds (1) one ArtifactCategory, (2) the SharedCriteria that apply to that category across all consuming systems, and (3) exactly one validated WiringVariant selected from the integration variation space. A Profile is the variant CONFIGURATION in the variant-algebra sense: it resolves the ecosystem's integration variation space to one reproducible, validated point. Every artifact carries exactly one canonical Profile IRI so that all systems (generator/measurer/grader) interpret its category identically — preventing cross-category collisions."@en ;
+    rdfs:comment "Consolidates the fragmented profile notions found in the ecosystem: PAMG's Profile (binding of Rubric+DocumentGenre+MetricSet) and RDODI's profile registry. RADAR had none — this fills that gap."@en .
+
+pib:ArtifactCategory a owl:Class ;
+    rdfs:label "ArtifactCategory"@en ;
+    skos:definition "The kind of artifact a profile governs (e.g. capstone report, IEEE conference paper, research report, courseware, technical document). The category is the stable identity all systems agree on; it does not carry system-specific behaviour."@en .
+
+pib:SharedCriterion a owl:Class ;
+    rdfs:label "SharedCriterion"@en ;
+    skos:definition "A criterion that applies to an artifact category and is meaningful to MORE THAN ONE system (e.g. 'must contain an Analysis & Design model', 'must declare requirements'). Criteria specific to a single system (a grading weight, a generation template) are deliberately excluded and remain in that system."@en .
+
+pib:WiringVariant a owl:Class ;
+    rdfs:label "WiringVariant"@en ;
+    rdfs:isDefinedBy <http://purl.org/pib/integration-interface> ;
+    skos:definition "A reference to one validated configuration of the integration variation space (defined in the Integration-Interface ontology). A Profile selects exactly one. Punned here so a Profile can point at it without importing the interface ontology (loose coupling)."@en .
+
+##############################################################################
+# Properties
+##############################################################################
+
+pib:hasCategory a owl:ObjectProperty ;
+    rdfs:label "hasCategory"@en ;
+    rdfs:domain pib:Profile ; rdfs:range pib:ArtifactCategory ;
+    skos:definition "Binds a profile to the single artifact category it governs."@en .
+
+pib:hasSharedCriterion a owl:ObjectProperty ;
+    rdfs:label "hasSharedCriterion"@en ;
+    rdfs:domain pib:Profile ; rdfs:range pib:SharedCriterion ;
+    skos:definition "Associates a profile with the cross-system criteria for its category."@en .
+
+pib:selectsWiring a owl:ObjectProperty ;
+    rdfs:label "selectsWiring"@en ;
+    rdfs:domain pib:Profile ; rdfs:range pib:WiringVariant ;
+    skos:definition "The variant-binding link: associates a profile with the ONE validated integration wiring variant it resolves to. Functional in intent — a profile must select exactly one wiring for reproducibility (enforced by SHACL, not OWL cardinality, to preserve self-coverage)."@en .
+
+pib:canonicalProfileOf a owl:ObjectProperty ;
+    rdfs:label "canonicalProfileOf"@en ;
+    skos:definition "Asserts that a profile is THE canonical profile for an artifact (inverse: artifact hasCanonicalProfile). Exactly-one is the collision-avoidance invariant; checked by SHACL in the consuming context."@en .

@@ -1,0 +1,27 @@
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix ex:   <http://purl.org/pib/prov#> .
+
+# PIB provenance records v1.1.0.
+# MINOR from v1.0.0: added the in-scope PROV-O Agent + Organization individuals so that
+# BP-D24 attribution (dcterms:creator / dcterms:rightsHolder / dcterms:publisher /
+# prov:wasAttributedTo) on the two TBoxes can reference SHARED, machine-linkable IRIs in
+# THIS package's own prov namespace (http://purl.org/pib/prov#) — NOT oe-prov# (OE L-64:
+# no scope-foreign vocabulary bleeding across packages).
+
+ex:Agent_YusufAltunel a prov:Agent, prov:Person ;
+    rdfs:label "Yusuf Altunel"@en .
+
+ex:Org_IKU_ComputerEngineering a prov:Agent, prov:Organization ;
+    rdfs:label "İstanbul Kültür Üniversitesi — Computer Engineering"@en .
+
+ex:PIB_v1_0_0 a prov:Entity ; rdfs:label "Profile + Integration-Interface Blueprint v1.0.0"@en ;
+    dcterms:created "2026-06-05"^^xsd:date ; prov:wasGeneratedBy ex:authoring ;
+    prov:wasDerivedFrom ex:vaf_pin, ex:oe_pack .
+ex:authoring a prov:Activity ; rdfs:label "PIB blueprint authoring (PAMG session)"@en ;
+    prov:wasAssociatedWith ex:Agent_YusufAltunel ;
+    prov:used ex:vaf_pin, ex:oe_pack .
+ex:vaf_pin a prov:Entity ; rdfs:label "Variant_Algebra_Framework_v1_0_0 (pinned engine)"@en .
+ex:oe_pack a prov:Entity ; rdfs:label "OE Pack v20.11.0 / ABox v2.2.0 (governance)"@en .

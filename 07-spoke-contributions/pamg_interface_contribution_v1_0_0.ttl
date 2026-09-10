@@ -1,0 +1,57 @@
+# PAMG SPOKE interface contribution v1.0.0 — declared AGAINST the PIB HUB v1.1.0 published vocabulary
+# (http://purl.org/pib/integration-interface# , http://purl.org/pib/profile# , http://purl.org/pib/example#),
+# WITHOUT owl:imports ("names referenced, not merged"). A contribution to the HUB; NOT an edit to the HUB
+# ontologies and NOT an edit to PAMG core (B1/L-64). PAMG package pinned (internal MANIFEST 148/148 OK).
+# Form matches the O4SDLC and RADAR sibling contributions: interface + G3 self-coverage link as RDF individual.
+
+@prefix iif:   <http://purl.org/pib/integration-interface#> .
+@prefix pib:   <http://purl.org/pib/profile#> .
+@prefix ex:    <http://purl.org/pib/example#> .
+@prefix ppib:  <http://purl.org/pamg/pib#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://purl.org/pamg/pib/interface-contribution> a owl:Ontology ;
+    rdfs:label "PAMG PIB interface contribution v1.0.0"@en ;
+    owl:versionInfo "1.0.0" ;
+    owl:versionIRI <http://purl.org/pamg/pib/interface-contribution/1.0.0> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:creator <http://www.zt4swe.io/agent/YusufAltunel> ;
+    dcterms:rightsHolder <http://www.zt4swe.io/agent/YusufAltunel> ;
+    dcterms:publisher <http://www.zt4swe.io/agent/YusufAltunel> ;
+    dcterms:rights "Copyright (c) 2026 Yusuf Altunel. Licensed under CC BY 4.0."@en ;
+    rdfs:comment "Declares PAMG's OntologyInterface (consumes the adequacy-measurement capability RADAR produces; produces the institutional-grade capability) + SelfCoverageAttestation (G3), and maps PAMG's genre profiles onto the shared pib:Profile. PAMG grades; it does NOT measure (RADAR's seam, Charter 02). Capability IRI ex:AdequacyMeasurement matches RADAR_if's produced capability — the consume-side of the contract closes."@en .
+
+# spoke-owned annotation/vocabulary (DL-clean; PAMG namespace; keeps pib/iif classes OUT of PAMG core, L-64)
+ppib:groundedBy   a owl:AnnotationProperty ; rdfs:label "L-58 capability grounding"@en .
+ppib:verdict      a owl:AnnotationProperty ; rdfs:label "self-coverage verdict"@en .
+ppib:attests      a owl:AnnotationProperty ; rdfs:label "attested ontology set (files @ result)"@en .
+ppib:dlMethod     a owl:AnnotationProperty ; rdfs:label "DL-consistency method"@en .
+ppib:reductionNote a owl:AnnotationProperty ; rdfs:label "measurement-outsourcing reduction note"@en .
+
+# ---- Deliverable 1: the PAMG OntologyInterface (produces + consumes + REQUIRED self-coverage link) ----
+ex:PAMG_if a iif:OntologyInterface ;
+    rdfs:label "PAMG interface (institutional grader)"@en ;
+    iif:produces ex:InstitutionalGrade ;
+    iif:consumes ex:AdequacyMeasurement ;
+    iif:hasSelfCoverage ppib:PAMG_SelfCoverage_v1_0_0 ;
+    ppib:groundedBy "L-58 GROUNDED (produces ex:InstitutionalGrade): backed by real PAMG content — pamg:GradeBand (final letter band over a composite-score interval) computed via pamg:Rubric + pamg:RubricComponent (weighted lines mapping to assessment dimensions). The institutional grade is PAMG's, not RADAR's (RADAR refuses to certify 'good'; it measures). 53 classes in pamg/01-ontologies, MANIFEST 148/148 OK." ;
+    ppib:groundedBy "L-58 (consumes ex:AdequacyMeasurement): POST-REDUCTION TARGET. PAMG's rubric currently maps to PAMG's OWN pamg:Metric/CoverageMetric/ProxyMetric/AssessmentDimension results; the reduction (PAMG_REDUCTION_RECORD) retires that duplicate measurement engine and rewires pamg:RubricComponent inputs to consume RADAR's ex:AdequacyMeasurement. The capability IRI matches RADAR_if's produced ex:AdequacyMeasurement (contract closes; no dangling consume)." ;
+    ppib:reductionNote "Retire pamg:Metric/CoverageMetric/ProxyMetric/ReferenceMetric/AssessmentDimension/ConfidenceTier/MetricResult/SourceFidelityMetric (duplicate RADAR). Keep pamg:GradeBand/Rubric/RubricComponent + review pipeline. CAVEAT: confirm RADAR covers source-fidelity before retiring pamg:SourceFidelityMetric (flagged to Charter 02)." .
+
+# ---- Deliverable 2: profile mapping onto the shared concept (consolidate, don't keep a private one) ----
+ex:CapstoneProfile  a pib:Profile ; rdfs:label "Capstone Profile (PAMG genre -> shared)"@en .
+ex:IEEEPaperProfile a pib:Profile ; rdfs:label "IEEE Paper Profile (PAMG genre -> shared)"@en .
+# PAMG's own pamg:Profile / pamg:DocumentGenre align to the shared pib:Profile (closeMatch; HUB owns canonical).
+<http://purl.org/pamg/core#Profile>      skos:closeMatch pib:Profile .
+<http://purl.org/pamg/core#DocumentGenre> skos:closeMatch pib:ArtifactCategory .
+
+# ---- Deliverable 3: the SelfCoverageAttestation (satisfies G3; profile-independent) ----
+ppib:PAMG_SelfCoverage_v1_0_0 a iif:SelfCoverageAttestation ;
+    rdfs:label "PAMG self-coverage attestation v1.0.0"@en ;
+    ppib:verdict "SELF-COVERED (PASS, SHACL leg): 15 PAMG ontology files parse (1370 triples); 0 violations against PAMG's own 7 SHACL shape sets standalone (pamg/02-shacl), no consumed ontology merged." ;
+    ppib:attests "pamg/01-ontologies/*.ttl (15 files) @ PAMG MANIFEST 148/148 OK : SHACL 0 violations" ;
+    ppib:dlMethod "DL-consistency leg: NOT run here (hook). RECOMMEND canonical OWLAPI/HermiT (OE BP-D3), NOT the owlready2->HermiT bridge — O4SDLC's HUB_TOOL_DEFECT_NOTE shows that bridge gives false negatives; corroborated independently this session." .
