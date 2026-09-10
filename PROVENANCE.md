@@ -5,24 +5,23 @@ created 2026-09-10.
 
 ## Governed lineage (not rewritten — L-112)
 
-Full prior history — the PIB Phase 1-3 build, ORCP registration and Phase-G closure with the
-OEE ecosystem, the v1.0.0-v1.4.0 lineage (vocabulary publication, per-profile wiring validation,
-reproducibility vendoring, four canonical assessment profiles materialized with OBAF retired) —
-remains on record at:
+PIB v1.0.0–v1.4.0 was developed and released in an internal engineering lineage before this
+repository existed: the Phase 1–3 build, ORCP registration and Phase-G closure with the OEE
+ecosystem, per-profile wiring validation, reproducibility vendoring, and the four canonical
+assessment profiles materialized with OBAF retired. That lineage is retained in full and is
+never rewritten or deleted; releases from v1.4.1 onward are made here.
 
-`https://github.com/altunelyusuf/Ontologies/tree/pib-hub-v1.4.0/pib-hub`
-
-That history is never rewritten or deleted. This repository does not duplicate the Ontologies
-discipline/OE Pack — governance is inherited from `altunelyusuf/Ontologies`, per the same pattern
-already used for `altunelyusuf/VAF` and `altunelyusuf/RDODI-Research`.
+This repository does not duplicate the OE Pack. Governance is inherited by reference from the
+OE Operating Discipline (see `GOVERNANCE.md`), which is maintained separately and versioned
+independently of this package.
 
 ## What's here
 
-The verified content of `pib-hub-v1.4.0` (27 files, manifest self-verifies clean 27/27), copied
-out of the `pib-hub/` subdirectory of the Ontologies monorepo to repository root.
-`PUBLISH_RECORD.ttl` is carried over unedited as the honest historical record of how this content
-was originally published (it references the Ontologies publish ceremony that produced it, not
-this repository).
+The verified content of the final internal release (27 files, manifest self-verified clean 27/27)
+promoted to repository root. `PUBLISH_RECORD.ttl` is carried over **unedited** as the honest
+historical record of how that content was originally published — it describes the publish ceremony
+that produced it, not this repository's own releases, and is deliberately left that way rather than
+rewritten to look native here (L-112).
 
 ## Real, verified before transfer, not asserted (2026-09-10)
 
@@ -58,8 +57,8 @@ is PAMG's own evolution and not this package's to build.
 
 ## Session attribution
 
-Transferred under `OE_SESSION=pib-publish-session`, a new session distinct from the original
-`pib-hub-session` that built and first published this content to Ontologies. Session attribution
-for every release is recorded in `PUBLISH_RECORD.ttl` (`reliability:authoringSession`) and in the
-`Session:` trailer of each commit; the private working-session URL previously cited here was
-removed when this repository was made public, as it is not resolvable to anyone but its owner.
+Promoted under `OE_SESSION=pib-publish-session`, a session distinct from the `pib-hub-session`
+that built and first released this content. Session attribution for every release is recorded in
+`PUBLISH_RECORD.ttl` (`reliability:authoringSession`) and in the `Session:` trailer of each commit.
+Working-session URLs and internal repository paths are deliberately not cited here: they resolve
+for no external reader and are not part of this package's verifiable record.

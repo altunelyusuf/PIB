@@ -87,9 +87,9 @@ The variant-algebra engine is **pinned by hash, not vendored** — its lineage s
 
 - `GOVERNANCE.md` — how PIB inherits the OE Operating Discipline by highest-SemVer resolution, and
   the boundaries that apply (ownership of vendored artifacts; historical records are never rewritten).
-- `PROVENANCE.md` — lineage. PIB was developed inside the `altunelyusuf/Ontologies` monorepo as
-  `pib-hub`; that directory is now **retired and frozen**, with its history preserved at tag
-  `pib-hub-v1.4.0`. This repository is the source of truth from v1.4.1 onward.
+- `PROVENANCE.md` — lineage. PIB v1.0.0–v1.4.0 was developed in an internal engineering lineage
+  that is now **retired and frozen**; its history is retained and never rewritten. This repository
+  is the source of truth from v1.4.1 onward.
 - **License: CC BY 4.0** (`LICENSE`), matching the `dcterms:license` declared in every ontology here.
 
 ## Citation

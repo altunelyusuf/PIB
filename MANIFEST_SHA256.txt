@@ -1,10 +1,12 @@
-# PIB v1.4.2 — SHA-256 Manifest
-# PATCH from v1.4.1 (2026-09-10): prepared for PUBLIC release.
-#   - ADD README.md (public landing page: purpose, layout, reproduction commands, citation, honest scope).
-#   - ADD LICENSE (CC BY 4.0, matching dcterms:license declared in every ontology).
-#   - PROVENANCE.md: removed a private working-session URL not resolvable outside its owner.
-#   Gates re-run: full package (01+07) pib_invariants conforms, 0 violations; 12/12 turtle parsed.
-#   No ontology, shape or tool content changed.
+# PIB v1.4.3 — SHA-256 Manifest
+# PATCH from v1.4.2 (2026-09-10): public-surface hygiene. Documentation only.
+#   - README.md / GOVERNANCE.md / PROVENANCE.md: removed all references and links to repositories
+#     that do not resolve for an external reader (1 dead link, 10 mentions). Governing artifacts are
+#     now cited by NAME + VERSION + resolution rule rather than by location.
+#   - Verifiability preserved: everything this repo asserts about itself remains re-runnable from
+#     the files here (manifest, SHACL invariants, wiring enumeration, profile set).
+#   Gates re-run: full package (01+07) conforms, 0 violations; 12/12 turtle parsed. No ontology,
+#   shape or tool content changed; PUBLISH_RECORD.ttl still carried unedited (L-112).
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 c55633f87b790978cbb9a83bd9a174896d06dba59778d314fd1ec80dcd8b1586  01-ontologies/integration_interface_tbox_v1_0_0_1.ttl  (9015b)
 741fbf9639f7656c9d9f1d529b5689f67988b6b925897d71d4ed35353d21de79  01-ontologies/pib_assessment_profiles_v1_0_0.ttl  (13240b)
@@ -31,9 +33,9 @@ c226b671eb8570dbe6c45f00e4d763f9efa01c04befd94cd60689fb25ce8d950  07-spoke-contr
 1acebf7ec37f81f8d55bb83b03b0d2d43d7c7f5046a5bc91f75bfc258432c153  08-registration/REGISTRATION_STATUS_v1_0_0.md  (2122b)
 65dc16c3ee8dad23cc09cb671e66ccbdbf5c742e45c989ff3a570e7c6dec1442  08-registration/build_pib_orcp_submission_v1_0_0.py  (4660b)
 f970dc114d77fcb914029965d015e31c18c347c841193d8a7e11720432897dd2  08-registration/pib_orcp_submission_v1_0_0.ttl  (2579b)
-36650ae1daafa1f0c4bed7120ed5b0a907a4d489d32a43937cea5bd191e829c6  GOVERNANCE.md  (3540b)
+575c8827a0260a4d4ca2506c3ea9a4ae60ebb6c9cd3f0f0e18d0a018ec8187d4  GOVERNANCE.md  (3759b)
 3d834db15fd6499713ce94d35f4f4a4f8e2548287c1e526c0b46cb7f71e68dac  LICENSE  (19202b)
-f5e4627a1ca406739b26f8210c2639223596af81cc3d2465e6ee0bfcc8f9bb24  PROVENANCE.md  (4017b)
+9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
-6b29a5f01f89249cb6c96297250048936d74413cb0faccefb52c71b18a2e224d  README.md  (5546b)
-b99b4c7cdf236f59bc9f65d963deaecae3b16a7dad87939cacb9057f7664daee  VERSION.txt  (6b)
+2344eb18a5cb46f38d6a3bcfcc307e97b329de7d8935ebb1fac500faf602ae94  README.md  (5520b)
+bd31e8d9cf8d14a1e9e3fdf3b9f6a524819aed0d1b14627523c6765767c7d8f1  VERSION.txt  (6b)
