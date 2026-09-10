@@ -29,17 +29,32 @@ this repository).
 Independently re-run this session, against the pinned VAF engine (exact SHA-256 match confirmed
 for all 4 pinned core files):
 - `wiring_validator_v1_0_0.py`: Variation Capacity 9, all 4 collision-guard checks PASS, exit 0.
-- SHACL invariants (`pib_invariants_v1_0_0.ttl`) across all 5 real ontology files: G3
-  (self-coverage required before wiring) correctly refuses the 3 worked-example interfaces
-  (PAMG, RADAR, O4SDLC) for lacking `SelfCoverageAttestation` — matching the package's own
-  documented claim that "the gate has teeth," not a defect.
+- SHACL invariants (`pib_invariants_v1_0_0.ttl`): validating `01-ontologies/` ALONE yields 3 G3
+  refusals (PAMG, RADAR, O4SDLC lack `SelfCoverageAttestation`) — this is the known
+  standalone-vs-merged measurement artifact documented in this package since v1.2.1, NOT the gate
+  refusing real content. The attestation links live in `07-spoke-contributions/`, which is exactly
+  why they are vendored. Validated over the full package (`01-ontologies/` + `07-spoke-contributions/`):
+  **conforms=True, 0 violations** (pySHACL, advanced mode, merged graph, 589 triples).
 
-## Honest status carried forward from the source package
+## Honest status (corrected v1.4.1 — the statement below replaced a stale one)
 
-Scaffold + verified tooling, NOT a populated ecosystem. Real interface declarations for the
-ecosystem's actual participants (O4SDLC, RADAR, PAMG), self-coverage attestations, and
-per-profile wiring models beyond the one worked capstone example remain open work — see this
-package's own `README.md` and `BLUEPRINT_v1_0_0.md` for the complete, honest scope.
+The transferred v1.4.0 text described this package as a scaffold whose real interface
+declarations, self-coverage attestations, and per-profile wiring models "remain open work."
+That was **false for v1.4.0** and is corrected here per B3, having been re-derived directly from
+the shipped bytes rather than carried forward on report. The v1.4.0 content actually carries:
+
+- **8 `iif:OntologyInterface`** individuals, **8/8 with `iif:hasSelfCoverage`** attestations
+  (real O4SDLC / RADAR / PAMG declarations vendored in `07-spoke-contributions/`, plus the
+  assessment-layer interfaces including the OEE measurement facet and GamOnt).
+- **6 `pib:Profile`** and **6 `iif:WiringVariant`** — the worked capstone + IEEE-paper examples
+  and the four canonical assessment profiles (Core software development, Ontology-based,
+  Ontology-development on OEE, Gamification), each pinning one validated wiring.
+- Full package conforms to `pib_invariants` with **0 violations**.
+
+What genuinely remains open: **`Profile_ZeroTime`** (deferred by owner decision; its ZT4SWE leg is
+additionally blocked because `zrcm_v2_5.ttl` is DL-inconsistent as shipped — a finding for the
+ZT4SWE owner, not edited here per B1), and the PAMG-ontology-native grading implementation, which
+is PAMG's own evolution and not this package's to build.
 
 ## Session attribution
 
