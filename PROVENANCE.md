@@ -59,5 +59,7 @@ is PAMG's own evolution and not this package's to build.
 ## Session attribution
 
 Transferred under `OE_SESSION=pib-publish-session`, a new session distinct from the original
-`pib-hub-session` that built and first published this content to Ontologies (see
-`https://claude.ai/chat/deecfc96-1250-4967-a407-8500247813fd`).
+`pib-hub-session` that built and first published this content to Ontologies. Session attribution
+for every release is recorded in `PUBLISH_RECORD.ttl` (`reliability:authoringSession`) and in the
+`Session:` trailer of each commit; the private working-session URL previously cited here was
+removed when this repository was made public, as it is not resolvable to anyone but its owner.
