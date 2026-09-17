@@ -45,3 +45,22 @@ gate. So:
 
 Both are pinned; neither is vendored as source into this package except the two read-only rule files.
 Re-pointing the engine pin at the newer generation is a separate decision and is **not** made here.
+
+---
+
+## Addendum 2026-09-17 (second) — the pin is now provenance, not a runtime dependency
+
+As of v2.0.0 PIB computes Variation Capacity **in the ontology**: candidate generation,
+admissibility and counting are SHACL rules and SPARQL. The Python enumeration engine this file pins
+is **no longer on PIB's calculation path**, and the tool that called it has been removed.
+
+The pin is retained deliberately. It records which engine generation produced the capacities PIB
+published in earlier releases, which is provenance worth keeping, and it is the reference for
+re-deriving the equivalence that justified the switch — measured, not assumed:
+
+| Space | Pinned engine | Ontology path |
+|---|---|---|
+| Worked capstone | 9 | 9 |
+| Ontology-development profile | 1 | 1 |
+
+`PIB_VAF_SRC` is no longer required to run any gate in this package.

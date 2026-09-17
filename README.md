@@ -76,11 +76,10 @@ than papered over — see `04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_
 ## Reproducing the checks
 
 ```bash
-pip install rdflib pyshacl lark owlready2 --break-system-packages
+pip install rdflib pyshacl owlready2 --break-system-packages
 
-# 1. wiring validity against the pinned engine (requires the VAF source; see 06-vaf-engine-pin/)
-export PIB_VAF_SRC=/path/to/variant_algebra_framework_v1_0_0/src
-python3 03-tooling/wiring_validator_v1_0_0.py
+# 1. Variation Capacity, computed in the ontology (no engine, no external source needed)
+python3 03-tooling/variation_capacity_v1_0_0.py --self-test
 
 # 2. invariants over the FULL package — 01-ontologies/ plus 07-spoke-contributions/
 python3 - <<'PY'
@@ -93,6 +92,13 @@ s = rdflib.Graph().parse('02-shacl-safeguards/pib_invariants_v1_0_0.ttl', format
 print(validate(g, shacl_graph=s, advanced=True)[0])   # -> True, 0 violations
 PY
 ```
+
+**The calculation runs in the ontology.** Candidate generation, admissibility against the algebra's
+operators, and counting are SHACL rules and SPARQL — see
+`02-shacl-safeguards/pib_enumeration_rules_v1_0_0.ttl`. The Python files are harnesses: they load
+graphs, drive the rule engine to a fixpoint, run a query and print. No constraint's meaning lives in
+code. The previously required enumeration engine has been retired from this path; see
+`03-tooling/RETIRED_wiring_validator_v1_0_0.md` for the equivalence measured before removing it.
 
 **Validate the whole package, not `01-ontologies/` alone.** Alone, it yields 3 G3 self-coverage
 refusals — a known standalone-vs-merged measurement artifact, not a defect: the attestation links

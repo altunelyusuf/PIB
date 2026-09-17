@@ -1,0 +1,188 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix pibe: <http://purl.org/pib/enumeration#> .
+@prefix va:   <http://example.org/variant-algebra#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================================
+# PIB Enumeration Rules v1.0.0 — variant enumeration and admissibility,
+# computed in the ontology.
+#
+# Adapted from the variant algebra's own operator rules, with the owner's
+# permission to reuse or adapt. One change of substance was required: the
+# algebra's rules read a GLOBAL selection marker, which evaluates exactly one
+# candidate per graph. Enumerating a whole variation space means many candidates
+# coexisting in one graph, so every rule here is CANDIDATE-SCOPED — admissibility
+# is decided per candidate, through the candidate's own membership links.
+#
+# Execution: advanced mode, in place, no inference. Generation runs to a fixpoint
+# (the harness re-invokes the engine until no new triples appear); the harness
+# carries no algebra, only that loop and a counting query.
+# ============================================================================
+
+<http://purl.org/pib/enumeration/rules>
+    a owl:Ontology ;
+    owl:versionInfo "1.0.0" ;
+    owl:versionIRI <http://purl.org/pib/enumeration/rules/1.0.0> ;
+    rdfs:label "PIB enumeration rules — variant generation and admissibility in the ontology"@en ;
+    dcterms:description "Generates every candidate selection over a declared variation space, decides each candidate's admissibility against the algebra's operators, and leaves the admissible set standing in the graph to be counted. Replaces the Python enumerator on PIB's calculation path."@en .
+
+# ---------------------------------------------------------------------------
+# GENERATION — decide one feature at a time, branching on include / exclude.
+# A candidate that has decided the first k features spawns two successors for
+# feature k+1. Successor identity is derived from the parent's identity and the
+# branch taken, so the same candidate is never created twice.
+# ---------------------------------------------------------------------------
+
+pibe:SeedRuleShape a sh:NodeShape ;
+    rdfs:label "Seed: every variation space starts with one undecided candidate"@en ;
+    sh:targetClass pibe:VariationSpace ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT {
+                ?seed a pibe:Candidate ;
+                      pibe:inSpace $this ;
+                      pibe:decidedUpTo 0 .
+            }
+            WHERE {
+                BIND(IRI(CONCAT(STR($this), "__c")) AS ?seed)
+            }
+        """ ] .
+
+pibe:BranchRuleShape a sh:NodeShape ;
+    rdfs:label "Branch: a candidate with k features decided spawns include and exclude successors for feature k+1"@en ;
+    sh:targetClass pibe:Candidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT {
+                ?in  a pibe:Candidate ; pibe:inSpace ?space ;
+                     pibe:decidedUpTo ?next ; pibe:includes ?feature .
+                ?out a pibe:Candidate ; pibe:inSpace ?space ;
+                     pibe:decidedUpTo ?next .
+                ?in  pibe:derivedFrom $this .
+                ?out pibe:derivedFrom $this .
+            }
+            WHERE {
+                $this pibe:inSpace ?space ; pibe:decidedUpTo ?k .
+                ?space pibe:hasFeature ?feature .
+                ?feature pibe:featureIndex ?idx .
+                FILTER(?idx = ?k + 1)
+                BIND(?k + 1 AS ?next)
+                BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "i")) AS ?in)
+                BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "o")) AS ?out)
+            }
+        """ ] .
+
+pibe:InheritRuleShape a sh:NodeShape ;
+    rdfs:label "Inherit: a successor keeps every feature its parent had already included"@en ;
+    sh:targetClass pibe:Candidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:includes ?f }
+            WHERE { $this pibe:derivedFrom ?parent . ?parent pibe:includes ?f }
+        """ ] .
+
+pibe:CompleteRuleShape a sh:NodeShape ;
+    rdfs:label "Complete: a candidate that has decided every feature of its space is a full variant"@en ;
+    sh:targetClass pibe:Candidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this a pibe:CompleteCandidate }
+            WHERE {
+                $this pibe:inSpace ?space ; pibe:decidedUpTo ?k .
+                ?space pibe:featureCount ?n .
+                FILTER(?k = ?n)
+            }
+        """ ] .
+
+# ---------------------------------------------------------------------------
+# ADMISSIBILITY — the algebra's operators, decided per candidate.
+# Each rule marks a candidate inadmissible; silence means the operator is satisfied.
+# ---------------------------------------------------------------------------
+
+pibe:MandatoryCheckShape a sh:NodeShape ;
+    rdfs:label "Mandatory: a complete candidate missing a required feature is inadmissible"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:MandatoryConstraint ; pibe:inSpace ?space ; pibe:requires ?f .
+                FILTER NOT EXISTS { $this pibe:includes ?f }
+            }
+        """ ] .
+
+pibe:ExclusiveCheckShape a sh:NodeShape ;
+    rdfs:label "Exclusive: a candidate including two members of an exclusive group is inadmissible"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:ExclusiveConstraint ; pibe:inSpace ?space ;
+                    pibe:groupMember ?m1 , ?m2 .
+                FILTER(STR(?m1) < STR(?m2))
+                $this pibe:includes ?m1 , ?m2 .
+            }
+        """ ] .
+
+pibe:OrCheckShape a sh:NodeShape ;
+    rdfs:label "Or: a candidate including no member of an or-group is inadmissible"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:OrConstraint ; pibe:inSpace ?space .
+                FILTER NOT EXISTS { ?op pibe:groupMember ?m . $this pibe:includes ?m }
+            }
+        """ ] .
+
+pibe:DependencyCheckShape a sh:NodeShape ;
+    rdfs:label "Dependency: a candidate including a dependent without its prerequisite is inadmissible"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:DependencyConstraint ; pibe:inSpace ?space ;
+                    pibe:dependent ?d ; pibe:prerequisite ?p .
+                $this pibe:includes ?d .
+                FILTER NOT EXISTS { $this pibe:includes ?p }
+            }
+        """ ] .
+
+pibe:RepetitionCheckShape a sh:NodeShape ;
+    rdfs:label "Repetition: a candidate exceeding a group's budget is inadmissible (the k-of-n bound)"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:RepetitionConstraint ; pibe:inSpace ?space ;
+                    pibe:budgetGroup ?g ; pibe:maxSelected ?max .
+                {
+                    SELECT $this ?g (COUNT(?f) AS ?n) WHERE {
+                        $this pibe:includes ?f . ?f pibe:contributesToGroup ?g .
+                    } GROUP BY $this ?g
+                }
+                FILTER(?n > ?max)
+            }
+        """ ] .
