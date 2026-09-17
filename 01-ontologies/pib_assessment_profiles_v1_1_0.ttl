@@ -14,17 +14,22 @@
     dcterms:created "2026-06-09"^^xsd:date ;
     dcterms:creator pibprov:Agent_YusufAltunel,
         "Yusuf Altunel" ;
-    dcterms:description "Canonical assessment profiles materialized by the HUB. OBAF retired: assessment is PAMG made ontology-native and profile-driven, riding on OEE's measurement facets; ontology-development assessment belongs to OEE. Each pib:Profile pins one reproducible WiringVariant (VariationCapacity recorded), validated against the pinned VAF; every participating interface carries a G3 self-coverage attestation recording its real on-disk result. ZeroTime deferred (ZT4SWE unresolved)."@en ;
+    dcterms:description "Canonical assessment profiles materialized by the HUB. OBAF retired: assessment is PAMG made ontology-native and profile-driven, riding on OEE's measurement facets; ontology-development assessment belongs to OEE. Each pib:Profile pins one reproducible WiringVariant (VariationCapacity recorded), validated against the pinned VAF; every participating interface carries a G3 self-coverage attestation recording its real on-disk result. ZeroTime deferred (ZT4SWE unresolved). MINOR v1.1.0: added the Repetition operator individual, completing the six variability operators this vocabulary already states it governs — the variant-algebra engine's own definition scopes its variability family to exactly Mandatory, Optional, Exclusive, Or, Dependency and Repetition, and only five had been declared here. The engine's remaining six operators (addition, subtraction, cartesian product, division, inverse, composition) are deliberately NOT imported: by that engine's own definitions they are algebraic-manipulation and structure-building operators, not operators governing variant admissibility at enumeration time, which is what this vocabulary models."@en ;
     dcterms:identifier "assessment" ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
     dcterms:modified "2026-06-09"^^xsd:date ;
     dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
     dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
     dcterms:rightsHolder "Yusuf Altunel" ;
-    owl:versionIRI <http://purl.org/pib/assessment/1.0.0> ;
-    owl:versionInfo "1.0.0" ;
+    owl:priorVersion <http://purl.org/pib/assessment/1.0.0> ;
+    owl:versionIRI <http://purl.org/pib/assessment/1.1.0> ;
+    owl:versionInfo "1.1.0" ;
     prov:wasAttributedTo pibprov:Agent_YusufAltunel ;
     prov:wasGeneratedBy pibprov:authoring .
+
+asmt:Op_Repetition a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Repetition operator"@en .
 
 asmt:Op_Dependency a iif:VariabilityOperator,
         owl:NamedIndividual ;
