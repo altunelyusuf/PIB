@@ -38,7 +38,7 @@ history** — they compose, never conflated.
 | Gate | Scope | Tool | What it checks |
 |---|---|---|---|
 | **Self-coverage** | per node, profile-INDEPENDENT | `self_coverage_checker_v1_0_0.py` | each ontology parses, is SHACL-conformant (and optionally DL-consistent) **standalone**, no consumed ontology merged |
-| **Wiring validity** | per profile | `wiring_validator_v1_0_0.py` (wraps VAF) | operator constraints hold + every active `consumes` matched by an active `produces`; reports Variation Capacity |
+| **Wiring validity** | per profile | `variation_capacity_v1_0_0.py` (drives the ontology's enumeration rules) | operator constraints hold + every active `consumes` matched by an active `produces`; reports Variation Capacity |
 
 A wiring is adoptable **only if BOTH gates pass.** Self-coverage has teeth: the SHACL invariant G3 refuses
 any interface lacking a `SelfCoverageAttestation` (demonstrated — the worked example's three interfaces all
@@ -78,3 +78,19 @@ a direct application of VAF to ecosystem integration — not a metaphor.
 - Wiring validity is verified against the pinned VAF engine; **Variation Capacity is reported as
   admissible-variant count** by the engine — VAF's own dedicated metric module was not separately confirmed.
 - DL-consistency in the self-coverage checker is a hook (caller wires the HermiT harness), not run here.
+
+---
+
+## Status note appended 2026-09-17 (v2.0.0) — do not rewrite the design text above
+
+The design above still describes how PIB works, with one change to how it is *computed*. Where this
+document says wiring validity is verified against the pinned variant-algebra engine and Variation
+Capacity reported by it, that is now done **in the ontology**: candidate generation, admissibility
+against the algebra's operators, and counting are SHACL rules and SPARQL
+(`02-shacl-safeguards/pib_enumeration_rules_v1_0_0.ttl`), driven by a harness that carries no algebra.
+
+The engine is no longer a runtime dependency and `PIB_VAF_SRC` is not needed to run any gate here. The
+equivalence was measured before the switch and is re-checked on every run: the worked capstone gives 9
+admissible wirings of 64 complete candidates — the same 9 the engine reported.
+
+The design intent is unchanged, so the text above is left as written rather than edited in place.

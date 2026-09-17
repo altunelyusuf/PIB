@@ -23,11 +23,11 @@ Validate the composed graph **from this package, no external files**:
 ```
 data  = 01-ontologies/example_capstone_profile_abox_v1_0_0.ttl
       + 01-ontologies/profile_tbox_v1_0_0_1.ttl
-      + 01-ontologies/integration_interface_tbox_v1_0_0_1.ttl
+      + 01-ontologies/integration_interface_tbox_v1_0_0_2.ttl
       + 01-ontologies/pib_wiring_composition_v1_0_0.ttl
       + 07-spoke-contributions/*.ttl          ← supplies the iif:hasSelfCoverage links (G3)
 shapes = 02-shacl-safeguards/pib_invariants_v1_0_0.ttl
-expect: conforms=True, 0 violations; wiring_validator → VC=9 (both profiles)
+expect: conforms=True, 0 violations; variation_capacity --self-test → 9 (worked capstone)
 ```
 
 Without `07-spoke-contributions/`, `01-ontologies/*` alone yields 3 G3 violations (the interfaces

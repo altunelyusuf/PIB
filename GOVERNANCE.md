@@ -42,8 +42,15 @@ invariants, the wiring enumeration, and the profile set are all re-runnable from
 
 ## External dependency
 
-The **VAF engine is not vendored** — it is pinned by SHA-256 in `06-vaf-engine-pin/` and loaded at
-run time via `PIB_VAF_SRC`. Pinning, not copying, is deliberate: it keeps VAF's lineage with its owner.
+PIB's calculation runs **in the ontology**: candidate generation, admissibility and counting are SHACL
+rules and SPARQL (`02-shacl-safeguards/pib_enumeration_rules_v1_0_0.ttl`). The Python files are
+harnesses — they drive the rule engine and report; no constraint's meaning lives in code.
+
+The variant-algebra **engine is no longer a runtime dependency**: as of v2.0.0 nothing in this package
+requires it, and the tool that called it was removed. Its pin in `06-vaf-engine-pin/` is retained as
+**provenance** for the capacities published in earlier releases. The algebra's **operator rules** are
+vendored read-only and SHA-pinned under `11-vendored-operator-rules/` so the gates re-run from this
+package alone; pinning rather than absorbing keeps that lineage with its owner.
 
 ## Registration status
 

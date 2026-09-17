@@ -12,9 +12,9 @@
 
 <http://purl.org/pib/integration-interface>
     a owl:Ontology ;
-    owl:versionInfo "1.0.0.1" ;
-    owl:versionIRI <http://purl.org/pib/integration-interface/1.0.0.1> ;
-    owl:priorVersion <http://purl.org/pib/integration-interface/1.0.0> ;
+    owl:versionInfo "1.0.0.2" ;
+    owl:versionIRI <http://purl.org/pib/integration-interface/1.0.0.2> ;
+    owl:priorVersion <http://purl.org/pib/integration-interface/1.0.0.1> ;
     rdfs:label "Integration-Interface Ontology — produces/consumes contracts & the wiring variation space"@en ;
     dcterms:description "Loose-integration vocabulary for the ontology ecosystem. Each ontology DECLARES its interface (what it produces = public exports; what it consumes = required inputs) WITHOUT owl:imports. Integration is therefore a DECLARED, VALIDATED CONTRACT, not a hard import — preserving each ontology's standalone self-coverage. The set of possible produces→consumes bindings is a variation space whose features are governed by variant-algebra operators (Mandatory/Optional/Exclusive/Or/Dependency/Repetition); a Profile selects one validated WiringVariant from it. Distinct from PROV-O: this is a DESIGN-TIME capability/interface declaration; PROV-O records RUNTIME history. They compose, they are not conflated. PATCH v1.0.0.1: BP-D24 metadata completed (added dcterms:modified, dcterms:identifier, prov:wasAttributedTo, machine-linkable dcterms:creator IRI, and Activity-IRI prov:wasGeneratedBy); no vocabulary change."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
@@ -55,7 +55,7 @@ iif:IntegrationEdge a owl:Class ;
 iif:VariabilityOperator a owl:Class ;
     rdfs:label "VariabilityOperator"@en ;
     rdfs:isDefinedBy <http://www.variant-algebra.org/ontology> ;
-    skos:definition "Marker aligning an IntegrationEdge (or edge group) to a Variant Algebra operator. The six operators carry their VAF semantics: Mandatory (edge must be active), Optional (may), Exclusive (exactly one of a group), Or (at least one), Dependency (active edge requires another), Repetition (bounded multiplicity). The formal engine (pinned VAF framework) enumerates and validates configurations under these operators."@en .
+    skos:definition "Marker aligning an IntegrationEdge (or edge group) to a Variant Algebra operator. The operators carry their variant-algebra semantics: Mandatory (edge must be active), Optional (may), Exclusive (at most one of a group), Or (at least one), Dependency (active edge requires another), Repetition (bounded multiplicity), together with the algebra's algebraic and structural operators. PIB applies the complete set of twelve through its wiring-expression vocabulary, where operator applications nest as expressions. Enumeration and admissibility are computed by rules in the ontology, not by an external engine."@en .
 
 iif:WiringVariant a owl:Class ;
     rdfs:label "WiringVariant"@en ;

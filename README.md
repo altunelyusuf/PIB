@@ -14,7 +14,8 @@ PIB's answer has three parts:
    every ontology keeps its standalone self-coverage.
 2. **The wiring space is a variability model.** The set of possible produces→consumes bindings is a
    variation space governed by variant-algebra operators (Mandatory, Optional, Exclusive, Or,
-   Dependency, Repetition). Admissible wirings are **enumerated by a pinned engine**, not argued for.
+   Dependency, Repetition, and the algebraic operators). Admissible wirings are **enumerated by rules in
+   the ontology**, not argued for.
 3. **A Profile pins one wiring.** A `pib:Profile` binds an artifact category, the criteria shared
    across systems, and exactly one validated `WiringVariant` — so an assessment is reproducible.
 
@@ -24,7 +25,7 @@ PIB's answer has three parts:
 |---|---|
 | `01-ontologies/` | `profile` and `integration-interface` TBoxes, the four canonical **assessment profiles**, the wiring-composition record, and a worked capstone example |
 | `02-shacl-safeguards/` | `pib_invariants` — G1 one-wiring-per-profile, G2 profile scoping, G3 self-coverage required before wiring, G4 contract closure, G5 well-formed edges |
-| `03-tooling/` | `wiring_validator` (wraps the pinned variant-algebra engine) and `self_coverage_checker` (parse + SHACL + HermiT) |
+| `03-tooling/` | `variation_capacity` and `operator_rule_runner` (harnesses that drive the ontology's rules) and `self_coverage_checker` (parse + SHACL + HermiT) |
 | `04-documentation/` | Blueprint, published vocabulary, composition and materialization records |
 | `05-prov-records/` | PROV-O provenance |
 | `06-vaf-engine-pin/` | SHA-256 pin of the external Variant Algebra Framework engine |

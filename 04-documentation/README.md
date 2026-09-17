@@ -13,7 +13,8 @@ loose **produces/consumes** integration contract, validated by the pinned **Vari
 01-ontologies/         profile_tbox + integration_interface_tbox + worked-example ABox
 02-shacl-safeguards/   pib_invariants (G1 one-wiring-per-profile, G2 profile-scoped, G3 self-coverage
                        required, G4 contract-closure, G5 edge well-formed)
-03-tooling/            wiring_validator (wraps pinned VAF) + self_coverage_checker
+03-tooling/            variation_capacity + operator_rule_runner (ontology-rule harnesses)
+                       + self_coverage_checker
 04-documentation/      BLUEPRINT_v1_0_0.md (the design), this README, BOOTSTRAP_PROMPT
 05-prov-records/       PROV-O lineage
 06-vaf-engine-pin/     VAF dependency pin (SHA-256 of the verified full framework package + 4 core files)
@@ -24,14 +25,15 @@ VERSION.txt MANIFEST_SHA256.txt
 ```
 
 ## Quick verification (what was proven here)
-- `python3 03-tooling/wiring_validator_v1_0_0.py` → Variation Capacity 9; all 4 collision-guard checks PASS
-  (requires the pinned VAF at `PIB_VAF_SRC`, default = this session's unpack path).
+- `python3 03-tooling/variation_capacity_v1_0_0.py --self-test` → Variation Capacity 9 over 64 complete
+  candidates, computed by rules in the ontology; needs nothing outside this package.
 - SHACL invariants run; G3 correctly refuses the worked example's interfaces until they carry
   self-coverage attestations (the gate has teeth).
 
 ## Two gates, both required before adoption
 1. **Self-coverage** (per node, profile-independent): `self_coverage_checker` — ontology valid standalone.
-2. **Wiring validity** (per profile): `wiring_validator` — operator constraints + contract closure, via VAF.
+2. **Wiring validity** (per profile): `variation_capacity` — operator constraints evaluated by SHACL rules,
+   plus contract closure.
 
 ## Honest status
 Scaffold + verified tooling, NOT a populated ecosystem. The parallel session builds out real interface
