@@ -1,0 +1,124 @@
+@prefix pibx:    <http://purl.org/pib/wiring-expression#> .
+@prefix iif:     <http://purl.org/pib/integration-interface#> .
+@prefix asmt:    <http://purl.org/pib/assessment#> .
+@prefix va:      <http://example.org/variant-algebra#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix pibprov: <http://purl.org/pib/prov#> .
+
+<http://purl.org/pib/wiring-expression>
+    a owl:Ontology ;
+    owl:versionInfo "1.0.0" ;
+    owl:versionIRI <http://purl.org/pib/wiring-expression/1.0.0> ;
+    rdfs:label "PIB wiring expressions — nested operator expressions over integration wirings"@en ;
+    dcterms:description "Lets a PIB wiring constraint be written as a NESTED EXPRESSION built from the variant algebra's operators, rather than as a flat list of operator applications. The algebra's operators are constructors in an expression language, not a fixed menu of features: composing them expresses constraints none of them expresses alone (a k-of-n bound, for example, is not expressible with mandatory, optional, exclusive, or, or dependency, but is expressible by composing repetition with a contributes-to grouping). This vocabulary therefore REFERENCES the algebra's own operator classes and operand/nesting predicates rather than redeclaring them — the algebra stays with its owner — and adds only what is genuinely PIB's: the binding from an expression to the wiring it governs, and the named operator individuals PIB applies. Complete adoption: all twelve concrete operators are available, not the six the previously pinned engine generation carried."@en ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:creator pibprov:Agent_YusufAltunel, "Yusuf Altunel" ;
+    dcterms:created "2026-09-17"^^xsd:date ;
+    dcterms:modified "2026-09-17"^^xsd:date ;
+    dcterms:identifier "wiring-expression" ;
+    prov:wasGeneratedBy pibprov:authoring ;
+    prov:wasAttributedTo pibprov:Agent_YusufAltunel .
+
+# ---------------------------------------------------------------------------
+# PIB-owned structure. Everything else is referenced from the algebra, not redeclared.
+# ---------------------------------------------------------------------------
+
+pibx:WiringExpression a owl:Class ;
+    rdfs:label "Wiring expression"@en ;
+    skos:definition "A constraint on an integration wiring, written as an expression tree whose nodes are applications of variant-algebra operators and whose leaves are the capabilities and interfaces of a PIB wiring. An expression may nest to any depth: an operator application is itself a valid operand of another operator application."@en .
+
+pibx:governsWiring a owl:ObjectProperty ;
+    rdfs:label "governs wiring"@en ;
+    rdfs:domain pibx:WiringExpression ;
+    rdfs:range iif:WiringVariant ;
+    skos:definition "Binds an expression to the wiring variant whose admissibility it constrains. A wiring may be governed by more than one expression; all of them must hold."@en .
+
+pibx:hasRootApplication a owl:ObjectProperty ;
+    rdfs:label "has root application"@en ;
+    rdfs:domain pibx:WiringExpression ;
+    rdfs:range va:OperatorApplication ;
+    skos:definition "The outermost operator application of the expression tree. Inner applications are reached through the algebra's own operand and inner-operator predicates, so nesting is expressed in the algebra's vocabulary rather than a parallel PIB one."@en .
+
+pibx:expressionIntent a owl:DatatypeProperty ;
+    rdfs:label "expression intent"@en ;
+    rdfs:domain pibx:WiringExpression ;
+    rdfs:range xsd:string ;
+    skos:definition "A one-sentence statement, in plain words, of what the expression requires — so a reviewer can challenge the constraint without reconstructing it from operator identifiers."@en .
+
+# ---------------------------------------------------------------------------
+# The twelve concrete operators PIB applies, each typed by the algebra's own class.
+# Named individuals so an expression can reference a specific application site.
+# ---------------------------------------------------------------------------
+
+pibx:Mandatory a va:MandatoryOperator, owl:NamedIndividual ;
+    rdfs:label "Mandatory — the operand appears in every admissible wiring"@en .
+pibx:Optional a va:OptionalOperator, owl:NamedIndividual ;
+    rdfs:label "Optional — the operand may be present or absent"@en .
+pibx:Exclusive a va:ExclusiveOperator, owl:NamedIndividual ;
+    rdfs:label "Exclusive — at most one of the operands may be selected"@en .
+pibx:Or a va:OrOperator, owl:NamedIndividual ;
+    rdfs:label "Or — at least one of the operands must be selected"@en .
+pibx:Dependency a va:DependencyOperator, owl:NamedIndividual ;
+    rdfs:label "Dependency — selecting the dependent requires the prerequisite"@en .
+pibx:Repetition a va:RepetitionOperator, owl:NamedIndividual ;
+    rdfs:label "Repetition — bounds how many contributors to a group may be selected"@en .
+pibx:Addition a va:AdditionOperator, owl:NamedIndividual ;
+    rdfs:label "Addition — co-inclusion: both operands enter the same set"@en .
+pibx:Subtraction a va:SubtractionOperator, owl:NamedIndividual ;
+    rdfs:label "Subtraction — the first operand with the second excluded"@en .
+pibx:Inverse a va:InverseOperator, owl:NamedIndividual ;
+    rdfs:label "Inverse — marks an element for removal before a wiring is emitted"@en .
+pibx:Division a va:DivisionOperator, owl:NamedIndividual ;
+    rdfs:label "Division — removes elements cancelled by another operand"@en .
+pibx:Intersection a va:IntersectionOperator, owl:NamedIndividual ;
+    rdfs:label "Intersection — retains only operands jointly present"@en .
+pibx:Cartesian a va:CartesianOperator, owl:NamedIndividual ;
+    rdfs:label "Cartesian — pairs every member of one operand set with every member of the other"@en .
+
+# ---------------------------------------------------------------------------
+# Worked nested expression, over the real assessment profiles.
+#
+#   measurement budget  :=  Repetition( FacetGroup , max 2 )
+#   grading discipline  :=  Exclusive( pamg_grades , alt_grader )
+#   whole constraint    :=  Addition( measurement budget , grading discipline )
+#
+# The outer addition takes two operator APPLICATIONS as operands, not features —
+# this is the nesting the flat form could not express.
+# ---------------------------------------------------------------------------
+
+pibx:MeasurementBudgetApp a va:OperatorApplication, va:RepetitionOperator, owl:NamedIndividual ;
+    rdfs:label "At most two measurement facets may feed the grader"@en ;
+    va:hasOperator pibx:Repetition ;
+    va:appliesTo pibx:FacetGroup ;
+    va:hasMaxRepetitions 2 .
+
+pibx:FacetGroup a va:Feature, owl:NamedIndividual ;
+    rdfs:label "Measurement facet group — the facets competing for the budget"@en .
+
+pibx:GradingDisciplineApp a va:OperatorApplication, va:ExclusiveOperator, owl:NamedIndividual ;
+    rdfs:label "Exactly one grader: the institutional grader, or an alternative, never both"@en ;
+    va:hasOperator pibx:Exclusive ;
+    va:members ( asmt:PAMG_if pibx:AlternativeGrader ) .
+
+pibx:AlternativeGrader a va:Feature, owl:NamedIndividual ;
+    rdfs:label "Alternative grader — any grader other than the institutional one"@en .
+
+pibx:CapstoneConstraintApp a va:OperatorApplication, va:AdditionOperator, owl:NamedIndividual ;
+    rdfs:label "Both the measurement budget and the grading discipline apply together"@en ;
+    va:hasOperator pibx:Addition ;
+    va:hasOperand pibx:MeasurementBudgetApp , pibx:GradingDisciplineApp ;
+    va:hasInnerOperator pibx:Repetition , pibx:Exclusive .
+
+pibx:CapstoneWiringExpression a pibx:WiringExpression, owl:NamedIndividual ;
+    rdfs:label "Capstone wiring constraint"@en ;
+    pibx:expressionIntent "At most two measurement facets may feed the grader, and exactly one grader may be selected — both conditions together." ;
+    pibx:hasRootApplication pibx:CapstoneConstraintApp ;
+    pibx:governsWiring asmt:Wiring_CoreSoftwareDevelopment .

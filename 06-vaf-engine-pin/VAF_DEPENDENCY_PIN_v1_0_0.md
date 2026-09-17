@@ -22,3 +22,26 @@ the enumerator + grammar and cannot execute the validity path. Pin the FULL fram
 
 **Fix-forward (VAF line, B1 — not fixed here):** variant_dsl_parser eager-loads the grammar at import;
 lazy-load would let the enumeration path run without the grammar present.
+
+---
+
+## Addendum 2026-09-17 — the pin now covers two things, and they are different generations
+
+This pin fixes the **Python enumeration engine** by hash, and that is unchanged: the wiring validator
+still loads it through `PIB_VAF_SRC` and still enumerates admissible wirings with it.
+
+What changed is that the engine is no longer PIB's only route to the algebra. Verified directly
+against the algebra's repository: its **runtime** ontology — the generation this engine implements —
+declares six variability operators, while its **current core** ontology declares twelve concrete
+operators, and every operator class differs between the two copies. PIB carried six because of this
+pin, not because of a scope decision.
+
+From v1.6.0 PIB additionally vendors the algebra's **operator rules** (see
+`11-vendored-operator-rules/`), which implement the complete operator set and run inside PIB's own
+gate. So:
+
+- **enumeration** of admissible wirings → the pinned engine, unchanged;
+- **operator expressions and their evaluation** → the vendored rules, pinned separately by hash.
+
+Both are pinned; neither is vendored as source into this package except the two read-only rule files.
+Re-pointing the engine pin at the newer generation is a separate decision and is **not** made here.

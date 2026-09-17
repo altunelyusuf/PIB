@@ -1,0 +1,15 @@
+@prefix pibx: <http://purl.org/pib/wiring-expression#> .
+@prefix asmt: <http://purl.org/pib/assessment#> .
+@prefix va:   <http://example.org/variant-algebra#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Positive candidate: a wiring selection that SATISFIES the capstone expression.
+# Two measurement facets selected (budget is two), and exactly one grader.
+asmt:RADAR_if  va:contributesTo pibx:FacetGroup ; va:isSelected true ;
+    rdfs:label "Adequacy measurement facet, selected"@en .
+asmt:OEE_if    va:contributesTo pibx:FacetGroup ; va:isSelected true ;
+    rdfs:label "Ontology-quality measurement facet, selected"@en .
+asmt:GamOnt_if va:contributesTo pibx:FacetGroup ;
+    rdfs:label "Gamification facet, not selected in this candidate"@en .
+asmt:PAMG_if   va:isSelected true ;
+    rdfs:label "Institutional grader, selected"@en .

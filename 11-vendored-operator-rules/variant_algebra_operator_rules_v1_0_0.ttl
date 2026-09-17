@@ -1,0 +1,195 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix va:      <http://example.org/variant-algebra#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oe:      <http://example.org/ontology-engineering#> .
+
+# ============================================================
+# Variant Algebra — Operator SHACL-AF Rules v1.0.0
+# Real implementation of the 11-operator ontology-native specification
+# (10-operator-implementation-spec/ Parts 1-4). Every rule below is the
+# EXACT rule already tested in this session's test-drives -- no drift
+# between spec and implementation. Execute with pyshacl: advanced=True,
+# inplace=True, inference="none" (deliberately no RDFS reasoning required
+# -- every rule matches on property patterns, never on rdf:type filters
+# against a superclass, per the granularity design principle established
+# in Part 1 §0).
+# ============================================================
+
+<http://example.org/vaf-consolidated/operator-rules> a owl:Ontology ;
+    rdfs:label "VAF Operator SHACL-AF Rules v1.0.0"@en ;
+    dcterms:created "2026-07-03"^^xsd:date ;
+    dcterms:identifier "variant_algebra_operator_rules_v1_0_0" ;
+    owl:versionInfo "1.0.0" ;
+    owl:versionIRI <http://example.org/vaf-consolidated/operator-rules/1.0.0> ;
+    dcterms:source "10-operator-implementation-spec/ Parts 1-4, this session. Depends on 01-ontologies/variant_algebra_v3_operator_properties_v1_0_0.ttl." ;
+    oe:testedBy <http://example.org/vaf-consolidated/operator-properties#TestSuite> ;
+    rdfs:comment "Extension file per BP-D14; variant_algebra_v3_2_6.ttl not mutated. All 11 operators, real implementation."@en .
+
+# ---- Part 1: Optional ----
+va:OptionalRuleShape a sh:NodeShape ;
+    sh:targetClass va:OptionalOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:isAdmissible true }
+            WHERE { $this va:appliesTo ?f }
+        """ ; ] .
+
+# ---- Part 1: Exclusive ----
+va:ExclusiveRuleShape a sh:NodeShape ;
+    sh:targetClass va:ExclusiveOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:isViolated true }
+            WHERE {
+                $this va:members ?list .
+                ?list rdf:rest*/rdf:first ?m1 .
+                ?list rdf:rest*/rdf:first ?m2 .
+                FILTER(?m1 != ?m2)
+                ?m1 va:isSelected true . ?m2 va:isSelected true .
+            }
+        """ ; ] .
+
+# ---- Part 1: Or ----
+va:OrRuleShape a sh:NodeShape ;
+    sh:targetClass va:OrOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:isViolated true }
+            WHERE {
+                $this va:members ?list .
+                FILTER NOT EXISTS { ?list rdf:rest*/rdf:first ?m . ?m va:isSelected true }
+            }
+        """ ; ] .
+
+# ---- Part 1: Dependency ----
+va:DependencyRuleShape a sh:NodeShape ;
+    sh:targetClass va:DependencyOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:isViolated true }
+            WHERE {
+                $this va:dependentSet/rdf:rest*/rdf:first ?dep .
+                $this va:prerequisiteSet/rdf:rest*/rdf:first ?pre .
+                ?dep va:isSelected true .
+                FILTER NOT EXISTS { ?pre va:isSelected true }
+            }
+        """ ; ] .
+
+# ---- Part 1: Addition ----
+va:AdditionRuleShape a sh:NodeShape ;
+    sh:targetClass va:AdditionOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:hasOperand ?u }
+            WHERE { { $this va:hasOperand ?u } UNION { ?u va:isCoIncludedBy $this } }
+        """ ; ] .
+
+# ---- Part 1: Division ----
+va:DivisionRuleShape a sh:NodeShape ;
+    sh:targetClass va:DivisionOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:hasResultMember ?a }
+            WHERE {
+                $this va:hasOperand ?a .
+                FILTER NOT EXISTS { $this va:hasOperand ?b . ?b va:removes ?a }
+            }
+        """ ; ] .
+
+# ---- Part 1: Intersection ----
+va:IntersectionRuleShape a sh:NodeShape ;
+    sh:targetClass va:IntersectionOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:hasResultMember ?a }
+            WHERE {
+                $this va:hasOperand ?a . $this va:hasOperand ?b .
+                ?a va:coOccursWith ?b . FILTER(?a != ?b)
+            }
+        """ ; ] .
+
+# ---- Part 2: Repetition (bound check + k-of-n via contributesTo composition) ----
+va:RepetitionRuleShape a sh:NodeShape ;
+    sh:targetClass va:RepetitionOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:isViolated true }
+            WHERE {
+                $this va:appliesTo ?group .
+                $this va:hasMaxRepetitions ?max .
+                {
+                    SELECT ?group (COUNT(?c) as ?n) WHERE {
+                        ?c va:contributesTo ?group . ?c va:isSelected true .
+                    } GROUP BY ?group
+                }
+                FILTER(?n > ?max)
+            }
+        """ ; ] .
+
+# ---- Part 3: Cartesian Layer 0 (decrease-and-conquer propagation) ----
+va:PropagationRuleShape a sh:NodeShape ;
+    sh:targetClass va:SetA ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:isPrunable true }
+            WHERE {
+                FILTER NOT EXISTS {
+                    ?b a va:SetB .
+                    FILTER NOT EXISTS { $this va:excludesPartner ?b }
+                }
+            }
+        """ ; ] .
+
+# ---- Part 3: Cartesian Layer 1 (divide-and-conquer partitioning) ----
+va:PartitionRuleShape a sh:NodeShape ;
+    sh:targetClass va:PartitionRoot ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { ?f1 va:samePartitionAs ?f2 }
+            WHERE {
+                { ?f1 va:constrainedWith ?f2 }
+                UNION
+                { ?f1 va:constrainedWith ?mid . ?mid va:constrainedWith ?f2 }
+            }
+        """ ; ] .
+
+# ---- Part 3: Cartesian Layer 2 (bounded pairing, post-propagation) ----
+va:CartesianRuleShape a sh:NodeShape ;
+    sh:targetClass va:PairGenerator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:hasOperand ?a . $this va:hasOperand ?b }
+            WHERE {
+                ?a a va:SetA . ?b a va:SetB .
+                FILTER NOT EXISTS { ?a va:isPrunable true }
+                FILTER NOT EXISTS { ?b va:isPrunable true }
+            }
+        """ ; ] .
+
+# ---- Part 4: Subtraction + Inverse (purge-before-emission) ----
+va:PurgeRuleShape a sh:NodeShape ;
+    sh:targetClass va:CandidateVariant ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:hasEmittedMember ?f }
+            WHERE {
+                $this va:candidateMember ?f .
+                FILTER NOT EXISTS { ?f va:isInverseMarked true }
+            }
+        """ ; ] .

@@ -1,0 +1,17 @@
+@prefix pibx: <http://purl.org/pib/wiring-expression#> .
+@prefix asmt: <http://purl.org/pib/assessment#> .
+@prefix va:   <http://example.org/variant-algebra#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Negative candidate: MUST be rejected, on two independent counts.
+# Three measurement facets against a budget of two, and two graders at once.
+asmt:RADAR_if  va:contributesTo pibx:FacetGroup ; va:isSelected true ;
+    rdfs:label "Adequacy measurement facet, selected"@en .
+asmt:OEE_if    va:contributesTo pibx:FacetGroup ; va:isSelected true ;
+    rdfs:label "Ontology-quality measurement facet, selected"@en .
+asmt:GamOnt_if va:contributesTo pibx:FacetGroup ; va:isSelected true ;
+    rdfs:label "Gamification facet, also selected — exceeds the budget"@en .
+asmt:PAMG_if   va:isSelected true ;
+    rdfs:label "Institutional grader, selected"@en .
+pibx:AlternativeGrader va:isSelected true ;
+    rdfs:label "Alternative grader, also selected — two graders at once"@en .

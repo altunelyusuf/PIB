@@ -30,6 +30,32 @@ PIB's answer has three parts:
 | `06-vaf-engine-pin/` | SHA-256 pin of the external Variant Algebra Framework engine |
 | `07-spoke-contributions/` | Vendored, SHA-pinned, **read-only** interface declarations owned by other systems |
 | `08-registration/` | OE ecosystem registration round (submission, contract, closure) |
+| `09-handover-inbox/` | Cross-session proposals received by PIB, with dispositions |
+| `10-experiments/` | Reference probes and findings (explicitly not releases) |
+| `11-vendored-operator-rules/` | Vendored, SHA-pinned, read-only operator rules from the variant algebra |
+| `12-operator-fixtures/` | Satisfying and violating candidate selections, proving the operator gate has teeth |
+
+## Wiring expressions
+
+A wiring constraint can be written as a **nested expression** over the variant algebra's operators,
+not just a flat list. Operator applications are themselves valid operands, so expressions nest to any
+depth, and PIB applies the algebra's **complete set of twelve operators** rather than a subset.
+
+This matters because the operators are constructors, not a fixed menu: composing them expresses
+constraints none of them expresses alone. "At most two of four measurement facets may feed the
+grader" is not expressible with mandatory, optional, exclusive, or, or dependency — exclusive means
+at most *one*, or means at least *one* — but is expressible by composing repetition with a
+contributes-to grouping.
+
+```bash
+python3 03-tooling/operator_rule_runner_v1_0_0.py              # self-test: proves the rules reject
+python3 03-tooling/operator_rule_runner_v1_0_0.py <expr.ttl> <candidate.ttl>
+```
+
+The rules are evaluated inside PIB's own gate run, from vendored copies, so the gate needs nothing
+outside this package. Evaluation is deliberately run **without inference**, as the rules prescribe;
+one consequence is that symmetric predicates must be asserted in both directions rather than relied
+on to infer.
 
 ## Assessment profiles
 

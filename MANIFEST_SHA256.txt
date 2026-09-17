@@ -1,18 +1,25 @@
-# PIB v1.5.2 — SHA-256 Manifest
-# PATCH from v1.5.1 (2026-09-17): round-3 experiment; rounds 1-2 conclusion corrected. No governed change.
-#   - ADD round-3 probe + findings: the framework ships a tested ontology-native implementation of its
-#     FULL operator specification as SHACL-AF rules. They run on PIB data today, unmodified, including a
-#     k-of-n bound the six variability operators provably cannot express (obtained by COMPOSING operators).
-#   - Rounds 1-2 claimed the extra operators needed a calculus layer PIB would build. Wrong; corrected by
-#     appended note, originals kept. PIB's six trace to pinning an older engine generation, not to scope.
-#   - Corrections filed to the two sessions I had given the wrong analysis to.
-#   Vocabulary UNCHANGED pending the owner's ruling. Gates: invariants conform, 0 violations.
+# PIB v1.6.0 — SHA-256 Manifest
+# MINOR from v1.5.2 (2026-09-17): complete adoption of the variant algebra's operator set,
+# as nested expressions, evaluated inside PIB. Owner's ruling on all three open questions.
+#   - ADD 01-ontologies/pib_wiring_expressions_v1_0_0.ttl: nested wiring expressions; all TWELVE
+#     concrete operators applied, each typed by the algebra's own class (referenced, not redeclared).
+#   - ADD 03-tooling/operator_rule_runner_v1_0_0.py: evaluates operator rules in PIB's gate run,
+#     with a self-test proving the rules reject a violating candidate.
+#   - ADD 11-vendored-operator-rules/: the algebra's properties + 12 rule shapes, vendored verbatim,
+#     SHA-pinned, read-only, so the gate re-runs from this package alone.
+#   - ADD 12-operator-fixtures/: satisfying and violating candidate selections.
+#   - 06-vaf-engine-pin: addendum recording that enumeration and operator evaluation now pin
+#     different generations of the algebra, deliberately.
+#   Gates: invariants conform 0 violations; 17/17 turtle parsed; operator self-test passes
+#   (violating candidate rejected on both constraints, satisfying candidate clean).
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 c55633f87b790978cbb9a83bd9a174896d06dba59778d314fd1ec80dcd8b1586  01-ontologies/integration_interface_tbox_v1_0_0_1.ttl  (9015b)
 bdf1815ac16d72b94cfcfb073276badb53c7cf7e3c807cca6415648992fa578b  01-ontologies/pib_assessment_profiles_v1_1_0.ttl  (14097b)
 7dbc559e2f70b04d285048c99b8bbe0e03c7e4edb8220fda17b9518a499e257c  01-ontologies/pib_wiring_composition_v1_0_0.ttl  (3804b)
+de713f19fb2dc40c486a12f30f707819b1e8bae0dc60d223c61b4ee09bb86ecd  01-ontologies/pib_wiring_expressions_v1_0_0.ttl  (8407b)
 0a578caf116cea7ab61e7ab324daba16ad43a6602de6103f7c24f2a71908a6a1  01-ontologies/profile_tbox_v1_0_0_1.ttl  (5745b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
+cbcea025772db27f207d6a5dec494b362a8cb0bb392a9ff5e584f52c8a52a741  03-tooling/operator_rule_runner_v1_0_0.py  (5110b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
 7b9515f2d36dc74ed3d683bf892ac88d06c6afbc642b5ac2b3167c6e2a1c44da  03-tooling/wiring_validator_v1_0_0.py  (5798b)
 399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
@@ -22,7 +29,7 @@ a32a83adabcde0a513727281e2ddfc8054287168712e388c841040eece31bfda  04-documentati
 35b5daf6d14059a3d9fd0ea68644f49c81836ec73ef55af381c9aa1e40c6a132  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (3351b)
 9f206e016821f8244b542a9089b841d3d729f6a769b5d9cd707ffe1fe589d936  04-documentation/README.md  (4152b)
 22d05f6eafddf17af66ab275b8fe46a56d142ee29fc669fe222701203935ee2e  05-prov-records/prov_v1_1_0.ttl  (1507b)
-edb4f4b676aaac9809c05c8b56c5154c5111e44668e2bcdb9f07f4898c8f1387  06-vaf-engine-pin/VAF_DEPENDENCY_PIN_v1_0_0.md  (1437b)
+f0525b8c889fa7d6f1f0170076287094a8f224c50c369906db9ce73a06c344e1  06-vaf-engine-pin/VAF_DEPENDENCY_PIN_v1_0_0.md  (2724b)
 0501d71692fc4c9f295aa30555e2bb9fcdf6a2ea84ba57c0c7214291bd68ee10  07-spoke-contributions/VENDORED_PINS_v1_0_0.md  (2026b)
 c2d4ce934d8691fa017002d278c647c3f0e143bc259ea916273d37e12e2f84d1  07-spoke-contributions/o4sdlc_interface_contribution_v1_0_0.ttl  (4873b)
 8f1e2bc1302c8b4115218cac017d2dcb742d47af6f757178e235ea8a812cfeba  07-spoke-contributions/pamg_interface_contribution_v1_0_0.ttl  (5539b)
@@ -48,9 +55,14 @@ f35b182160ee29174d69fb57ab724e8a36ecc581276bd0d94972de9c05d4c114  10-experiments
 40c53ddd7238b435f570296f280e4ba3cfde2fcc2baf8d0f091e1b49ea9f510f  10-experiments/probe_round1_operator_use_cases_v1_0_0.py  (5784b)
 16abe080bc782712f542b6bc046632e018444b9ff6f54044e201c73134e5e3d9  10-experiments/probe_round2_intersection_and_necessity_v1_0_0.py  (4003b)
 741222119fba9999cc1a483b2499c4e5e6408903a4c0b6b1ce155534779d366d  10-experiments/probe_round3_shipped_operator_rules_v1_0_0.py  (5863b)
+3177ad83a23d55067600915294b59c6058d28984af89c4ca641370994568c475  11-vendored-operator-rules/VENDORED_PINS_v1_0_0.md  (1789b)
+b9e4cd27d884a83bfd52a1d84d256630cdce345c8ac3ae789f16bde25deccef0  11-vendored-operator-rules/variant_algebra_operator_rules_v1_0_0.ttl  (7907b)
+6300bd7157b0fa8a2318f3ecb0216a3bf3b6c4bd9126367c6e1ec3645c1750a0  11-vendored-operator-rules/variant_algebra_v3_operator_properties_v1_0_0.ttl  (14401b)
+f886d2d09f9fd7a6b52a5098eefb2a5e3a76526b4e5b9e6433071ad48c6f3cc0  12-operator-fixtures/candidate_negative_v1_0_0.ttl  (993b)
+826e572d07ce16ba6ae2924e67c4adbd7300e61fc3c764c9945358f44924d898  12-operator-fixtures/candidate_positive_v1_0_0.ttl  (854b)
 575c8827a0260a4d4ca2506c3ea9a4ae60ebb6c9cd3f0f0e18d0a018ec8187d4  GOVERNANCE.md  (3759b)
 3d834db15fd6499713ce94d35f4f4a4f8e2548287c1e526c0b46cb7f71e68dac  LICENSE  (19202b)
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
-2344eb18a5cb46f38d6a3bcfcc307e97b329de7d8935ebb1fac500faf602ae94  README.md  (5520b)
-ded1b601e81d31ca1f65c4f3ccf2ebd7992b6390e37bc2a86f3837282f1e00cf  VERSION.txt  (6b)
+15eb2908a2e62a2c29ad99ad407e247ae12edfecbcd5a1d0a08c4dad1dafb596  README.md  (7144b)
+cb1d9a30bc4ab8a397f39b7d786bb82aca0b816077eefc35d7c822017d75f6a5  VERSION.txt  (6b)
