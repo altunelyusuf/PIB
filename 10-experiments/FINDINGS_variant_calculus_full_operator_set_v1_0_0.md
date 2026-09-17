@@ -87,3 +87,27 @@ python3 10-experiments/probe_round2_intersection_and_necessity_v1_0_0.py
 ```
 
 Both probes compute every number from live enumeration against the pinned engine; none is asserted.
+
+---
+
+## Correction appended (round 3) — do not rewrite the text above
+
+The analysis above is **wrong on its central claim** and is corrected here rather than replaced, so the
+record shows what was checked, when, and what changed the answer.
+
+It states that the framework's enumerator "ships no set algebra," that the remaining operators are
+therefore set-level operations over results, and that adopting them would mean PIB building a calculus
+layer. That conclusion came from reading a single Sprint-2 parser grammar and generalising to the whole
+framework.
+
+In fact the framework ships a tested, ontology-native implementation of the full operator specification
+as twelve SHACL-AF rule shapes, with generic scaffold classes explicitly intended for a consumer to
+instantiate. The operators execute on PIB-shaped data today, using those rules unmodified — including a
+k-of-n bound that the six variability operators provably cannot express, obtained by composing
+operators rather than by adding a primitive.
+
+The reason PIB carries six is neither the operator categorisation (round 1's answer) nor a
+calculus-layer cost (round 2's answer): it is that PIB pins an older generation of the engine, whose
+runtime ontology declares only those six.
+
+See `FINDINGS_round3_algebra_is_an_expression_language_v1_0_0.md`.

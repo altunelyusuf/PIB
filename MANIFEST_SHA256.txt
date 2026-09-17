@@ -1,10 +1,12 @@
-# PIB v1.5.1 — SHA-256 Manifest
-# PATCH from v1.5.0 (2026-09-17): reference experiment added. No governed content changed.
-#   - ADD 10-experiments/: two runnable probes + findings, testing whether PIB needs the
-#     variant-algebra engine's full operator set. Explicitly REFERENCE_ONLY, NOT_A_RELEASE.
-#   - The operator vocabulary is UNCHANGED (still the six enumeration-time operators): the
-#     scoping question is a stipulation for the owner to rule on, not for this session to enforce.
-#   Gates: invariants conform, 0 violations.
+# PIB v1.5.2 — SHA-256 Manifest
+# PATCH from v1.5.1 (2026-09-17): round-3 experiment; rounds 1-2 conclusion corrected. No governed change.
+#   - ADD round-3 probe + findings: the framework ships a tested ontology-native implementation of its
+#     FULL operator specification as SHACL-AF rules. They run on PIB data today, unmodified, including a
+#     k-of-n bound the six variability operators provably cannot express (obtained by COMPOSING operators).
+#   - Rounds 1-2 claimed the extra operators needed a calculus layer PIB would build. Wrong; corrected by
+#     appended note, originals kept. PIB's six trace to pinning an older engine generation, not to scope.
+#   - Corrections filed to the two sessions I had given the wrong analysis to.
+#   Vocabulary UNCHANGED pending the owner's ruling. Gates: invariants conform, 0 violations.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 c55633f87b790978cbb9a83bd9a174896d06dba59778d314fd1ec80dcd8b1586  01-ontologies/integration_interface_tbox_v1_0_0_1.ttl  (9015b)
 bdf1815ac16d72b94cfcfb073276badb53c7cf7e3c807cca6415648992fa578b  01-ontologies/pib_assessment_profiles_v1_1_0.ttl  (14097b)
@@ -41,12 +43,14 @@ a8b4abe6fcd37f8864776bbf326943e46205310b6551eae1d4b9a2b4bfb859d1  09-handover-in
 9532f94b41e34e33bb451149fdd3bc10b5b55bc75b373f5a619e29e9114bc6d4  09-handover-inbox/deferred/README.md  (127b)
 c554652270bc22e7e7ec2fe6a8011de4967a946bb623b87a90ebd1fe90afaa0a  09-handover-inbox/pending/README.md  (126b)
 ca1a494270177073fb285e04e451e5a0f81c6de5bd9bc24885e24aae1fe79a9a  09-handover-inbox/rejected/README.md  (127b)
-7d12663102e2888fb6594e115e2c45a477c3012cb02a1bb66f4f588b6513c955  10-experiments/FINDINGS_variant_calculus_full_operator_set_v1_0_0.md  (5804b)
+753acdbd6067fc0a3302e4fbeeeb20f4b061c84b6bfb2a05f9506f37c1f9f152  10-experiments/FINDINGS_round3_algebra_is_an_expression_language_v1_0_0.md  (6585b)
+f35b182160ee29174d69fb57ab724e8a36ecc581276bd0d94972de9c05d4c114  10-experiments/FINDINGS_variant_calculus_full_operator_set_v1_0_0.md  (7120b)
 40c53ddd7238b435f570296f280e4ba3cfde2fcc2baf8d0f091e1b49ea9f510f  10-experiments/probe_round1_operator_use_cases_v1_0_0.py  (5784b)
 16abe080bc782712f542b6bc046632e018444b9ff6f54044e201c73134e5e3d9  10-experiments/probe_round2_intersection_and_necessity_v1_0_0.py  (4003b)
+741222119fba9999cc1a483b2499c4e5e6408903a4c0b6b1ce155534779d366d  10-experiments/probe_round3_shipped_operator_rules_v1_0_0.py  (5863b)
 575c8827a0260a4d4ca2506c3ea9a4ae60ebb6c9cd3f0f0e18d0a018ec8187d4  GOVERNANCE.md  (3759b)
 3d834db15fd6499713ce94d35f4f4a4f8e2548287c1e526c0b46cb7f71e68dac  LICENSE  (19202b)
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 2344eb18a5cb46f38d6a3bcfcc307e97b329de7d8935ebb1fac500faf602ae94  README.md  (5520b)
-dfe7d71b3f428eb73ed853f8fded65e2986896e21d69f45ebf06bb623b450e14  VERSION.txt  (6b)
+ded1b601e81d31ca1f65c4f3ccf2ebd7992b6390e37bc2a86f3837282f1e00cf  VERSION.txt  (6b)
