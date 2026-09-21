@@ -1,15 +1,11 @@
-# PIB v2.0.2 — SHA-256 Manifest
-# PATCH from v2.0.1 (2026-09-21): consolidate per-profile variation spaces (consolidate before creating).
-#   - Two per-case space files -> ONE: 12-operator-fixtures/profile_variation_spaces_v1_0_0.ttl.
-#     Triple set verified identical to the two originals before they were removed. New profiles'
-#     spaces are added to this file rather than getting a file each.
-#   - Capacity harness 1.0.0 -> 1.0.0.1: self-test checks every space BY NAME. The old self-test took
-#     whichever result came first, correct only while each file held one space. Proven to fail on a
-#     wrong reference answer before being trusted.
-#   - Candidate fixtures stay separate by construction: the operator rules read one global selection,
-#     so a satisfying and a violating candidate cannot share a graph.
-#   Gates: capstone 9 of 64 and ontology-development 1 of 8, both by name; operator gate rejects its
-#   violating fixture; invariants conform, 0 violations. No vocabulary changed.
+# PIB v2.0.3 — SHA-256 Manifest
+# PATCH from v2.0.2 (2026-09-21): dependency maintenance + handover processed. No vocabulary change.
+#   - 11-vendored-operator-rules: the algebra retired the properties file PIB vendored (its v2.18.0
+#     merged eight property files into one). Re-vendored the consolidated file after verifying it is a
+#     strict superset for every term the rules use (21/21 present, no axiom changed); operator gate
+#     re-run against the new file ALONE before the old copy was removed. Rules file unchanged upstream.
+#   - 09-handover-inbox: OE's registration-staleness handover accepted, verification recorded.
+#   Gates: capacity 9 and 1 by name; operator gate rejects its violating fixture; invariants 0 violations.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -44,7 +40,8 @@ f970dc114d77fcb914029965d015e31c18c347c841193d8a7e11720432897dd2  08-registratio
 429cb8533e02c7e7a65f27f3e9bf35c98cc924b83f177330ee8f0c421317e9ca  09-academic-paper/PROPOSAL_pib-vaf-paper_to_VAF_taxonomy-based-configuration.md  (5375b)
 0c78895d129c0b27fc9af0e67d8c02c5e7abf74b55108c567d777b2e602c1a27  09-academic-paper/README.md  (3363b)
 2daed89db27fb8b0b1a6eb17434d8f87f93d6bcded98800765b35d93c58c5d60  09-academic-paper/pib_vaf_document_v21_0_0.docx  (470379b)
-6747ab637ee33a720f84dc1901c0943194f33db7fb83377bc115898cb8e0cdd7  09-handover-inbox/HANDOVER_LOG.md  (2627b)
+aa1a72c3a98af3250419daf8782635fd30688f89330d34672cefe006b06a7578  09-handover-inbox/HANDOVER_LOG.md  (4375b)
+a2925c44a8e430bc754e88e387aeac45eecc53206526fb956e9d2015b8f20978  09-handover-inbox/accepted/HANDOVER_OE_to_PIB_dependency-shape-changed-since-registration_v1_0_0.md  (2934b)
 a8b4abe6fcd37f8864776bbf326943e46205310b6551eae1d4b9a2b4bfb859d1  09-handover-inbox/accepted/PROPOSAL_backlog-roadmap-framework_to_pib-hub_vaf-operator-count-unverifiable_v1_0_0.md  (4841b)
 4e66912bc7936434718434b359c967ac38c0e78a7b97727d968e81beeea289eb  09-handover-inbox/accepted/RESPONSE_PIB_to_backlog-roadmap-framework_vaf-operator-count_v1_0_0.md  (4328b)
 9532f94b41e34e33bb451149fdd3bc10b5b55bc75b373f5a619e29e9114bc6d4  09-handover-inbox/deferred/README.md  (127b)
@@ -55,9 +52,9 @@ f35b182160ee29174d69fb57ab724e8a36ecc581276bd0d94972de9c05d4c114  10-experiments
 40c53ddd7238b435f570296f280e4ba3cfde2fcc2baf8d0f091e1b49ea9f510f  10-experiments/probe_round1_operator_use_cases_v1_0_0.py  (5784b)
 16abe080bc782712f542b6bc046632e018444b9ff6f54044e201c73134e5e3d9  10-experiments/probe_round2_intersection_and_necessity_v1_0_0.py  (4003b)
 741222119fba9999cc1a483b2499c4e5e6408903a4c0b6b1ce155534779d366d  10-experiments/probe_round3_shipped_operator_rules_v1_0_0.py  (5863b)
-3177ad83a23d55067600915294b59c6058d28984af89c4ca641370994568c475  11-vendored-operator-rules/VENDORED_PINS_v1_0_0.md  (1789b)
+396b4d0a5b834b931df6af2b9c645b89df33a20d0e9436bb2a702f8777e5414c  11-vendored-operator-rules/VENDORED_PINS_v1_0_0.md  (2643b)
 b9e4cd27d884a83bfd52a1d84d256630cdce345c8ac3ae789f16bde25deccef0  11-vendored-operator-rules/variant_algebra_operator_rules_v1_0_0.ttl  (7907b)
-6300bd7157b0fa8a2318f3ecb0216a3bf3b6c4bd9126367c6e1ec3645c1750a0  11-vendored-operator-rules/variant_algebra_v3_operator_properties_v1_0_0.ttl  (14401b)
+225e1de2b3478cd8caf9060b784259d8822271ee39485b108f53e1067f01a1f0  11-vendored-operator-rules/variant_algebra_v3_extended_properties_v1_0_0.ttl  (113858b)
 f886d2d09f9fd7a6b52a5098eefb2a5e3a76526b4e5b9e6433071ad48c6f3cc0  12-operator-fixtures/candidate_negative_v1_0_0.ttl  (993b)
 826e572d07ce16ba6ae2924e67c4adbd7300e61fc3c764c9945358f44924d898  12-operator-fixtures/candidate_positive_v1_0_0.ttl  (854b)
 7966a3da38d8a74a05ad008b750faf3aa290b6f66e179db1233eefec9a1dfcf4  12-operator-fixtures/profile_variation_spaces_v1_0_0.ttl  (4486b)
@@ -66,4 +63,4 @@ f91114d9e1b921a7860cad9a687078e95bf1dea88293624f287d10e53038423a  GOVERNANCE.md 
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 b1042f3ed8f32cb4360401fe226fa1672cdde083e32538071f8a837cdccbad2f  README.md  (7693b)
-b4b16faea52dc04ccfe32f7b342094855923ebf599a3cac1940470a2d6d7c261  VERSION.txt  (6b)
+be695fc8092ad3706d7d7d3b5104e1eaf8fe69666e5958e375c9952a06fa9514  VERSION.txt  (6b)

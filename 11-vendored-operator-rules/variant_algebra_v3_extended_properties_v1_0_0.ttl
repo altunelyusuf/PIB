@@ -1,0 +1,1400 @@
+@prefix amod: <http://example.org/amod#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix oe: <http://example.org/ontology-engineering#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix va: <http://example.org/variant-algebra#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+#################################################################
+# VAF Extended Properties v1.0.0 -- real, 4-round merger of 22
+# formerly-separate small TBox files, per the owner's own real
+# heuristic (2026-09-21): "If they do the same thing but different
+# concepts, possibly it should be consolidated." See this file's own
+# real rdfs:comment values (below, on the ontology header individual)
+# for the full, round-by-round provenance of every original file.
+# Round 4 (2026-09-21) adds: variant_algebra_assembly_model_v1_0_0
+# ("Variant Algebra Assembly Model v1.0.0") -- checked before merging:
+# zero real coupling to anything already merged, zero subject
+# collision, zero real active Python consumers found.
+#################################################################
+
+
+<http://example.org/tokens/sprint10_llm_empirics_tests_v1_0_0> a amod:VersionToken ;
+    rdfs:label "sprint10_llm_empirics_tests v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/tokens/sprint11_feedback_store_tests_v1_0_0> a amod:VersionToken ;
+    rdfs:label "sprint11_feedback_store_tests v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/tokens/sprint12_adaptive_tests_v1_0_0> a amod:VersionToken ;
+    rdfs:label "sprint12_adaptive_tests v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/tokens/sprint7_ergonomics_tests_v1_0_0> a amod:VersionToken ;
+    rdfs:label "sprint7_ergonomics_tests v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/tokens/sprint8_quality_refinement_tests_v1_0_0> a amod:VersionToken ;
+    rdfs:label "sprint8_quality_refinement_tests v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/tokens/sprint9_hardening_tests_v1_0_0> a amod:VersionToken ;
+    rdfs:label "sprint9_hardening_tests v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/tokens/variant_algebra_v2_10_0> a amod:VersionToken ;
+    rdfs:label "variant_algebra v2.10.0"@en ;
+    amod:fileExtension "ttl" ;
+    amod:tokenValue "v2_10_0" .
+
+<http://example.org/tokens/variant_executor_hardening_v1_0_0> a amod:VersionToken ;
+    rdfs:label "variant_executor_hardening v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/tokens/variant_feedback_adaptive_v1_0_0> a amod:VersionToken ;
+    rdfs:label "variant_feedback_adaptive v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/tokens/variant_feedback_emitter_v1_1_0> a amod:VersionToken ;
+    rdfs:label "variant_feedback_emitter v1.1.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_1_0" .
+
+<http://example.org/tokens/variant_feedback_store_v1_0_0> a amod:VersionToken ;
+    rdfs:label "variant_feedback_store v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/tokens/variant_quality_v1_1_0> a amod:VersionToken ;
+    rdfs:label "variant_quality v1.1.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_1_0" .
+
+<http://example.org/tokens/variant_synthesis_v1_2_0> a amod:VersionToken ;
+    rdfs:label "variant_synthesis v1.2.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_2_0" .
+
+<http://example.org/tokens/variant_verdict_emitter_v1_2_0> a amod:VersionToken ;
+    rdfs:label "variant_verdict_emitter v1.2.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_2_0" .
+
+<http://example.org/tokens/variant_verifier_v14_v1_0_0> a amod:VersionToken ;
+    rdfs:label "variant_verifier_v14 v1.0.0"@en ;
+    amod:fileExtension "py" ;
+    amod:tokenValue "v1_0_0" .
+
+<http://example.org/vaf-consolidated/calculus-implementations#TestSuite> a oe:TestSuite ;
+    rdfs:label "test_variant_detection_calculi_v1_0_0.py"@en ;
+    dcterms:source "06-runtime/src/test_variant_detection_calculi_v1_0_0.py, executed 2026-07-02: 16/16 tests PASS, covering all 9 calculi (C1-C9) with both positive and negative fixture cases, including 2 real bugs found and fixed during testing (C8/C9 import-form coverage; C9 symbol-qualification)."@en .
+
+<http://example.org/vaf-consolidated/code-analysis-properties#TestSuite> a oe:TestSuite ;
+    rdfs:label "testdrive_calculus_rules.py"@en ;
+    dcterms:source "10-operator-implementation-spec/testdrive_calculus_rules.py, executed 2026-07-03: all 9 calculi's real SHACL-AF rules tested against fixtures, results compared to the already-verified Python ground truth."@en .
+
+<http://example.org/vaf-consolidated/complexity-annotations#TestSuite> a oe:TestSuite ;
+    rdfs:label "test_variant_algebra_complexity_annotations_v1_0_0.py (v1.1.0-updated)"@en ;
+    dcterms:source "06-runtime/src/test_variant_algebra_complexity_annotations_v1_0_0.py, updated for the v1.1.0 object-property fix and re-executed 2026-07-03: verifies all 11 Lock #3 operator classes carry exactly one va:hasComputationalComplexity object of type va:ComputationalComplexity with a non-empty label."@en .
+
+<http://example.org/vaf-consolidated/deployment-calculus-properties#TestSuite> a oe:TestSuite ;
+    rdfs:label "test_variant_deployment_calculus_v1_0_0.py"@en ;
+    dcterms:source "06-runtime/src/test_variant_deployment_calculus_v1_0_0.py, executed 2026-07-04: 9/9 checks pass -- all 6 named DeploymentArtifact file types (Dockerfile, docker-compose.yml, Kubernetes manifest, Terraform, Ansible playbook, systemd unit) correctly detected via real structural markers, plus 3 real negative cases proving the detection is NOT bare keyword matching (a README mentioning all 4 technology names by NAME, a Python comment containing docker+[Unit]-like text, and a file NAMED docker-compose.yml lacking the real services: marker -- all correctly unflagged)."@en .
+
+<http://example.org/vaf-consolidated/extended-properties> a owl:Ontology ;
+    rdfs:label "VAF Extended Properties v1.0.0"@en ;
+    dcterms:created "2026-09-21"^^xsd:date ;
+    dcterms:identifier "variant_algebra_v3_extended_properties_v1_0_0" ;
+    rdfs:comment "Real merger of 8 formerly-separate v3 properties files (code-analysis, deployment-calculus, general-bridge, operator, purpose-attribution, purpose-target-selection, rdodi-domain-translation, semantic-marker) -- 432 real content triples, verified equal to the sum of the 8 originals' real content."@en,
+        "Real, 3-round merger of 21 formerly-separate small TBox files. See this file's own header comment for full, real provenance of every original."@en,
+        "Round 4 (2026-09-21): variant_algebra_assembly_model_v1_0_0 (\"Variant Algebra Assembly Model v1.0.0\") added -- 257 real content triples, zero coupling, zero collision, zero real active consumers found."@en ;
+    owl:versionInfo "1.0.0" .
+
+<http://example.org/vaf-consolidated/general-bridge-properties#TestSuite> a oe:TestSuite ;
+    rdfs:label "testdrive_general_bridge_v1_0_0.py"@en ;
+    dcterms:source "10-operator-implementation-spec/testdrive_general_bridge_v1_0_0.py, executed 2026-07-04: real production test using these actual declared properties (not the earlier test-drive's inline predicates), 2 structurally different fact types (C2 dependency edges, Purpose/BuilderAttribution claims) both route correctly, plus explicit negative (unrelated Method gets no fabricated candidate)."@en .
+
+<http://example.org/vaf-consolidated/operator-properties#TestSuite> a oe:TestSuite ;
+    rdfs:label "testdrive_consolidated_implementation.py"@en ;
+    dcterms:source "10-operator-implementation-spec/testdrive_consolidated_implementation.py, executed 2026-07-03: 6/6 checks pass, loaded from the actual shipped property+rule files (not inline test strings), including an explicit no-cross-talk check across multiple operators run together in one graph."@en .
+
+<http://example.org/vaf-consolidated/purpose-attribution-properties#TestSuite> a oe:TestSuite ;
+    rdfs:label "testdrive_purpose_agent.py"@en ;
+    dcterms:source "10-operator-implementation-spec/testdrive_purpose_agent.py, executed 2026-07-04: 3/3 checks pass, each directly addressing a concern raised before implementation -- (1) applicationOperand coexists with existing operator-specific properties without interference, (2) unknown-purpose correctly represented by absence of any attribution triple, not a fabricated marker, (3) SuperComponent-derived purpose correctly propagates across 1 and 2 hops of nesting and correctly does NOT override a sub-component's own first-hand attribution."@en .
+
+<http://example.org/vaf-consolidated/purpose-target-selection-properties#TestSuite> a oe:TestSuite ;
+    rdfs:label "test_variant_target_selection_v1_0_0.py"@en ;
+    dcterms:source "06-runtime/src/test_variant_target_selection_v1_0_0.py, executed 2026-07-04: real end-to-end routing test -- a Purpose classified as utility-shaped routes to MockSynthesisBackend (real Python skeleton generated); a Purpose classified as demo-shaped routes to HTMLSynthesisBackend (real, functionally-verified HTML generated); a Method with no BuilderAttribution at all correctly falls back to the defined default (python), not an error."@en .
+
+<http://example.org/vaf-consolidated/rdodi-domain-translation-properties#TestSuite> a oe:TestSuite ;
+    rdfs:label "testdrive_rdodi_domain_translation_v1_0_0.py"@en ;
+    dcterms:source "10-operator-implementation-spec/testdrive_rdodi_domain_translation_v1_0_0.py, executed 2026-07-06: gap-filling behavior tested positive and negative -- a Method with no existing candidate and a matching domain concept correctly receives a domain-inferred candidate; a Method that already HAS a candidate from another source correctly does NOT receive one even when a matching concept exists (proving gap-filling-only, not general override); a Method with no matching concept correctly receives nothing."@en .
+
+<http://example.org/vaf-consolidated/semantic-marker-properties#TestSuite> a oe:TestSuite ;
+    rdfs:label "test_variant_semantic_calculi_v1_0_0.py"@en ;
+    dcterms:source "06-runtime/src/test_variant_semantic_calculi_v1_0_0.py, executed 2026-07-03: 13/13 checks pass (C10-C13), each verified against the base ontology's own worked skos:example text, with positive and negative fixtures. One real bug found and fixed during testing: the naming-pattern regexes initially required a letter after prefixes like 'handle_', but the ontology's OWN worked example 'handle_401' has a digit -- caught by testing against the ontology's exact examples, not invented fixtures."@en .
+
+va:AnthropicProvider a owl:Class ;
+    rdfs:label "Anthropic Provider"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class AnthropicProvider in llm_providers_v1_0_0.py directly." ;
+    rdfs:subClassOf va:LLMProvider ;
+    skos:definition "Concrete LLMProvider binding to the Anthropic v1 messages endpoint. Uses stdlib urllib.request. API key resolved from constructor argument or ANTHROPIC_API_KEY environment variable. Raises LLMProviderError on any non-2xx response. Retries 5xx up to three attempts with exponential backoff." .
+
+va:AttributeUsageCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+    va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesAttributeDependency ?a } WHERE { $this va:readsAttribute ?a . FILTER NOT EXISTS { $this va:writesAttribute ?a } }"^^xsd:string ;
+    dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c1_attribute_usage_calculus(). Tested (test file above): detects self.X reads outside assignment LHS; verified negative case (does not flag an attribute that's never read). ALSO now backed by va:hasConstructQuery -- the shape's own PREFERRED form (vaf_invariants_v1_1_0.ttl Shape_CalculusContent) -- real SHACL-AF rule at 02-shacl-safeguards/variant_algebra_code_analysis_rules_v1_0_0.ttl (va:C1RuleShape), verified identical to this Python function's output on the same fixture (10-operator-implementation-spec/testdrive_calculus_rules.py)."@en .
+
+va:BoundedEnumeration a owl:Class ;
+    rdfs:label "Bounded Enumeration"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    rdfs:subClassOf va:EnumerationStrategy ;
+    skos:definition "Caps unbounded cardinalities at enumerationBound K." .
+
+va:BruteForceBackend a owl:Class ;
+    rdfs:label "Brute-Force Backend"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class BruteForceBackend in variant_backends_v1_0_0.py directly." ;
+    rdfs:subClassOf va:EnumerationBackend ;
+    skos:definition "Naive Cartesian-product backend. Enumerates every assignment in the declared integer box and filters by constraint predicates. Correct by inspection; inefficient above ~2^20 assignments. Retained permanently as the C5 correctness oracle for DecompositionBackend; must not be used in production runtime paths." .
+
+va:Calc_CommitMessageMiner a va:ProbabilisticCalculus ;
+    rdfs:label "Commit-message dependency miner (synthetic, hand-authored)"@en ;
+    dcterms:source "WI_ProbabilisticGuardFact, 2026-08-31 -- one hand-authored, synthetic Tier-5 fact to exercise the quarantine mechanism, per the acceptance criterion's own words and explicitly scoped against Ex_NoProbabilisticEngine: NOT a working NLP/LLM engine, a single named individual standing in for what one would produce." .
+
+va:CartesianOperator va:hasComputationalComplexity va:Complexity_ProductAB .
+
+va:CheckOutcome a owl:Class ;
+    rdfs:label "Check Outcome"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class CheckOutcome in variant_executor_v1_0_0.py directly." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "Result of evaluating one ContractCheck during sandbox execution. Carries the check kind and target, a boolean passed flag, and a detail string describing the observed outcome (e.g. attribute value type, exception class and message)." .
+
+va:CollectionInitCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+    va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesOperatorRefinement 'RepetitionOperator' } WHERE { $this va:isCollectionTyped true }"^^xsd:string ;
+    dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c6_collection_init_calculus(). Tested: detects list/dict/set literals and list()/dict()/set()/deque()/OrderedDict() constructor calls in __init__; verified a non-collection attribute is correctly excluded. ALSO now backed by va:hasConstructQuery (va:C6RuleShape), verified identical to Python's output."@en .
+
+va:CompleteEnumeration a owl:Class ;
+    rdfs:label "Complete Enumeration"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    rdfs:subClassOf va:EnumerationStrategy ;
+    skos:definition "Entire admissible set; fully bounded Components only." .
+
+va:ContractCheck a owl:Class ;
+    rdfs:label "Contract Check"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class ContractCheck in variant_executor_v1_0_0.py directly." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "One runtime assertion derived mechanically from a Variant. Kinds: instantiate (the component class must instantiate without raising), attribute (each selected singleton feature must be a non-None attribute on the instance), repetition (each feature with count greater than one must produce count-many non-None suffixed attributes)." .
+
+va:CrossFileCallCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+    va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesExternalDependency ?resolved } WHERE { $this va:callsResolvedCrossFile ?resolved }"^^xsd:string ;
+    dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c8_cross_file_call_calculus(). Tested against BOTH real Python import forms (`from module import name; name()` and `import module; module.name()`) -- the second form was a real bug found and fixed during this session's testing, not present in the first draft. ALSO now backed by va:hasConstructQuery (va:C8RuleShape). NOTE (disclosed, not silently assumed): va:proposesExternalDependency is shared with C4/C9 based on their source AST facts being disjoint, but this sharing was NOT independently joint-tested the way C1/C2/C3/C7's commingling was found and fixed -- flagged as follow-up work."@en .
+
+va:DecompositionBackend a owl:Class ;
+    rdfs:label "Decomposition Backend"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class DecompositionBackend (with real Tarjan SCC logic, _connected_components) in variant_backends_v1_0_0.py directly." ;
+    rdfs:subClassOf va:EnumerationBackend ;
+    skos:definition "Thesis-native backend. Partitions features into constraint-connected groups via Tarjan SCC analysis over the operator hypergraph, enumerates each group locally with unit propagation and backtracking, and combines per-group variant sets via Cartesian product. Asymptotically superior to BruteForceBackend on specs with disconnected constraint clusters. Correctness empirically gated against BruteForceBackend via differential testing." .
+
+va:DecoratorRoleCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+    va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesOperatorRefinement ?op } WHERE { { $this va:hasDecorator 'property' . BIND('MandatoryOperator' AS ?op) } UNION { $this va:hasDecorator ?d . FILTER(?d = 'classmethod' || ?d = 'staticmethod') . BIND('OptionalOperator' AS ?op) } }"^^xsd:string ;
+    dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c5_decorator_role_calculus(). Tested: @property -> MandatoryOperator, @classmethod/@staticmethod -> OptionalOperator, undecorated -> None (all three cases verified). ALSO now backed by va:hasConstructQuery (va:C5RuleShape), verified identical to Python's output."@en .
+
+va:Delta a owl:Class ;
+    rdfs:label "Delta (reserved, v3.1)"@en ;
+    dcterms:source "Variant Algebra v3 Ontology Extension — reserved feature-delta vocabulary (add/remove/wrap method); declared but not implemented in v3.x."@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    skos:definition "A feature-level delta applied to a base implementation (add method, remove method, wrap method). Reserved; not implemented in v3.0."@en .
+
+va:DependencyOperator va:hasComputationalComplexity va:Complexity_DependencyGraphWide .
+
+va:DiscoveryBackend a owl:Class ;
+    rdfs:label "Discovery Backend"@en ;
+    dcterms:source "Altunel Y. (2013) PhD Thesis, İstanbul Üniversitesi, Computer Engineering, §4.4 pp.733-737, p.821; generalization REGISTRANT-STATED 2026-08-28"@en ;
+    skos:definition "A pluggable static-analysis engine that reads existing source code and produces DiscoveredFeature/DiscoveredComponent individuals. Symmetric counterpart to va:SynthesisBackend. Language-agnostic per va:LanguageAgnosticismPrinciple: concrete subclasses name a source-language/toolchain pairing (e.g. a Java-grammar backend, a Python-AST backend, a COBOL-parser backend) purely as a statement of which tool exists — never as a boundary the class itself imposes. Generalizes the thesis's Java/NetBeans-only reverse-engineering application (Altunel 2013, §4.4 pp.733-737: 'the current reverse-engineering application is directed only at static analyses') to VAF's later multi-backend pattern."@en .
+
+va:DiscoveryRequest a owl:Class ;
+    rdfs:label "Discovery Request"@en ;
+    dcterms:source "Altunel Y. (2013) PhD Thesis, p.821"@en ;
+    skos:definition "A request to scan a source root (package/module/file set) through a va:DiscoveryBackend, producing a va:DiscoveryResult. Grounded verbatim in Altunel 2013 p.821: the application 'scans source code consisting of different packages and classes, and converts them into software elements defined by the language.'"@en .
+
+va:DiscoveryScopeLimitation a owl:Class ;
+    rdfs:label "Discovery Scope Limitation"@en ;
+    dcterms:source "Altunel Y. (2013) PhD Thesis, pp.735-736, p.810"@en ;
+    skos:definition "Disclosed, not-yet-closed limitation carried directly from the thesis: reverse-engineering discovery in VAF is STATIC-analysis only. Altunel 2013 pp.735-736 distinguishes static vs dynamic (behavioral) analysis explicitly; p.736: 'The current reverse-engineering application is directed only at static analyses.' Behavioral/relational discovery among entities was named as future work at p.810 ('add the property of automatically or semi-automatically determining relations among entities to the reverse-engineering application... dependencies appear extractable from analysis of source code') and remains open in VAF v1.35.1 — no dynamic-analysis discovery backend exists yet, 13 years later."@en .
+
+va:DiscoveryVerdict a owl:Class ;
+    rdfs:label "Discovery Verdict"@en ;
+    skos:definition "Accept/reject/needs-review verdict over a va:DiscoveryResult, per the same BP-3-style quality-gate pattern as va:SynthesisVerdict."@en .
+
+va:DivisionOperator va:hasComputationalComplexity va:Complexity_SumAB .
+
+va:ExclusiveOperator va:hasComputationalComplexity va:Complexity_O1 .
+
+va:ExecutionReport a owl:Class ;
+    rdfs:label "Execution Report"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class ExecutionReport in variant_executor_v1_0_0.py directly." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "Structured outcome of one sandbox execution. Carries an outcome (PASS, FAIL, EXCEPTION, TIMEOUT, OOM, CPU, INTERNAL), wall-clock elapsed milliseconds, exit code, one CheckOutcome per contract check, truncated stdout and stderr, and exception class plus message when applicable." .
+
+va:ExternalCallCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+    va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesExternalDependency ?f } WHERE { $this va:callsExternalFunction ?f }"^^xsd:string ;
+    dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c4_external_call_calculus(). Tested against the fixture and self-referentially against real shipped runtime code (variant_dsl_parser_v1_0_0.py), producing plausible, non-crashing output. ALSO now backed by va:hasConstructQuery (va:C4RuleShape), verified identical to Python's output."@en .
+
+va:ExternalSymbolCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+    va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesExternalDependency ?sym } WHERE { $this va:callsUnresolvedExternal ?sym }"^^xsd:string ;
+    dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c9_external_symbol_calculus(). Tested: flags a genuinely-unresolvable external import, module-qualified in its symbol name (a second real bug -- the first version discarded the module identity for attribute-style calls -- found and fixed during this session's testing), and verified it stays silent when C8 already resolved the call. ALSO now backed by va:hasConstructQuery (va:C9RuleShape). Same disclosed sharing note as C8 above."@en .
+
+va:FabricationReport a owl:Class ;
+    rdfs:label "Fabrication Report"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "Outcome of FabricatedAPIChecker on generated code. Carries two flag lists: flagged imports (unknown module names at top of import statements) and flagged calls (unknown free-name call targets). Empty report means no fabrication detected." .
+
+va:FailureClass a owl:Class ;
+    rdfs:label "Failure Class"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed already actively used and serialised by variant_feedback_adaptive_v1_0_0.py and variant_feedback_emitter_v1_0_0.py/v1_1_0.py, both real, existing, pre-session code." ;
+    rdfs:subClassOf skos:Concept ;
+    skos:definition "Enumeration of failure classes for FailureDiagnostic. One of SYNTACTIC, STRUCTURAL, CONTRACT, FABRICATION, QUALITY, EXECUTION, RESOURCE, UNKNOWN. Classes are prioritised in pipeline order so earlier static failures mask later dynamic ones when multiple would apply." .
+
+va:FailureDiagnostic a owl:Class ;
+    rdfs:label "Failure Diagnostic"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- REAL, ALREADY-MATERIALIZED FINDING: variant_feedback_emitter_v1_0_0.py/v1_1_0.py already serialise real va:FailureDiagnostic-typed RDF individuals, confirmed by direct reading (the emitter's own docstring names this exact vocabulary), meaning the pre-existing system has already been producing RDF using a class this session's core never declared -- a live gap, not a hypothetical one, closed by this declaration." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "Structured classification of why a SynthesisVerdict FAILed. Carries a primary FailureClass, a dict of class-specific details (missing features for STRUCTURAL, failed checks for EXECUTION, violated dimensions for QUALITY, outcome string for RESOURCE, etc), and a short human-readable reason excerpt." .
+
+va:FeatureCount a owl:Class ;
+    rdfs:label "Feature Count"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "Reified multiplicity of a Feature in a Variant." .
+
+va:FeedbackAttempt a owl:Class ;
+    rdfs:label "Feedback Attempt"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class FeedbackAttempt in variant_feedback_v1_0_0.py directly." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "One iteration within a FeedbackSession. Carries the attempt number (1-indexed), the hints provided to this attempt, the SynthesisResult produced, the SynthesisVerdict issued, and (when the verdict FAILed) the FailureDiagnostic that classified the cause." .
+
+va:FeedbackLoop a owl:Class ;
+    rdfs:label "Feedback Loop"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class FeedbackLoop in variant_feedback_v1_0_0.py directly." ;
+    rdfs:subClassOf oe:EngineeringPattern ;
+    skos:definition "Orchestrator for iterative variant synthesis. Wraps a SynthesisBackend plus a SynthesisVerifier and runs up to max_attempts iterations per request. Between attempts extracts a FailureDiagnostic from each FAILed verdict and builds a refinement hint appended to the hints list passed to the next attempt. Terminates on SUCCESS (PASS or WARN verdict), EXHAUSTED (max_attempts reached with FAIL), or ABORTED_TERMINAL (diagnostic class is RESOURCE or UNKNOWN which are unlikely to recover)." .
+
+va:FeedbackSession a owl:Class ;
+    rdfs:label "Feedback Session"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class FeedbackSession in variant_feedback_v1_0_0.py directly." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "Record of one FeedbackLoop run on a single SynthesisRequest. Carries the request, an ordered list of FeedbackAttempt individuals, the termination reason string, and the final SynthesisVerdict. Complete history of a loop run, PROV-O-serialisable." .
+
+va:InitDependencyCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+    va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesInitDependency true } WHERE { $this va:readsAttribute ?a . ?a va:isInitDeclared true . }"^^xsd:string ;
+    dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c3_init_dependency_calculus(). Tested: detects methods reading __init__-declared attributes; verified negative case (a method with no such read is correctly omitted). ALSO now backed by va:hasConstructQuery (va:C3RuleShape), verified identical to Python's output."@en .
+
+va:IntersectionOperator va:hasComputationalComplexity va:Complexity_MinAmortized .
+
+va:InverseOperator va:hasComputationalComplexity va:Complexity_O1 .
+
+va:LLMSynthesisBackend a owl:Class ;
+    rdfs:label "LLM Synthesis Backend"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- correctly chains to va:SynthesisBackend, already formally declared earlier this session (the first, Synthesis group of this same disposition item)." ;
+    rdfs:subClassOf va:SynthesisBackend ;
+    skos:definition "Production backend that calls an LLM API to produce code from a Variant. Outputs must pass the same verification pipeline as MockSynthesisBackend output." .
+
+va:LanguageAgnosticismPrinciple a owl:Class ;
+    rdfs:label "Language Agnosticism Principle"@en ;
+    dcterms:source "REGISTRANT-STATED, Y. Altunel, 2026-08-28"@en ;
+    skos:definition "Design principle governing both va:DiscoveryBackend and va:SynthesisBackend: no natural or programming language is privileged or excluded by the ontology itself. A concrete backend may be limited to specific languages by the availability and accessibility of its underlying tools/libraries (e.g. a parser exists for Java but not for a given DSL) — but that is a property of the backend instance, never a constraint encoded in the Discovery or Synthesis class definitions. Applies symmetrically to both families; stated for Discovery here, and holds for the already-published va:Synthesis* classes by the same registrant statement without requiring their file to be mutated (BP-D14)."@en .
+
+va:LazyEnumeration a owl:Class ;
+    rdfs:label "Lazy Enumeration"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    rdfs:subClassOf va:EnumerationStrategy ;
+    skos:definition "On-demand iteration without full materialisation." .
+
+va:MethodCallCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+    va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesCallDependency ?called } WHERE { $this va:callsSelfMethod ?called }"^^xsd:string ;
+    dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c2_method_call_calculus(). Tested: detects self.B() calls within a method body. ALSO now backed by va:hasConstructQuery (va:C2RuleShape), verified identical to Python's output."@en .
+
+va:MockProvider a owl:Class ;
+    rdfs:label "Mock Provider"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class MockProvider in llm_providers_v1_0_0.py directly." ;
+    rdfs:subClassOf va:LLMProvider ;
+    skos:definition "Test-time deterministic LLMProvider that returns canned completions by prompt-substring lookup. Raises on unmatched prompts so tests cannot silently drift. Used by the CI suite and the Sprint 4.1 regression tests to exercise the full pipeline without network access." .
+
+va:MockSynthesisBackend a owl:Class ;
+    rdfs:label "Mock Synthesis Backend"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class MockSynthesisBackendV12 in variant_synthesis_v1_2_0.py directly, and correctly chains to va:SynthesisBackend, already declared earlier this session." ;
+    rdfs:subClassOf va:SynthesisBackend ;
+    skos:definition "Deterministic test-only backend. Generates skeleton code from a Variant using fixed rules, no LLM call. Analogous to BruteForceBackend in the enumeration layer: cheap, predictable, useful for oracle comparisons." .
+
+va:OptionalOperator va:hasComputationalComplexity va:Complexity_O1 .
+
+va:OrOperator va:hasComputationalComplexity va:Complexity_O1 .
+
+va:PairGenerator a owl:Class ;
+    rdfs:label "Pair Generator"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 3, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Marker individual that anchors Layer 2's bounded Cartesian pairing rule (va:CartesianRuleShape targets this class), run after Layer 0 propagation has marked prunable candidates. A real consumer asserts one va:PairGenerator instance per enumeration task."@en .
+
+va:PartitionRoot a owl:Class ;
+    rdfs:label "Partition Root"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 3, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Marker individual that anchors Layer 1's divide-and-conquer partitioning rule (va:PartitionRuleShape targets this class). A real consumer asserts exactly one va:PartitionRoot instance per enumeration task to trigger partitioning over that task's va:constrainedWith edges."@en .
+
+va:Pattern_Accessor a va:NamingPattern ;
+    rdfs:label "accessor"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'accessor (X_of_Y)'." .
+
+va:Pattern_Factory a va:NamingPattern ;
+    rdfs:label "factory"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'factory (create_X, make_X, build_X, X_factory)'." .
+
+va:Pattern_Getter a va:NamingPattern ;
+    rdfs:label "getter"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'getter (get_X, getX)'." .
+
+va:Pattern_Handler a va:NamingPattern ;
+    rdfs:label "handler"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'handler (handle_X, on_X)'." .
+
+va:Pattern_Lifecycle a va:NamingPattern ;
+    rdfs:label "lifecycle"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'lifecycle (init_X, destroy_X, open_X, close_X, start_X, stop_X)'." .
+
+va:Pattern_Mutator a va:NamingPattern ;
+    rdfs:label "mutator"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'mutator (X_to_Y)'." .
+
+va:Pattern_Predicate a va:NamingPattern ;
+    rdfs:label "predicate"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'predicate (is_X, has_X, can_X)'." .
+
+va:Pattern_Setter a va:NamingPattern ;
+    rdfs:label "setter"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'setter (set_X, setX)'." .
+
+va:Pattern_Test a va:NamingPattern ;
+    rdfs:label "test"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'test (test_X, X_test)'." .
+
+va:Pattern_Validator a va:NamingPattern ;
+    rdfs:label "validator"@en ;
+    dcterms:source "va:NamingPattern's own base-ontology definition: 'validator (validate_X, is_valid_X)'." .
+
+va:Profile_KnowledgeBaseConstruction a va:VAFDomainProfile,
+        owl:NamedIndividual ;
+    rdfs:label "Knowledge Base Construction"@en ;
+    va:realizesFacet va:Facet_KnowledgeBase ;
+    skos:definition "Discovery over emails, corporate legal documentation, quality systems, incidents, business documents, and expert insight, to identify and build Variants of business/organizational knowledge, and synthesize an agent-usable knowledge base for task-based, team-based, or expert agents -- the second, real profile proving va:VAFDomainProfile's own mechanism genuinely extends beyond software, not merely declared open in principle." .
+
+va:Profile_SoftwareVariantManagement a va:VAFDomainProfile,
+        owl:NamedIndividual ;
+    rdfs:label "Software Variant Management"@en ;
+    va:realizesFacet va:Facet_Software ;
+    skos:definition "Discovery over source code, development documentation, database metadata, and data itself, to identify relationships between software units, select and build Variants, and synthesize running systems -- the profile this whole lineage has built and tested so far." .
+
+va:Purpose a owl:Class ;
+    rdfs:label "Purpose"@en ;
+    dcterms:source "This session's semantic/behavioral capability discussion, 2026-07-04." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Why an entity exists, as claimed by one or more BuilderAttributions. Deliberately NOT modeled as an intrinsic, objective property of the entity itself -- per explicit direction, purpose is always an agent-relative interpretation, never ground truth. An entity with no BuilderAttribution has no claimed Purpose at all; this is a valid, legitimate state (see va:BuilderAttribution's confidence tiers), not an error."@en .
+
+va:QualityMetric a owl:Class ;
+    rdfs:label "Quality Metric"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl (06-runtime/ontology/), carried forward verbatim -- confirmed against variant_quality_v1_1_0.py's own real implementation, and confirmed already actively serialised by variant_feedback_emitter_v1_0_0.py/v1_1_0.py." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "Single dimension observation. Carries the dimension label, the observed value (decimal), the threshold (decimal), a violated flag (boolean), the severity assigned (WARN or FAIL), and a human-readable message suitable for inclusion in a verdict reason line." .
+
+va:QualityPolicy a owl:Class ;
+    rdfs:label "Quality Policy"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    rdfs:subClassOf oe:EngineeringPattern ;
+    skos:definition "Per-dimension threshold-and-severity configuration for the static quality verifier. Each of five quality dimensions (cyclomatic, size, documentation, coupling, cohesion) carries a threshold and a severity. Severity WARN registers a warning without blocking synthesis acceptance; severity FAIL promotes the verdict outcome to FAIL. DEFAULT_POLICY is WARN on all dimensions; STRICT_POLICY is FAIL on all dimensions. A QualityPolicy is immutable for the duration of one verification run." .
+
+va:QualityReport a owl:Class ;
+    rdfs:label "Quality Report"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed already actively serialised by the real, existing feedback-emitter pipeline." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "Outcome record of QualityChecker on a SynthesisResult. Carries one QualityMetric per dimension evaluated. Silent (zero metrics) when the generated code failed the syntactic check upstream; otherwise reports five to seven metric observations depending on whether size's sub-dimensions each produced an independent metric." .
+
+va:RefinementHint a owl:Class ;
+    rdfs:label "Refinement Hint"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing function build_refinement_hint in variant_feedback_v1_0_0.py directly." ;
+    rdfs:subClassOf oe:EngineeringArtefact ;
+    skos:definition "Human-readable string produced by build_refinement_hint from a FailureDiagnostic. Class-specific template injects concrete details (missing feature names, failed check targets, violated quality dimensions) into a guidance string passed to the next synthesis attempt." .
+
+va:ReplayCache a owl:Class ;
+    rdfs:label "Replay Cache"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class ReplayCache in variant_synthesis_v1_1_0.py directly." ;
+    rdfs:subClassOf oe:EngineeringPattern ;
+    skos:definition "Content-addressed filesystem cache for LLM completions. Key is sha256(provider name concatenated with model concatenated with seed concatenated with prompt). Makes CI reproducible by bootstrapping against a live LLM on first run and replaying deterministically thereafter." .
+
+va:ResourceLimits a owl:Class ;
+    rdfs:label "Resource Limits"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed to match the real, existing class ResourceLimits and DEFAULT_LIMITS in variant_executor_v1_0_0.py directly." ;
+    rdfs:subClassOf oe:EngineeringPattern ;
+    skos:definition "Bag of resource ceilings for a single sandbox run. Carries CPU time cap, address-space cap, file-descriptor cap, wall-clock timeout, stdout and stderr truncation limits. DEFAULT_LIMITS is 5s CPU, 256MB memory, 64 FDs, 10s wall clock." .
+
+va:SandboxExecutor a owl:Class ;
+    rdfs:label "Sandbox Executor"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward -- confirmed to match the real, existing, concrete class SandboxExecutor in variant_executor_v1_0_0.py directly. NOTE, real finding: v2.10.0's own text describes this as abstract with SubprocessSandbox as a separate reference implementation; the real code never built that split -- SandboxExecutor is itself the concrete, real class, disclosed here rather than silently carrying forward an abstract/concrete distinction the implementation doesn't have." ;
+    rdfs:subClassOf oe:EngineeringPattern ;
+    skos:definition "Runs SynthesisResult code under resource limits. Orthogonal to SynthesisBackend: synthesis produces code, the sandbox executes it." .
+
+va:SetA a owl:Class ;
+    rdfs:label "Cartesian Operand Set A"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 3, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:subClassOf va:ComposableUnit ;
+    skos:definition "Scaffold class for CartesianOperator's first operand set. A real consumer types their own candidate features/components as va:SetA members for a specific enumeration task -- generic by design, matching the operator's own domain-agnostic thesis definition (A x B), not tied to one use case."@en .
+
+va:SetB a owl:Class ;
+    rdfs:label "Cartesian Operand Set B"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 3, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:subClassOf va:ComposableUnit ;
+    skos:definition "Scaffold class for CartesianOperator's second operand set. See va:SetA."@en .
+
+va:SubtractionOperator va:hasComputationalComplexity va:Complexity_SumAB .
+
+va:SynthesisRequest a owl:Class ;
+    rdfs:label "Synthesis Request"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl (06-runtime/ontology/), carried forward verbatim -- accurately describes VAF's real, existing synthesis implementation, confirmed by direct reading of variant_synthesis_v1_2_0.py during this session's legacy-code disposition work." ;
+    skos:definition "A declarative request to synthesise code for a specific Variant in a specific target language. Carries the Variant IRI, target language label, and optional stylistic or constraint annotations. Immutable; one Request produces one Result." .
+
+va:SynthesisVerdict a owl:Class ;
+    rdfs:label "Synthesis Verdict"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    skos:definition "The verifier's judgement on a SynthesisResult. Carries an outcome (PASS, FAIL, or WARN), a structured reason, and optionally a list of violated contract elements. Authored by the verifier pipeline independently of the synthesis backend; the two are deliberately decoupled so the verifier cannot be gamed by the backend." .
+
+va:TransitiveClosureCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+    va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesTransitiveDependency ?c } WHERE { $this va:callsSelfMethod ?b . ?b va:callsSelfMethod ?c . FILTER NOT EXISTS { $this va:callsSelfMethod ?c } }"^^xsd:string ;
+    dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c7_transitive_closure_calculus(). Tested: computes a genuinely-implied 2-hop edge from direct C2 edges, and verifies the implied edge is not already present as a direct edge (avoids double-reporting). ALSO now backed by va:hasConstructQuery (va:C7RuleShape), verified identical to Python's output."@en .
+
+va:VariantTransformation a owl:Class ;
+    rdfs:label "Variant Transformation"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    rdfs:subClassOf oe:EngineeringPattern ;
+    skos:definition "Rule mapping operation-sets to admissible variants." .
+
+va:VariationCapacityMetric a owl:Class ;
+    rdfs:label "Variation Capacity Metric"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- qc:QualityPattern is a real, foreign term (the vendored quality# namespace), referenced by its real IRI, not recreated." ;
+    rdfs:subClassOf <http://example.org/quality#QualityPattern> ;
+    skos:definition "Well-defined only when the Component is fully bounded; otherwise truncatedCapacityRatio under a declared bound." .
+
+va:Verdict_Accept a va:ConversionVerdict,
+        owl:NamedIndividual ;
+    rdfs:label "Accept"@en .
+
+va:Verdict_NeedsReview a va:ConversionVerdict,
+        owl:NamedIndividual ;
+    rdfs:label "Needs Review"@en ;
+    rdfs:comment "Real named individuals declared here because the same documentation/data gap found in va:ConfidenceLevel (prose names a value, no individual ever existed) was checked for here before it could recur -- va:DiscoveryVerdict has the identical gap, undeclared, out of this item's own scope to fix." .
+
+va:Verdict_Reject a va:ConversionVerdict,
+        owl:NamedIndividual ;
+    rdfs:label "Reject"@en .
+
+va:applicationName a owl:DatatypeProperty ;
+    rdfs:label "application name"@en ;
+    rdfs:domain va:Application ;
+    rdfs:range xsd:string .
+
+va:applicationOperand a owl:ObjectProperty ;
+    rdfs:label "application operand"@en ;
+    dcterms:source "v4.6.1 patch, recovered from session history 2026-07-04 -- absent from this ontology's own lineage until now." ;
+    rdfs:domain va:OperatorApplication ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:altLabel "uygulama operandı"@tr ;
+    skos:definition "Relates an OperatorApplication to an operand of the operation. Distinct from va:hasOperand (which targets ComposableUnit values per v3.0.7 CompositionOperator semantics). applicationOperand has NO range constraint -- operands may be whole ontologies, SoftwareUnits, Features, Aspects, or any other entity, depending on applicationLevel. Multi-valued; most operators take two operands, but multi-input merge may take more."@en ;
+    skos:scopeNote "Formalizes what v4.6.0 intended with 'hasOperand on OperatorApplication'. Necessary because CompositionOperator's own domain-SHACL constrains hasOperand values to ComposableUnit, too strict for ontology-level or cross-family operator applications (e.g. binding an Aspect and a BodySegment to the same OperatorApplication, neither of which is a ComposableUnit)."@en .
+
+va:assembledAt a owl:DatatypeProperty ;
+    rdfs:label "assembled at"@en ;
+    rdfs:domain va:ApplicationInstance ;
+    rdfs:range xsd:dateTime .
+
+va:assembledFromDiscovery a owl:ObjectProperty ;
+    rdfs:label "assembled from discovery"@en ;
+    dcterms:source "Altunel Y. (2013) PhD Thesis, p.494 (round trip named as one capability), p.821 (discovery output = 'software elements'), grounding the closure; the connecting property itself is REGISTRANT-STATED, 2026-08-28, to close a structural gap the thesis's separate §3 (algebra) and §4.4 (reverse engineering) never bridged explicitly."@en ;
+    rdfs:domain va:Variant ;
+    rdfs:range va:DiscoveryResult ;
+    skos:definition "Links a va:Variant to the va:DiscoveryResult whose va:DiscoveredFeature individuals were assembled (via the existing va:hasFeature / va:hasConcreteFeature properties) to form it. Optional: a Variant may still be authored manually with no DiscoveryResult, per VAF's original (pre-Discovery-family) design. When present, it is what makes a Variant's provenance traceable back to the source it was reverse-engineered from, rather than merely coincidentally sharing Feature instances with a DiscoveryResult."@en .
+
+va:assembledSource a owl:DatatypeProperty ;
+    rdfs:label "assembled source"@en ;
+    rdfs:domain va:ApplicationInstance ;
+    rdfs:range xsd:string ;
+    skos:definition "The assembled Python module text (variants + DI wiring + entry point). Emitted by the application assembler; consumed by the execution layer."@en .
+
+va:attributedAgent a owl:ObjectProperty ;
+    rdfs:label "attributed agent"@en ;
+    dcterms:source "This session, 2026-07-04." ;
+    rdfs:domain va:BuilderAttribution ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:Agent ;
+    skos:definition "Links a BuilderAttribution to the Agent making the claim."@en .
+
+va:attributesPurposeTo a owl:ObjectProperty ;
+    rdfs:label "attributes purpose to"@en ;
+    dcterms:source "This session, 2026-07-04." ;
+    rdfs:domain va:BuilderAttribution ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Links a BuilderAttribution to the entity it attributes a Purpose to. No range constraint, matching va:applicationOperand's own rationale -- the attributed entity may be a BodySegment, a Component, a SuperComponent, or any other SoftwareUnit."@en .
+
+va:bindingKind a owl:DatatypeProperty ;
+    rdfs:label "binding kind"@en ;
+    rdfs:domain va:Binding ;
+    rdfs:range xsd:string ;
+    skos:definition "One of 'constructor' (inject at construction), 'attribute' (post-construction assignment), or 'method-call' (call setter method). Defaults to 'constructor'."@en .
+
+va:callsExternalFunction a owl:DatatypeProperty ;
+    rdfs:label "calls external function"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C4 (ExternalCallCalculus)." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "A method calls a bare module-scope function F(...) (not self.F()) -- the real-code fact C4's rule reads to propose the dependency M < F."@en .
+
+va:callsResolvedCrossFile a owl:DatatypeProperty ;
+    rdfs:label "calls resolved cross-file"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C8 (CrossFileCallCalculus)." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "A method calls an imported name that resolves to a function/class defined in a loaded sibling file -- the real-code fact C8's rule reads to propose a cross-file dependency."@en .
+
+va:callsSelfMethod a owl:ObjectProperty ;
+    rdfs:label "calls self method"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C2 (MethodCallCalculus)." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:Method ;
+    skos:definition "Method A calls self.B() in its body -- the real-code fact C2's rule reads to propose the pairwise dependency A < B."@en .
+
+va:callsUnresolvedExternal a owl:DatatypeProperty ;
+    rdfs:label "calls unresolved external"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C9 (ExternalSymbolCalculus)." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "A method calls an imported name that cannot be resolved to a loaded sibling file and is not stdlib -- the real-code fact C9's rule reads to propose a weak-evidence external-symbol dependency."@en .
+
+va:candidateKind a owl:DatatypeProperty ;
+    rdfs:label "candidate kind"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session." ;
+    rdfs:domain va:SynthesisInputCandidate ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "Tags which kind of fact a SynthesisInputCandidate wraps: one of 'dependency' (from C1/C2/C7-style calls/reads), 'purpose' (from BuilderAttribution), or a future value. Unlike the earlier code-analysis property-commingling issue, this is safe by construction: the tag lives on the WRAPPER individual, not shared directly on the Method, so distinguishing kinds never requires separating output properties per calculus."@en .
+
+va:candidateMember a owl:ObjectProperty ;
+    rdfs:label "candidate member"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 4, this session." ;
+    rdfs:domain va:CandidateVariant ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:Feature ;
+    skos:definition "Links a CandidateVariant (pre-purge) to a Feature under consideration for inclusion. Subtraction(a,b) = {a, !b} (thesis eq. 2.29) is realized upstream by asserting both a and b as candidateMember, with b additionally marked va:isInverseMarked."@en .
+
+va:candidateSource a owl:ObjectProperty ;
+    rdfs:label "candidate source"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session." ;
+    rdfs:domain va:SynthesisInputCandidate ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Links a SynthesisInputCandidate wrapper back to the real fact it wraps (a Method for a dependency edge, or a BuilderAttribution individual for a purpose claim) -- no range constraint, matching va:applicationOperand's own precedent, since the source varies genuinely by candidateKind."@en .
+
+va:cardinality a owl:DatatypeProperty ;
+    rdfs:label "cardinality"@en ;
+    rdfs:domain va:Role ;
+    rdfs:range xsd:string ;
+    skos:definition "How many implementation instances fill this role. Defaults to 1. Use 'N' for unbounded, or an integer literal for a fixed count."@en .
+
+va:coOccursWith a owl:ObjectProperty,
+        owl:SymmetricProperty ;
+    rdfs:label "co-occurs with"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 1, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Marks two operands of an IntersectionOperator instance as jointly present in the relevant variant. Symmetric by construction (a co-occurs with b iff b co-occurs with a)."@en .
+
+va:confidenceTier a owl:DatatypeProperty ;
+    rdfs:label "confidence tier"@en ;
+    dcterms:source "This session, 2026-07-04. Reuses the shape of the existing va:DependencyEdge.evidence pattern (variant_detection_calculi_v1_0_0.py: 'strong'|'weak'), extended with two more tiers this domain needs. Extended again 2026-07-06 with a fourth tier, 'domain-inferred', per the RDODI domain-ontology assessment (soundness verdict: sound but requires this tier as a prerequisite, not silently blended with directly-discovered confidence)." ;
+    rdfs:domain va:BuilderAttribution ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "One of: 'first-hand' (the attributing Agent IS the entity's actual builder/decider), 'derived' (inherited from a containing SuperComponent's own attribution, via the hasDerivedPurposeFrom mechanism), 'weak' (inferred from secondary evidence, e.g. naming or docstring heuristics), 'domain-inferred' (proposed from a matching concept in an externally-authored RDODI DomainOntologyArtifact, not from any fact discovered about this specific system -- the lowest tier, deliberately below 'weak', since a domain-typical pattern is a different kind of claim than any evidence about the analyzed system itself). No 'unknown' value exists -- unknown is represented by the complete absence of any BuilderAttribution, not a literal tier value (tested explicitly, Concern 2)."@en .
+
+va:constrainedWith a owl:ObjectProperty,
+        owl:SymmetricProperty ;
+    rdfs:label "constrained with"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 3, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "A real (typically Exclusive/Dependency-derived) constraint edge between two features, for Layer 1 divide-and-conquer partitioning. Ports the same connected-components strategy already real and tested in 06-runtime/src/variant_backends_v1_0_0.py's DecompositionBackend to the composition-scope, ontology-natively. KNOWN LIMIT (disclosed, not silently accepted): a global k-ary bound spanning two edge-free partitions is invisible to this property unless the modeler adds an explicit edge or uses the va:contributesTo/hasMaxRepetitions pattern (Part 2) instead."@en .
+
+va:contributesTo a owl:ObjectProperty ;
+    rdfs:label "contributes to"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 2, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:Feature ;
+    skos:definition "Links a candidate Feature to a virtual grouping Feature it counts toward when selected. Lets RepetitionOperator (via hasMaxRepetitions on the group) bound how many of a SET of otherwise-unrelated candidate features may be simultaneously selected, without a dedicated k-of-n operator -- real composition, proven in Part 2, not new algebra."@en .
+
+va:convertsFrom a owl:ObjectProperty ;
+    rdfs:label "converts from"@en ;
+    rdfs:domain va:ConversionRequest ;
+    rdfs:range va:DiscoveryResult ;
+    skos:definition "The DiscoveryResult a ConversionRequest is assembling into a Variant." .
+
+va:definesFeature a owl:ObjectProperty ;
+    rdfs:label "defines feature"@en ;
+    rdfs:domain va:Implementation ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range va:Feature ;
+    skos:definition "A Feature the Implementation itself provides — either as a method (def name:) or as an instance/class attribute (self.name = ..., or name = ... at class scope). Used with va:requiresFeature to compute dependency closure via pure graph queries rather than source-text matching."@en .
+
+va:dependencyKind a owl:DatatypeProperty ;
+    rdfs:label "dependency kind"@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range xsd:string ;
+    skos:definition "Classification of the dependency: one of 'self-read', 'self-call', 'bare-call', 'type-annotation', 'exception-class', 'decorator', 'inheritance', 'import', 'context-manager'. Attached to the reification of the va:requiresFeature edge when finer-grained classification is needed."@en .
+
+va:dependencyLine a owl:DatatypeProperty ;
+    rdfs:label "dependency line"@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "The source line number where the dependency reference occurs; enables UI-level highlighting when a closure violation is reported."@en .
+
+va:deploymentFileContent a owl:DatatypeProperty ;
+    rdfs:label "deployment file content"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C14." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "The raw text content of a candidate file, read by C14's rule to check for real structural markers (a FROM instruction, a services: key, apiVersion:+kind:, a resource block, hosts:+tasks:, or a [Unit] section) -- never bare keyword presence, which would false-positive on comments merely mentioning a technology by name."@en .
+
+va:deploymentFilename a owl:DatatypeProperty ;
+    rdfs:label "deployment filename"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C14." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "The raw filename of a candidate file under consideration for DeploymentArtifact detection."@en .
+
+va:domainConceptLabel a owl:DatatypeProperty ;
+    rdfs:label "domain concept label"@en ;
+    dcterms:source "This session, 2026-07-06." ;
+    rdfs:domain va:DomainConcept ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "The rdfs:label of the source RDODI DomainTaxonomy class, carried over verbatim for matching against a Method's own hasRawName. A real, modest string-based matching mechanism (case-insensitive substring), not full NLP -- matching the same scope discipline already used by C10/C11 (regex/string-based, not machine-learned semantic matching)."@en .
+
+va:excludesPartner a owl:ObjectProperty ;
+    rdfs:label "excludes partner"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 3, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Marks a candidate operand as incompatible with a specific member of the opposing operand set, for Layer 0 decrease-and-conquer domain propagation ahead of CartesianOperator. A candidate is only prunable (see va:isPrunable) if it excludes EVERY member of the opposing set -- proven both directions in Part 3 (partial exclusion must survive; total exclusion is correctly prunable)."@en .
+
+va:forApplication a owl:ObjectProperty ;
+    rdfs:label "for application"@en ;
+    rdfs:domain va:ApplicationInstance ;
+    rdfs:range va:Application .
+
+va:forRole a owl:ObjectProperty ;
+    rdfs:label "for role"@en ;
+    rdfs:domain va:RoleBinding ;
+    rdfs:range va:Role .
+
+va:hasASTPatternDescriptor a owl:DatatypeProperty ;
+    rdfs:label "has AST pattern descriptor"@en ;
+    dcterms:source "Referenced by vaf_invariants_v1_1_0.ttl Shape_CalculusContent; never actually declared until this session, same gap as va:hasConstructQuery." ;
+    rdfs:domain va:DetectionCalculus ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "An AST-pattern-DSL descriptor realizing a DetectionCalculus. Declared for completeness alongside va:hasConstructQuery (same shape's sh:or alternatives) -- not used by this session's implementation, which uses the preferred SPARQL CONSTRUCT form instead."@en .
+
+va:hasBinding a owl:ObjectProperty ;
+    rdfs:label "has binding"@en ;
+    rdfs:domain va:Application ;
+    rdfs:range va:Binding ;
+    skos:definition "Associates an application with one of its inter-role wirings."@en .
+
+va:hasConstructQuery a owl:DatatypeProperty ;
+    rdfs:label "has construct query"@en ;
+    dcterms:source "Referenced by vaf_invariants_v1_1_0.ttl Shape_CalculusContent as the PREFERRED backing form for Concern #2; never actually declared anywhere in the ontology until this session -- checked directly, confirmed absent, then fixed." ;
+    rdfs:domain va:DetectionCalculus ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "A real SPARQL CONSTRUCT query (as a string literal) realizing a DetectionCalculus's algorithm directly in the ontology, making the ontology itself -- not external source code -- the authoritative definition, per Concern #2's own stated principle. The preferred backing form of Shape_CalculusContent's sh:or alternatives."@en .
+
+va:hasConversionVerdict a owl:ObjectProperty ;
+    rdfs:label "has conversion verdict"@en ;
+    rdfs:domain va:ConversionResult ;
+    rdfs:range va:ConversionVerdict .
+
+va:hasDerivedPurposeFrom a owl:ObjectProperty ;
+    rdfs:label "has derived purpose from"@en ;
+    dcterms:source "This session, 2026-07-04." ;
+    rdfs:domain va:ComposableUnit ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:SuperComponent ;
+    skos:definition "Rule-derived: a sub-component lacking its own direct BuilderAttribution inherits a derived Purpose claim from its containing SuperComponent's own attribution, via the real, pre-existing va:hasSubComponent relationship. Tested across 1 and 2 hops of nesting; a sub-component WITH its own direct attribution correctly never receives this (first-hand is not overridden). Disclosed limitation: proven to 2 hops only, matching this session's own established precedent for transitive rule depth (Layer 1 partitioning); deeper nesting needs further explicit verification before being assumed to work."@en .
+
+va:hasDiscoverySource a owl:ObjectProperty ;
+    rdfs:label "has discovery source"@en ;
+    rdfs:domain va:DiscoveredFeature ;
+    rdfs:range va:SourceLocation ;
+    skos:definition "Links a va:DiscoveredFeature to the va:SourceLocation (module/file/line) it was discovered at. Reuses the definitional style of va:sourceModule (variant_algebra_v3_2_6.ttl ~line 1588: 'Module basename... in which a Feature... was discovered')."@en .
+
+va:hasDiscoveryStage a owl:ObjectProperty ;
+    rdfs:label "has discovery stage"@en ;
+    rdfs:domain va:DiscoverySynthesisPipeline ;
+    rdfs:range va:DiscoveryResult ;
+    skos:definition "Links a va:DiscoverySynthesisPipeline instance to the va:DiscoveryResult that started it."@en .
+
+va:hasDomainSource a owl:ObjectProperty ;
+    rdfs:label "has domain source"@en ;
+    dcterms:source "This session, 2026-07-06." ;
+    rdfs:domain va:DomainConcept ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Links a DomainConcept back to the RDODI class it was read from. No range constraint -- the source IRI belongs to RDODI's own namespace, not VAF's, and is carried as a reference only, not re-typed into any VAF class."@en .
+
+va:hasEmittedMember a owl:ObjectProperty ;
+    rdfs:label "has emitted member"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 4, this session." ;
+    rdfs:domain va:CandidateVariant ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:Feature ;
+    skos:definition "Rule-derived (purge-before-emission output): the final, post-purge membership of a CandidateVariant -- every va:candidateMember NOT also va:isInverseMarked. A CandidateVariant whose only member is inverse-marked correctly emits none (tested explicitly, Part 4)."@en .
+
+va:hasMaxRepetitions a owl:DatatypeProperty ;
+    rdfs:label "has max repetitions"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 2, this session -- closes a real gap: RepetitionOperator had zero bound-declaring properties in the base ontology, checked directly, not assumed." ;
+    rdfs:domain va:RepetitionOperator ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "The maximum number of repetitions admissible for the feature (or virtual grouping feature, see va:contributesTo) this RepetitionOperator instance applies to via va:appliesTo. Per thesis eq. 2.39's 'zero or more', absence of this property should be read as unbounded, not zero."@en .
+
+va:hasParameter a owl:ObjectProperty ;
+    rdfs:label "has parameter"@en ;
+    rdfs:domain va:Operation ;
+    rdfs:range va:Parameter ;
+    skos:definition "Associates an operation with one of its formal parameters, in declared order (use va:parameterOrder)."@en .
+
+va:hasRawName a owl:DatatypeProperty ;
+    rdfs:label "has raw name"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C10/C11 (NameTerm/NamingPattern calculi read a Feature's raw source name to decompose/match)." ;
+    rdfs:domain va:Feature ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "The raw, unparsed source-code name of a Feature (method/function/class name as written), read by C10/C11's rules to produce NameTerm/NamingPattern proposals. Distinct from any already-parsed representation."@en .
+
+va:hasResultMember a owl:ObjectProperty ;
+    rdfs:label "has result member"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 1, this session." ;
+    rdfs:domain va:Operator ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Rule-derived: a member of the result set of a DivisionOperator or IntersectionOperator instance, after the operator's own filtering (removes / coOccursWith) has been applied."@en .
+
+va:hasRole a owl:ObjectProperty ;
+    rdfs:label "has role"@en ;
+    rdfs:domain va:Application ;
+    rdfs:range va:Role ;
+    skos:definition "Associates an application with one of its declared roles."@en .
+
+va:hasRoleBinding a owl:ObjectProperty ;
+    rdfs:label "has role binding"@en ;
+    rdfs:domain va:ApplicationInstance ;
+    rdfs:range va:RoleBinding ;
+    skos:definition "Associates an application instance with one of its per-role implementation choices."@en .
+
+va:hasSynthesisCandidate a owl:ObjectProperty ;
+    rdfs:label "has synthesis candidate"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:SynthesisInputCandidate ;
+    skos:definition "Rule-derived: links a Method to a SynthesisInputCandidate wrapper recognized by the General Bridge. The wrapper itself (not this property) carries the candidateKind tag, so multiple candidates of different kinds may attach to the same Method without collision -- avoiding the exact property-commingling mistake found and fixed in the code-analysis rules (F-14)."@en .
+
+va:hasSynthesisStage a owl:ObjectProperty ;
+    rdfs:label "has synthesis stage"@en ;
+    rdfs:domain va:DiscoverySynthesisPipeline ;
+    rdfs:range va:SynthesisResult ;
+    skos:definition "Links a va:DiscoverySynthesisPipeline instance to the va:SynthesisResult that closed it."@en .
+
+va:implementationOperation a owl:ObjectProperty ;
+    rdfs:label "implementation operation"@en ;
+    rdfs:domain va:Implementation ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range va:Operation ;
+    skos:definition "Associates an Implementation with the Operation record describing one of its own methods. When an Implementation claims va:implementsInterface I, and I has Operation O_iface, the implementation's correspondingly-named Operation record O_impl must have matching va:paramCount / va:requiredParamCount for signature conformance."@en .
+
+va:implementationSourceFile a owl:DatatypeProperty ;
+    rdfs:label "implementation source file"@en ;
+    rdfs:domain va:Implementation ;
+    rdfs:range xsd:string ;
+    skos:definition "The filename from which this implementation's source was extracted. For provenance."@en .
+
+va:implementsInterface a owl:ObjectProperty ;
+    rdfs:label "implements interface"@en ;
+    rdfs:domain va:Implementation ;
+    rdfs:range va:Interface ;
+    skos:definition "Declares that this implementation conforms to the given interface. SHACL shapes verify signature-level conformance (every interface operation has a matching method in va:pythonSource)."@en .
+
+va:implementsVariant a owl:ObjectProperty ;
+    rdfs:label "implements variant"@en ;
+    rdfs:domain va:Implementation ;
+    rdfs:range va:Variant ;
+    skos:definition "Optional link from an Implementation to the va:Variant (from v2.x) whose feature selection this implementation realises. This connects the implementation to the discovery/induction output."@en .
+
+va:impliesExclusiveOperator a owl:DatatypeProperty ;
+    rdfs:label "implies exclusive operator"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C13, realizing the base ontology's OWN stated algebraic fact: 'the members of a ValueDomain are mutually exclusive... which aligns with the Exclusion operator' (va:ValueDomain's own skos:definition, quoted verbatim)." ;
+    rdfs:domain va:ValueDomain ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Rule-derived: true iff a ValueDomain has 2+ distinct members, confirming it genuinely implies an ExclusiveOperator relationship among its va:hasDomainMember values -- a real, disclosed link back to the already-implemented ExclusiveOperator (Part 1 of this spec), not a new algebraic claim."@en .
+
+va:isAdmissible a owl:DatatypeProperty ;
+    rdfs:label "is admissible"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 1, this session." ;
+    rdfs:domain va:Operator ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Rule-derived: true iff the operator instance is structurally well-formed (e.g. OptionalOperator correctly has an appliesTo target)."@en .
+
+va:isCoIncludedBy a owl:ObjectProperty ;
+    rdfs:label "is co-included by"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 1, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:AdditionOperator ;
+    skos:definition "Inverse-direction binding for AdditionOperator: lets an operand be bound from either direction, since va:hasOperand's natural direction is operator-to-operand only."@en .
+
+va:isCollectionTyped a owl:DatatypeProperty ;
+    rdfs:label "is collection typed"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C6 (CollectionInitCalculus)." ;
+    rdfs:domain va:Attribute ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "True iff an Attribute was initialized in __init__ to a mutable-container literal or constructor call (list/dict/set/deque/OrderedDict) -- the real-code fact C6's rule reads to propose the attribute is RepetitionOperator-governed."@en .
+
+va:isInitDeclared a owl:DatatypeProperty ;
+    rdfs:label "is init declared"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C3 (InitDependencyCalculus)." ;
+    rdfs:domain va:Attribute ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "True iff an Attribute was assigned in __init__. C3's rule combines this with the real, EXISTING va:readsAttribute (not a new property) to propose a method reading any init-declared attribute depends on __init__."@en .
+
+va:isInverseMarked a owl:DatatypeProperty ;
+    rdfs:label "is inverse marked"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 4, this session." ;
+    rdfs:domain va:Feature ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "The operational realization of InverseOperator's (!x): 'produces an element that is removed from the variant's feature set... requires subtraction of all inverse elements before variant emission' (base ontology's own skos:definition, quoted verbatim). Tested idempotent under double-marking (stays purged, does not flip back to present -- Part 4)."@en .
+
+va:isPrunable a owl:DatatypeProperty ;
+    rdfs:label "is prunable"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 3, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Rule-derived: true iff a candidate operand has zero admissible partners remaining in the opposing set (Layer 0 output). Consumers should exclude va:isPrunable=true candidates before CartesianOperator's Layer 2 pairing rule runs."@en .
+
+va:isSelected a owl:DatatypeProperty ;
+    rdfs:label "is selected"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 1, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Marks a Feature/Component as chosen in the candidate variant currently under evaluation by Exclusive/Or/Dependency rules. An evaluation-time marker, asserted per-candidate by the consuming pipeline before rules run -- not a static ontology fact."@en .
+
+va:isViolated a owl:DatatypeProperty ;
+    rdfs:label "is violated"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 1, this session." ;
+    rdfs:domain va:Operator ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Rule-derived: true iff the operator instance's constraint is violated by the current candidate selection (va:isSelected markers). Shared across ExclusiveOperator, OrOperator, and DependencyOperator's rules rather than one bespoke property per operator."@en .
+
+va:memberOfDiscoveryResult a owl:ObjectProperty ;
+    rdfs:label "member of discovery result"@en ;
+    rdfs:domain va:DiscoveredFeature ;
+    rdfs:range va:DiscoveryResult ;
+    skos:definition "Real, disclosed gap closed during WI_ConversionVerdictShape: no property linked a va:DiscoveredFeature to the va:DiscoveryResult its own assembled set belongs to -- found while re-checking conversion_verdict_shacl_v1_0_0.ttl's own ambiguity shape, which had no way to scope a targetSlot collision to features within the SAME result without this link, and so genuinely false-positived on two separate, legitimate ConversionResults that independently happened to use the same slot name."@en .
+
+va:paramCount a owl:DatatypeProperty ;
+    rdfs:label "parameter count"@en ;
+    rdfs:domain va:Operation ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "Cached total count of parameters, excluding self. Used by the signature-conformance SHACL shape."@en .
+
+va:parameterDefault a owl:DatatypeProperty ;
+    rdfs:label "parameter default"@en ;
+    rdfs:domain va:Parameter ;
+    rdfs:range xsd:string ;
+    skos:definition "Default value as a Python expression string. Absent means no default (parameter is required)."@en .
+
+va:parameterKind a owl:DatatypeProperty ;
+    rdfs:label "parameter kind"@en ;
+    rdfs:domain va:Parameter ;
+    rdfs:range xsd:string ;
+    skos:definition "Python parameter kind: one of 'pos-only', 'positional', 'keyword-only', 'vararg', 'kwarg'. Enables signature-fidelity checks (e.g. a caller passing positional args can only satisfy pos-only or positional params)."@en .
+
+va:parameterName a owl:DatatypeProperty ;
+    rdfs:label "parameter name"@en ;
+    rdfs:domain va:Parameter ;
+    rdfs:range xsd:string .
+
+va:parameterOrder a owl:DatatypeProperty ;
+    rdfs:label "parameter order"@en ;
+    rdfs:domain va:Parameter ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "Zero-based position of the parameter within its operation's signature. 'self' does not receive a position."@en .
+
+va:parameterType a owl:DatatypeProperty ;
+    rdfs:label "parameter type"@en ;
+    rdfs:domain va:Parameter ;
+    rdfs:range xsd:string ;
+    skos:definition "Python type annotation string, e.g. 'str', 'List[int]'. Empty/absent means unspecified."@en .
+
+va:producesConversion a owl:ObjectProperty ;
+    rdfs:label "produces conversion"@en ;
+    rdfs:domain va:ConversionRequest ;
+    rdfs:range va:ConversionResult .
+
+va:proposesAttributeDependency a owl:ObjectProperty ;
+    rdfs:label "proposes attribute dependency"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C1 (AttributeUsageCalculus)." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:Attribute ;
+    skos:definition "Rule-derived: C1's proposed dependency on a real Attribute individual, read but not written. Purpose-built, not shared with C2/C7's output -- an earlier design sharing one generic va:proposesDependency property across C1/C2/C7 was tested running all three together and found to commingle their outputs on the same Method subject, making attribution ambiguous. Split per calculus instead."@en .
+
+va:proposesCallDependency a owl:ObjectProperty ;
+    rdfs:label "proposes call dependency"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C2 (MethodCallCalculus)." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:Method ;
+    skos:definition "Rule-derived: C2's proposed dependency on a real Method individual, via a direct self.method() call. Purpose-built, see va:proposesAttributeDependency for why this isn't shared with C1/C7."@en .
+
+va:proposesDeploymentArtifactKind a owl:DatatypeProperty ;
+    rdfs:label "proposes deployment artifact kind"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C14." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "Rule-derived: one of 'dockerfile', 'docker-compose', 'kubernetes', 'terraform', 'ansible', 'systemd' -- the specific DeploymentArtifact kind C14's rule detected via a real structural marker in va:deploymentFileContent."@en .
+
+va:proposesExternalDependency a owl:DatatypeProperty ;
+    rdfs:label "proposes external dependency"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C4/C8/C9 (ExternalCall/CrossFileCall/ExternalSymbol calculi). Shared across these three based on their source AST facts being structurally disjoint at the trigger-property level (C4 triggers on va:callsExternalFunction from bare Name() calls; C8/C9 trigger on va:callsResolvedCrossFile/va:callsUnresolvedExternal from Attribute() calls, and the original Python C8/C9 are mutually exclusive by explicit design -- C9 skips any call C8 already resolved). NOT independently joint-tested the way C1/C2/C3/C7's commingling was found and fixed this session -- disclosed as an assumption carried from the source design, not verified with the same rigor. Flagged as follow-up work, not silently treated as proven." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "Rule-derived: a proposed dependency on an EXTERNAL name (a bare function call C4, a cross-file resolved symbol C8, or an unresolved external symbol C9) not modeled as a va:Method individual."@en .
+
+va:proposesInitDependency a owl:DatatypeProperty ;
+    rdfs:label "proposes init dependency"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C3 (InitDependencyCalculus)." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Rule-derived: true iff this method reads an init-declared Attribute (C3's proposal). Purpose-built, kept separate from C4/C8/C9's va:proposesExternalDependency after the same commingling issue found for C1/C2/C7 was also found here on re-test."@en .
+
+va:proposesNameTerm a owl:DatatypeProperty ;
+    rdfs:label "proposes name term"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C10." ;
+    rdfs:domain va:Feature ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "Rule-derived: a proposed lexical term text, to be materialized as a real va:NameTerm individual (via va:hasNameTerm) once accepted -- kept as a string proposal at the SHACL-AF layer since NameTerm individuals are per-term and open-vocabulary, not a closed enumeration like NamingPattern."@en .
+
+va:proposesOperatorRefinement a owl:DatatypeProperty ;
+    rdfs:label "proposes operator refinement"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "Rule-derived: a proposed operator-type refinement (e.g. 'MandatoryOperator', 'RepetitionOperator') produced by C5/C6's rules. Shared output vocabulary."@en .
+
+va:proposesOuterConfirmed a owl:DatatypeProperty ;
+    rdfs:label "proposes outer confirmed"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C12." ;
+    rdfs:domain va:TypeReference ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Rule-derived: true iff a TypeReference individual has a real va:typeName, confirming it was correctly materialized from source (the outer type of a container, or a simple type). Nested parameter TypeReferences are already linked via the base ontology's own va:hasTypeParameter -- this rule confirms well-formedness, it does not re-derive the nesting structure itself."@en .
+
+va:proposesSynthesisTarget a owl:DatatypeProperty ;
+    rdfs:label "proposes synthesis target"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- Package 3." ;
+    rdfs:domain va:BuilderAttribution ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "Rule-derived: one of 'python' or 'html', classified from va:purposeDescription's free text via keyword matching (utility/library-shaped text -> python; demo/stakeholder/presentation-shaped text -> html). Absence of this property (no BuilderAttribution, or a BuilderAttribution with no matching keywords) means the consuming pipeline must apply its own defined default, not treat it as an error -- matching F-16's own 'unknown purpose is absence, not an error' precedent."@en .
+
+va:proposesTransitiveDependency a owl:ObjectProperty ;
+    rdfs:label "proposes transitive dependency"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- C7 (TransitiveClosureCalculus)." ;
+    rdfs:domain va:Method ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range va:Method ;
+    skos:definition "Rule-derived: C7's proposed dependency via 2-hop transitive closure over va:proposesCallDependency edges. Purpose-built, see va:proposesAttributeDependency for why this isn't shared with C1/C2."@en .
+
+va:purposeDescription a owl:DatatypeProperty ;
+    rdfs:label "purpose description"@en ;
+    dcterms:source "10-operator-implementation-spec/, this session -- Package 3." ;
+    rdfs:domain va:BuilderAttribution ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:range xsd:string ;
+    skos:definition "Free-text description of why the attributed entity exists, e.g. 'internal utility library' or 'stakeholder demo'. Classified by va:proposesSynthesisTarget's rule into a concrete target-selection signal, matching the keyword-classification approach already established by C11 (NamingPattern)."@en .
+
+va:pythonAst a owl:DatatypeProperty ;
+    rdfs:label "python AST"@en ;
+    rdfs:range xsd:string ;
+    skos:definition "Optional serialised AST (e.g. output of Python ast.dump) for entities where structural manipulation is expected. Redundant with va:pythonSource; maintained for tools that prefer AST-level reasoning."@en .
+
+va:pythonEntryPoint a owl:DatatypeProperty ;
+    rdfs:label "python entry point"@en ;
+    rdfs:range xsd:string ;
+    skos:definition "The fully qualified name of a callable within the source that serves as the entry point for execution. E.g. 'Notifier' for a class, or 'main' for a module-level function."@en .
+
+va:pythonRequiredModule a owl:DatatypeProperty ;
+    rdfs:label "python required module"@en ;
+    rdfs:range xsd:string ;
+    skos:definition "A module name (e.g. 'smtplib', 'requests') that the annotated implementation imports. Used by the assembler to verify availability in the target runtime (Pyodide has a bounded set of stdlib and PyPI packages)."@en .
+
+va:pythonSource a owl:DatatypeProperty ;
+    rdfs:label "python source"@en ;
+    rdfs:domain [ a owl:Class ;
+            owl:unionOf ( va:Implementation va:Operation ) ] ;
+    rdfs:range xsd:string ;
+    skos:definition "The Python source text of the annotated entity, verbatim, preserved from the original parse. Caller is responsible for ensuring the text is syntactically valid Python 3."@en .
+
+va:realizesFacet a owl:ObjectProperty ;
+    rdfs:label "realizes facet"@en ;
+    rdfs:comment "Mirrors backlog:adoptsFacet's role." ;
+    rdfs:domain va:VAFDomainProfile ;
+    rdfs:range va:DomainFacet .
+
+va:removes a owl:ObjectProperty ;
+    rdfs:label "removes"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 1, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Marks one operand of a DivisionOperator instance as cancelling another -- the operational realization of thesis eq. 2.32-33's set-difference semantics."@en .
+
+va:requiredParamCount a owl:DatatypeProperty ;
+    rdfs:label "required parameter count"@en ;
+    rdfs:domain va:Operation ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "Cached count of parameters without defaults, excluding *args and **kwargs. Used by the signature-conformance SHACL shape to avoid per-shape aggregation. Parser v2.0.1 auto-populates this."@en .
+
+va:requires a owl:ObjectProperty ;
+    rdfs:label "requires (interface)"@en ;
+    rdfs:domain va:Role ;
+    rdfs:range va:Interface ;
+    skos:definition "The interface that any implementation filling this role must conform to."@en .
+
+va:requiresFeature a owl:ObjectProperty ;
+    rdfs:label "requires feature"@en ;
+    rdfs:domain [ a owl:Class ;
+            owl:unionOf ( va:Implementation va:Operation ) ] ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range va:Feature ;
+    skos:definition "An Implementation or Operation requires the target Feature to be present in any variant selection including this one. Derived from AST analysis: the source references this feature by name, as a method call, as a type annotation, as an exception class, or as another concrete code-level reference."@en .
+
+va:returnType a owl:DatatypeProperty ;
+    rdfs:label "return type"@en ;
+    rdfs:domain va:Operation ;
+    rdfs:range xsd:string ;
+    skos:definition "The return type as a Python type annotation string, e.g. 'bool', 'Optional[str]', 'dict'. Empty/absent means unspecified."@en .
+
+va:reviewApproved a owl:DatatypeProperty ;
+    rdfs:label "review approved"@en ;
+    dcterms:source "WI_ProbabilisticGuardFact, 2026-08-31 — the review-gate half of Del_ProbabilisticGuardProven." ;
+    rdfs:domain va:Operator ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Records that a human designer explicitly reviewed and accepted an Operator whose provenance (detectedBy) traces to a Tier-5, probabilistic calculus. Absent or false means the fact has not been consciously accepted -- it must not be treated as carrying the same epistemic weight as a deterministically-detected or manually-declared Operator. This property has no meaning, and is not required, for non-probabilistic provenance; requiring it universally would misrepresent Tiers 1-4 as needing the same review Tier-5 genuinely does." .
+
+va:runtimeRequirementKind a owl:DatatypeProperty ;
+    rdfs:label "runtime requirement kind"@en ;
+    rdfs:domain va:RuntimeRequirement ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range xsd:string ;
+    skos:definition "Classification of the runtime requirement: one of 'config-key', 'env-var', 'event-topic', 'service-url', 'plugin-name', 'protocol', 'file-path', 'db-table', 'other'. The kind determines how the assembler's deployment manifest categorises the requirement."@en .
+
+va:runtimeRequirementName a owl:DatatypeProperty ;
+    rdfs:label "runtime requirement name"@en ;
+    rdfs:domain va:RuntimeRequirement ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range xsd:string ;
+    skos:definition "The identifying name of the runtime requirement: the env-var name, the config key path, the event topic, the protocol FQN, etc."@en .
+
+va:runtimeRequirementOptional a owl:DatatypeProperty ;
+    rdfs:label "runtime requirement optional"@en ;
+    rdfs:domain va:RuntimeRequirement ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range xsd:boolean ;
+    skos:definition "If true, the implementation has a fallback when the requirement is absent. If false (default), absence is a hard error at resolution time."@en .
+
+va:runtimeRequirementSourceLine a owl:DatatypeProperty ;
+    rdfs:label "runtime requirement source line"@en ;
+    rdfs:domain va:RuntimeRequirement ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range xsd:nonNegativeInteger ;
+    skos:definition "The source line number where the auto-detector spotted this requirement (e.g. the line with os.environ[...] or config[...])."@en .
+
+va:runtimeRequires a owl:ObjectProperty ;
+    rdfs:label "runtime requires"@en ;
+    rdfs:domain va:Implementation ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    rdfs:range va:RuntimeRequirement ;
+    skos:definition "An Implementation declares a RuntimeRequirement it needs at execution time."@en .
+
+va:samePartitionAs a owl:ObjectProperty,
+        owl:SymmetricProperty ;
+    rdfs:label "same partition as"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 3, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Rule-derived (Layer 1 output): two features are in the same partition if connected via one or more va:constrainedWith hops. Proven transitive up to 2 hops in Part 3's test; the rule's property-path (rdf:rest*/rdf:first-free UNION chain) generalizes to arbitrary depth by the nature of SPARQL property-path-free transitive UNION chaining used."@en .
+
+va:sourceProperty a owl:DatatypeProperty ;
+    rdfs:label "source property"@en ;
+    rdfs:domain va:Binding ;
+    rdfs:range xsd:string ;
+    skos:definition "Name of the property/method on the source role's implementation that provides the value. Empty string means the instance itself."@en .
+
+va:sourceRole a owl:ObjectProperty ;
+    rdfs:label "source role"@en ;
+    rdfs:domain va:Binding ;
+    rdfs:range va:Role ;
+    skos:definition "The role whose instance provides the bound value."@en .
+
+va:targetProperty a owl:DatatypeProperty ;
+    rdfs:label "target property"@en ;
+    rdfs:domain va:Binding ;
+    rdfs:range xsd:string ;
+    skos:definition "Name of the property (or constructor parameter) on the target role's implementation that receives the bound value."@en .
+
+va:targetRole a owl:ObjectProperty ;
+    rdfs:label "target role"@en ;
+    rdfs:domain va:Binding ;
+    rdfs:range va:Role ;
+    skos:definition "The role whose instance receives the bound value."@en .
+
+va:targetSlot a owl:DatatypeProperty ;
+    rdfs:label "target slot"@en ;
+    rdfs:domain va:DiscoveredFeature ;
+    rdfs:range xsd:string ;
+    skos:definition "Which Variant slot a DiscoveredFeature is proposed to fill. Two DiscoveredFeatures sharing a targetSlot within one ConversionRequest is the real ambiguous-mapping failure mode Obj_ConversionRiskReduced's FMEA analysis names." .
+
+va:useImplementation a owl:ObjectProperty ;
+    rdfs:label "use implementation"@en ;
+    rdfs:domain va:RoleBinding ;
+    rdfs:range va:Implementation .
+
+va:wrapsUnitClass a owl:ObjectProperty ;
+    rdfs:label "wraps unit class"@en ;
+    rdfs:comment "The concrete domain-specific class a facet wraps -- e.g. Facet_Software wraps va:SoftwareUnit. Required, exactly one: a DomainFacet with none is malformed (declared without saying what it actually covers) and a DomainFacet with two is ambiguous about its own scope." ;
+    rdfs:domain va:DomainFacet ;
+    rdfs:range owl:Class .
+
+<http://example.org/variant-algebra/version-tokens#VersionTokenInvariantSuite> a oe:TestSuite ;
+    rdfs:label "Version Token Invariant Suite"@en ;
+    dcterms:source "Tested implicitly by Sprint 7-12 test suites which exercise every artefact whose version token is declared here."@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/version-tokens> .
+
+va:AdditionOperator va:hasComputationalComplexity va:Complexity_O1 .
+
+va:Agent a owl:Class ;
+    rdfs:label "Agent"@en ;
+    dcterms:source "This session's semantic/behavioral capability discussion, 2026-07-04." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Any entity capable of deciding to build, or building, a software artifact -- a first-hand source of purpose. Deliberately not restricted to a human person: an automated system, a calculus, or an organization may all be Agents, per explicit direction. Modeled as a real, referenceable Class (the 'non-terminal/variable' side of VAF's own grammar convention, confirmed against variant_dsl_grammar_v1_0_0.lark's rule/terminal distinction), not a literal, because the same Agent is reused across many attributions."@en .
+
+va:Complexity_DependencyGraphWide a va:ComputationalComplexity ;
+    rdfs:label "O(1) per pair; O(E) graph-wide"@en ;
+    skos:definition "O(1) to check a single declared dependency pair; O(E) for a full consistency pass across the dependency graph (E = number of declared edges)."@en .
+
+va:Complexity_MinAmortized a va:ComputationalComplexity ;
+    rdfs:label "O(min(|A|,|B|)) amortized"@en ;
+    skos:definition "Hash-based membership test, amortized. Implementation-strategy decision (domain author): matches the runtime's own DecompositionBackend grouping strategy (06-runtime/src), consistent with the sizes this VAF targets (benchmark P2_medium_sparse: 13824 admissible assignments)."@en .
+
+va:Complexity_ParametricN a va:ComputationalComplexity ;
+    rdfs:label "O(n), n = repetition count"@en ;
+    skos:definition "Parametric in the repetition count n, NOT a fixed-arity Big-O class. Implementation-strategy decision (domain author): the operator's own definition (thesis eq. 2.39, zero-or-more repetitions) has unbounded arity; a single fixed-arity class would misrepresent it."@en .
+
+va:Complexity_ProductAB a va:ComputationalComplexity ;
+    rdfs:label "O(|A|*|B|)"@en ;
+    skos:definition "The Cartesian product's own definition (thesis eq. 2.30-31, A x B = {(a,b) : a in A, b in B}) -- not a chosen strategy, the operator's output size IS |A|*|B|."@en .
+
+va:Facet_KnowledgeBase a va:DomainFacet,
+        owl:NamedIndividual ;
+    rdfs:label "Knowledge Base Facet"@en ;
+    va:wrapsUnitClass va:KnowledgeUnit ;
+    rdfs:comment "The second facet, proving va:DomainFacet is genuinely open (not closed the way BRSF's own FrameworkFacet is) -- built and declared exactly like Facet_Software, wrapping a different, sibling unit class." .
+
+va:Facet_Software a va:DomainFacet,
+        owl:NamedIndividual ;
+    rdfs:label "Software Facet"@en ;
+    va:wrapsUnitClass va:SoftwareUnit ;
+    rdfs:comment "The first, mandatory facet -- wraps the existing, thesis-grounded SoftwareUnit hierarchy, now explicitly declared as one facet among possible others rather than assumed to be the only root." .
+
+va:KnowledgeUnit a owl:Class ;
+    rdfs:label "Knowledge Unit"@en ;
+    dcterms:source "REGISTRANT-STATED, Y. Altunel, 2026-08-30, closing a real gap: va:VAFDomainProfile and va:DomainFacet existed with only one facet ever wired to a concrete profile, and no second facet had ever been declared to prove the mechanism genuinely extends." ;
+    rdfs:subClassOf va:GenericUnit ;
+    skos:definition "A composable or variable entity in the knowledge-base-construction profile's own domain -- a business document, an incident record, a quality-system entry, an expert insight -- sibling to va:SoftwareUnit under the shared va:GenericUnit ancestor, not a subclass of it. Neither profile's entities are members of the other's domain." .
+
+va:RepetitionOperator va:hasComputationalComplexity va:Complexity_ParametricN .
+
+va:SynthesisResult a owl:Class ;
+    rdfs:label "Synthesis Result"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    skos:definition "The output of one synthesis backend on one SynthesisRequest. Contains the generated code as a string literal, the backend that produced it, and exactly one SynthesisVerdict." .
+
+va:CandidateVariant a owl:Class ;
+    rdfs:label "Candidate Variant"@en ;
+    dcterms:source "10-operator-implementation-spec/ Part 4, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    rdfs:subClassOf va:Variant ;
+    skos:definition "A Variant under evaluation, before Subtraction/Inverse's purge-before-emission rule has been applied. Subclass of the base ontology's own va:Variant."@en .
+
+va:Complexity_SumAB a va:ComputationalComplexity ;
+    rdfs:label "O(|A|+|B|)"@en ;
+    skos:definition "Linear in the combined size of both operands -- the set-difference family (thesis eq. 2.29/2.32-33) requires materializing both operands' membership."@en .
+
+va:ConversionRequest a owl:Class ;
+    rdfs:label "Conversion Request"@en ;
+    skos:definition "A request to convert one va:DiscoveryResult into a va:Variant, producing a va:ConversionResult. Symmetric to va:DiscoveryRequest: where Discovery scans source into DiscoveredFeatures, Conversion assembles those features into the algebra's own Variant structure." .
+
+va:ConversionResult a owl:Class ;
+    rdfs:label "Conversion Result"@en ;
+    skos:definition "The va:Variant produced by one va:ConversionRequest, plus a confidence/verdict. Symmetric to va:DiscoveryResult." .
+
+va:DiscoverySynthesisPipeline a owl:Class ;
+    rdfs:label "Discovery-Synthesis Pipeline"@en ;
+    dcterms:source "REGISTRANT-STATED, Y. Altunel, 2026-08-28 (original), corrected 2026-08-30 following the owner's explicit clarification that VA is a distinct subject from the discover-synthesize workflow, and that both a software-variant profile and a knowledge-base-construction profile are real, first-class VAF profiles, not external subclassing."@en ;
+    skos:definition "The full round trip as one named, referenceable process: a va:DiscoveryBackend scans a corpus (va:DiscoveryRequest -> va:DiscoveryResult, holding va:DiscoveredFeature individuals) -> those features are assembled into a va:Variant (va:assembledFromDiscovery) -> the Variant is realised through a va:SynthesisBackend (va:SynthesisRequest -> va:SynthesisResult) into whatever form the target profile's aim requires. This class is the generic workflow SHAPE, deliberately a different subject from the va: algebra it invokes (Feature/Variant/ComposableUnit/composition) -- the workflow moves a corpus through the algebra toward a specific aim, it is not the algebra itself. CORRECTED 2026-08-30 (was: 'VAF's own instantiation of this class is scoped to software... a consuming project instantiates or subclasses it for its own domain' -- written before the Mission amendment and the domain-profile mechanism existed, and inconsistent with both once they did): VAF itself declares multiple first-class va:VAFDomainProfile instances of this same generic pipeline, not merely enabling external consumers to do so -- va:Profile_SoftwareVariantManagement (discovery over source code, development documentation, database metadata, and data itself; synthesis realizes running systems) and va:Profile_KnowledgeBaseConstruction (discovery over emails, corporate legal documentation, quality systems, incidents, business documents, and expert insight; synthesis realizes an agent-usable knowledge base) are both real, named profiles of this one pipeline shape, sharing the same generic algebra core."@en .
+
+va:DomainConcept a owl:Class ;
+    rdfs:label "Domain Concept"@en ;
+    dcterms:source "This session, 2026-07-06." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "A VAF-side representation of a single concept read from an RDODI DomainOntologyArtifact's DomainTaxonomy (a class in the rdfs:subClassOf hierarchy). Deliberately minimal -- carries only the label needed for gap-filling matching, not the full taxonomic position or axiom set, since the translation mechanism's scope is proposing candidates, not importing RDODI's ontology wholesale."@en .
+
+va:EnumerationBackend a owl:Class ;
+    rdfs:label "Enumeration Backend"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim -- confirmed against variant_backends_v1_0_0.py's own real class hierarchy." ;
+    rdfs:subClassOf oe:EngineeringPattern ;
+    skos:definition "Algorithmic policy governing how the enumerator computes the admissible variant set. Abstract parent of BruteForceBackend and DecompositionBackend. Orthogonal to EnumerationStrategy: any Strategy may be implemented by any Backend, and a Component carries both during emission." .
+
+va:LLMProvider a owl:Class ;
+    rdfs:label "LLM Provider"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl (06-runtime/ontology/), carried forward verbatim -- confirmed to match the real, existing llm_providers_v1_0_0.py's own LLMProvider Protocol directly." ;
+    rdfs:subClassOf oe:EngineeringPattern ;
+    skos:definition "Abstract parent of vendor-specific LLM bindings consumed by LLMSynthesisBackend. Concrete subclasses implement a complete() method taking prompt, seed, max_tokens. Orthogonal to SynthesisBackend: the backend governs the request and verification pipeline; the provider governs the underlying HTTP call." .
+
+va:SynthesisBackend a owl:Class ;
+    rdfs:label "Synthesis Backend"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
+    skos:definition "Abstract parent of backends that produce code for a given Variant. Does not itself run any LLM; concrete subclasses carry their own configuration. Orthogonal to EnumerationBackend: the enumerator produces Variants, the SynthesisBackend consumes a Variant and returns a SynthesisResult." .
+
+va:ComposableUnit rdfs:subClassOf va:GenericUnit .
+
+va:DiscoveredFeature a owl:Class ;
+    rdfs:label "Discovered Feature"@en ;
+    rdfs:subClassOf va:Feature ;
+    skos:definition "A va:Feature whose origin is static-analysis discovery from existing source rather than manual specification. Carries va:hasDiscoverySource. Corresponds to the 'software elements — packages, classes, methods, attributes, parameters' produced by reverse engineering per Altunel 2013 p.821."@en .
+
+va:EnumerationStrategy a owl:Class ;
+    rdfs:label "Enumeration Strategy"@en ;
+    dcterms:source "variant_algebra_v2_10_0.ttl (06-runtime/ontology/), carried forward verbatim -- confirmed to match variant_enumerator_v2_0_0.py's own real, existing implementation." ;
+    rdfs:subClassOf oe:EngineeringPattern ;
+    skos:definition "Policy governing how the enumerator materialises variants: what is produced." .
+
+va:GenericUnit a owl:Class ;
+    rdfs:label "Generic Unit"@en ;
+    dcterms:source "REGISTRANT-STATED, Y. Altunel, 2026-08-29, closing a structural gap found during WI_MetaLevelAssertion's grooming — not present in Altunel 2013, which scoped the whole algebra to software (Ψ) by design; this is the mission-amendment's own generalization made structurally real rather than only claimed." ;
+    skos:definition "A composable or variable entity in ANY domain's algebra — the genuinely domain-neutral ancestor va:SoftwareUnit could not be, since SoftwareUnit's own definition scopes it to the thesis's element set Ψ (software entities specifically). A future non-software facet's own entities are GenericUnit instances without needing to also be SoftwareUnit instances, which would be a category error for, say, a database schema field or a workflow step."@en .
+
+va:RoleBinding a owl:Class ;
+    rdfs:label "Role Binding"@en ;
+    dcterms:source "Variant Algebra v3 Ontology Extension — application-assembly layer (role-to-implementation selection within an ApplicationInstance)."@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    skos:definition "The choice of a specific Implementation to fill a specific Role in a specific ApplicationInstance. Distinct from va:Binding (inter-role wiring): a RoleBinding is role → implementation; a Binding is role-output → role-input."@en .
+
+va:SynthesisInputCandidate a owl:Class ;
+    rdfs:label "Synthesis Input Candidate"@en ;
+    dcterms:source "10-operator-implementation-spec/VAF_PIPELINE_BACKBONE_BACKLOG_v1_0_0.md, Package 1, this session." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "A generic wrapper marking that some real, discovered or attributed fact (a dependency edge from C1-C9, a Purpose claim from BuilderAttribution, or a future fact type) has been recognized by the General Bridge as a candidate input to synthesis. Deliberately generic -- the whole point of Package 1 is that this class does not need to change when a new fact type (e.g. a future DeploymentArtifact-derived fact) is added; only a new bridging rule is needed, not a new wrapper class."@en .
+
+va:VAFDomainProfile a owl:Class ;
+    rdfs:label "VAF Domain Profile"@en ;
+    rdfs:comment "Mirrors backlog:AdoptionProfile's declaratory shape only -- deliberately NOT FrameworkFacet's closed owl:oneOf enumeration, since VAF's mission requires this to stay open for domains not yet built." .
+
+va:ApplicationInstance a owl:Class ;
+    rdfs:label "Application Instance"@en ;
+    dcterms:source "Variant Algebra v3 Ontology Extension — application-assembly layer (fully-filled assembly; synthesis/execution target with PROV-O lineage)."@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    skos:definition "A concrete assembly: an Application with every Role filled by a specific Implementation. The target of synthesis (source emission) and execution. Connects via PROV-O to the activity that assembled and ran it."@en .
+
+va:ConversionVerdict a owl:Class ;
+    rdfs:label "Conversion Verdict"@en ;
+    skos:definition "Accept/reject/needs-review verdict over a va:ConversionResult, per the same BP-3-style quality-gate pattern as va:DiscoveryVerdict and va:SynthesisVerdict." .
+
+va:DiscoveryResult a owl:Class ;
+    rdfs:label "Discovery Result"@en ;
+    skos:definition "The set of va:DiscoveredFeature/va:DiscoveredComponent individuals produced by one va:DiscoveryRequest, plus a confidence/verdict. Symmetric to va:SynthesisResult."@en .
+
+va:DomainFacet a owl:Class ;
+    rdfs:label "Domain Facet"@en ;
+    rdfs:comment "Open class, deliberately not owl:oneOf-closed. Facet_Software is the first individual, not the only one the class permits." .
+
+va:BuilderAttribution a owl:Class ;
+    rdfs:label "Builder Attribution"@en ;
+    dcterms:source "This session's semantic/behavioral capability discussion, 2026-07-04." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "A reified claim that a specific Agent attributes a Purpose to a specific entity, with an explicit confidence tier. Follows the SAME reification pattern already established by va:OperatorApplication (a Class whose individuals tie together several facts), not a new pattern. Multiple BuilderAttribution individuals may attribute Purpose to the same entity from different Agents, potentially disagreeing -- this is real information, not noise to be resolved to a single answer."@en .
+
+va:Complexity_O1 a va:ComputationalComplexity ;
+    rdfs:label "O(1)"@en ;
+    skos:definition "Constant time: predicate/insertion decidable for a single pair without scanning either operand's full contents."@en .
+
+va:RuntimeRequirement a owl:Class ;
+    rdfs:label "Runtime Requirement"@en ;
+    dcterms:source "Variant Algebra v3 Ontology Extension — runtime-requirement declaration layer (deployment-manifest inputs not statically verifiable)."@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    skos:definition "A runtime binding an Implementation depends on but which cannot be verified statically: a config key, environment variable, event topic, external service URL, plugin name, protocol contract, file path, or database table. Verification occurs at runtime; the declaration ensures the assembler emits a deployment manifest enumerating these requirements."@en ;
+    skos:example "EmailNotifierImpl declares a RuntimeRequirement of kind 'env-var' with name 'SMTP_PASSWORD'. The assembler's manifest lists 'SMTP_PASSWORD' among environment variables that must be set before the assembled app will run."@en .
+
+va:Binding a owl:Class ;
+    rdfs:label "Binding"@en ;
+    dcterms:source "Variant Algebra v3 Ontology Extension — inter-role wiring layer (producer-output to consumer-dependency binding)."@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    skos:definition "A directed wiring from a producing role's output property to a consuming role's dependency property. Assembled by the application assembler as either constructor-argument injection or post-construction attribute assignment, depending on va:bindingKind."@en .
+
+va:Role a owl:Class ;
+    rdfs:label "Role"@en ;
+    dcterms:source "Variant Algebra v3 Ontology Extension — application-assembly layer (interface-typed slot filled by an Implementation at assembly time)."@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    skos:definition "A slot in an application, typed by an interface. At assembly time, each role is filled by a concrete Implementation that declares va:implementsInterface matching the role's va:requires."@en .
+
+va:Feature rdfs:subClassOf va:GenericUnit .
+
+va:Implementation a owl:Class ;
+    rdfs:label "Implementation"@en ;
+    dcterms:source "Variant Algebra v3 Ontology Extension — implementation layer (concrete variant realisation carrying Python source). Grounded in Altunel (2013) thesis component/feature model §2.2."@en ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
+    skos:definition "A concrete realisation of a variant, carrying its Python source. Every Implementation implements at least one Interface; each operation declared in that interface must correspond to a method in the implementation's source. Implementations are what the assembler actually composes into applications."@en .
+
