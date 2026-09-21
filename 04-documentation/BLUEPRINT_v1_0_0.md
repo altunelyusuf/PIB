@@ -38,7 +38,7 @@ history** — they compose, never conflated.
 | Gate | Scope | Tool | What it checks |
 |---|---|---|---|
 | **Self-coverage** | per node, profile-INDEPENDENT | `self_coverage_checker_v1_0_0.py` | each ontology parses, is SHACL-conformant (and optionally DL-consistent) **standalone**, no consumed ontology merged |
-| **Wiring validity** | per profile | `variation_capacity_v1_0_0.py` (drives the ontology's enumeration rules) | operator constraints hold + every active `consumes` matched by an active `produces`; reports Variation Capacity |
+| **Wiring validity** | per profile | `variation_capacity_v1_0_0_1.py` (drives the ontology's enumeration rules) | operator constraints hold + every active `consumes` matched by an active `produces`; reports Variation Capacity |
 
 A wiring is adoptable **only if BOTH gates pass.** Self-coverage has teeth: the SHACL invariant G3 refuses
 any interface lacking a `SelfCoverageAttestation` (demonstrated — the worked example's three interfaces all

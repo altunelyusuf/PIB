@@ -1,16 +1,15 @@
-# PIB v2.0.1 — SHA-256 Manifest
-# PATCH from v2.0.0 (2026-09-17): reconcile prose and ontology descriptions with the disk.
-#   The v2.0.0 switch to ontology-native calculation left documents describing the retired tool and
-#   the engine as PIB's calculation path, and one ontology description still claiming the algebra's
-#   other operators were 'deliberately not imported' — false since v1.6.0.
-#   - README, GOVERNANCE, 04-documentation README: corrected to the current calculation path.
-#   - BLUEPRINT: status note APPENDED, design text left as written.
-#   - assessment profiles 1.1.0 -> 1.1.0.1 and integration-interface tbox 1.0.0.1 -> 1.0.0.2:
-#     description corrections only, no vocabulary change; prior-version chains recorded.
-#   - 07-spoke-contributions loadset instruction repointed and re-run as written (0 violations).
-#   Registration-round records under 08-registration keep the old filenames deliberately: they
-#   record past state with the SHAs submitted at the time and are not rewritten.
-#   Gates: capacity 9 of 64; operator gate rejects its violating fixture; invariants 0 violations.
+# PIB v2.0.2 — SHA-256 Manifest
+# PATCH from v2.0.1 (2026-09-21): consolidate per-profile variation spaces (consolidate before creating).
+#   - Two per-case space files -> ONE: 12-operator-fixtures/profile_variation_spaces_v1_0_0.ttl.
+#     Triple set verified identical to the two originals before they were removed. New profiles'
+#     spaces are added to this file rather than getting a file each.
+#   - Capacity harness 1.0.0 -> 1.0.0.1: self-test checks every space BY NAME. The old self-test took
+#     whichever result came first, correct only while each file held one space. Proven to fail on a
+#     wrong reference answer before being trusted.
+#   - Candidate fixtures stay separate by construction: the operator rules read one global selection,
+#     so a satisfying and a violating candidate cannot share a graph.
+#   Gates: capstone 9 of 64 and ontology-development 1 of 8, both by name; operator gate rejects its
+#   violating fixture; invariants conform, 0 violations. No vocabulary changed.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -19,16 +18,16 @@ de713f19fb2dc40c486a12f30f707819b1e8bae0dc60d223c61b4ee09bb86ecd  01-ontologies/
 0a578caf116cea7ab61e7ab324daba16ad43a6602de6103f7c24f2a71908a6a1  01-ontologies/profile_tbox_v1_0_0_1.ttl  (5745b)
 8ed343ec5818c3343cfa57196a605ef09f95ec6c60d14dbbff298e5b80293bb6  02-shacl-safeguards/pib_enumeration_rules_v1_0_0.ttl  (8869b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
-d7016062109fdf484c687b50e288fac8c0da27d8fb51b2e403b73518ed92ec72  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2248b)
+266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
 cbcea025772db27f207d6a5dec494b362a8cb0bb392a9ff5e584f52c8a52a741  03-tooling/operator_rule_runner_v1_0_0.py  (5110b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
-5eac7446440713ffbe8317e2caf53ac5c5b44dae73bd48737197fea56eb2a8d1  03-tooling/variation_capacity_v1_0_0.py  (4056b)
+547dcd9e493a1e80144f9b45ee6b28ef869b7c4c343b4bc99c85e335f7a6a080  03-tooling/variation_capacity_v1_0_0_1.py  (4958b)
 399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
-5889475471a861b5a271b54daa877e4ca32758f04d69a98c5982a2cb689070bb  04-documentation/BLUEPRINT_v1_0_0.md  (7052b)
+3192a7f0001837ecf9cce182a55e4258c4fe703d6b0b0b218b41af4c7f5de334  04-documentation/BLUEPRINT_v1_0_0.md  (7054b)
 46fa7f5262078bed29d9268a721403d3ac8dc2dd21f67079acbb9346382ccebc  04-documentation/PHASE3_COMPOSITION_RECORD_v1_0_0.md  (4984b)
 10b39ee97f897b5f46116bbc86e3fdd743429409069189ff493476d6741d4614  04-documentation/PROPOSAL_DISPOSITION_v1_0_0.md  (1814b)
 35b5daf6d14059a3d9fd0ea68644f49c81836ec73ef55af381c9aa1e40c6a132  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (3351b)
-a79005365ccf6de3c52aabedb047099f3c54bdb8e2ff5c2142db7bb009645b32  04-documentation/README.md  (4229b)
+018ad844f61dcfa9839beb15e64515d1315c40190098f0348eb55026ad4167fd  04-documentation/README.md  (4231b)
 22d05f6eafddf17af66ab275b8fe46a56d142ee29fc669fe222701203935ee2e  05-prov-records/prov_v1_1_0.ttl  (1507b)
 27f1bcd775925b746bdb96c3b8fad136a8132171f95e481be3f398e1d409dbf3  06-vaf-engine-pin/VAF_DEPENDENCY_PIN_v1_0_0.md  (3566b)
 253b09f5693eceefe79daee2331e68fa3107797ee11e1312a8e033f8461e1b8c  07-spoke-contributions/VENDORED_PINS_v1_0_0.md  (2039b)
@@ -61,11 +60,10 @@ b9e4cd27d884a83bfd52a1d84d256630cdce345c8ac3ae789f16bde25deccef0  11-vendored-op
 6300bd7157b0fa8a2318f3ecb0216a3bf3b6c4bd9126367c6e1ec3645c1750a0  11-vendored-operator-rules/variant_algebra_v3_operator_properties_v1_0_0.ttl  (14401b)
 f886d2d09f9fd7a6b52a5098eefb2a5e3a76526b4e5b9e6433071ad48c6f3cc0  12-operator-fixtures/candidate_negative_v1_0_0.ttl  (993b)
 826e572d07ce16ba6ae2924e67c4adbd7300e61fc3c764c9945358f44924d898  12-operator-fixtures/candidate_positive_v1_0_0.ttl  (854b)
-e7127ab70cd9685d5e80a6828e0115555d24fe5e03d81afbb263a0ebbadd2f40  12-operator-fixtures/space_capstone_v1_0_0.ttl  (2404b)
-cac34856d64e3476d9a8f49f0478064aab58fda660de70f4be5d2dcf15fec899  12-operator-fixtures/space_ontology_development_v1_0_0.ttl  (1649b)
+7966a3da38d8a74a05ad008b750faf3aa290b6f66e179db1233eefec9a1dfcf4  12-operator-fixtures/profile_variation_spaces_v1_0_0.ttl  (4486b)
 f91114d9e1b921a7860cad9a687078e95bf1dea88293624f287d10e53038423a  GOVERNANCE.md  (4332b)
 3d834db15fd6499713ce94d35f4f4a4f8e2548287c1e526c0b46cb7f71e68dac  LICENSE  (19202b)
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
-959852fe6cd0419b2cd9a6f52372e68f89e9a302e1b9c73b4679eca8c7bb3794  README.md  (7691b)
-fe840f52fb5578d3f77eb497115eb02c6036601c3a53e60df7995c7276baa77a  VERSION.txt  (6b)
+b1042f3ed8f32cb4360401fe226fa1672cdde083e32538071f8a837cdccbad2f  README.md  (7693b)
+b4b16faea52dc04ccfe32f7b342094855923ebf599a3cac1940470a2d6d7c261  VERSION.txt  (6b)

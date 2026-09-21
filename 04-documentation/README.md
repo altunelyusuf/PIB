@@ -25,7 +25,7 @@ VERSION.txt MANIFEST_SHA256.txt
 ```
 
 ## Quick verification (what was proven here)
-- `python3 03-tooling/variation_capacity_v1_0_0.py --self-test` → Variation Capacity 9 over 64 complete
+- `python3 03-tooling/variation_capacity_v1_0_0_1.py --self-test` → Variation Capacity 9 over 64 complete
   candidates, computed by rules in the ontology; needs nothing outside this package.
 - SHACL invariants run; G3 correctly refuses the worked example's interfaces until they carry
   self-coverage attestations (the gate has teeth).

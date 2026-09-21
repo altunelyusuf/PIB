@@ -40,3 +40,12 @@ matters is whether the *meaning* of a constraint lives in code or in the ontolog
 `06-vaf-engine-pin/` is kept. The pin records which engine generation produced the numbers PIB
 published historically, which is provenance worth keeping, and it remains the reference if anyone
 wants to re-derive the equivalence above. It is no longer required to compute anything here.
+
+---
+
+## Note appended in PIB v2.0.2 — do not rewrite the text above
+
+The text above names `variation_capacity_v1_0_0.py` and the per-case space files as they stood at
+retirement. Since v2.0.2 the harness is `variation_capacity_v1_0_0_1.py`, and the two spaces live in
+one consolidated file, `12-operator-fixtures/profile_variation_spaces_v1_0_0.ttl`. The equivalence
+table is unchanged: the self-test now checks both spaces by name and still reproduces 9 and 1.

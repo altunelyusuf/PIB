@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """
-PIB Variation Capacity — ontology-native v1.0.0
-===============================================
+PIB Variation Capacity — ontology-native v1.0.0.1
+=================================================
+v1.0.0.1 (PATCH): the per-profile variation spaces now live in ONE consolidated file, so the
+self-test checks every space BY NAME. v1.0.0 took whichever result came first, which was correct
+only while each file held a single space — with several spaces in one graph it could silently
+compare the wrong space against the expected number. No change to the rules or the calculation.
+
 Computes a wiring space's Variation Capacity entirely in the ontology.
 
 What is NOT here, deliberately: no enumeration, no constraint evaluation, no admissibility
@@ -17,8 +22,8 @@ per invocation and exposes no fixpoint option, so the harness supplies the itera
 carries no algebra — it stops when the rules stop producing triples.
 
 Usage:
-    python3 03-tooling/variation_capacity_v1_0_0.py <space.ttl> [...]
-    python3 03-tooling/variation_capacity_v1_0_0.py --self-test
+    python3 03-tooling/variation_capacity_v1_0_0_1.py <space.ttl> [...]
+    python3 03-tooling/variation_capacity_v1_0_0_1.py --self-test
 """
 import sys, os
 
@@ -72,27 +77,42 @@ def compute(space_paths, max_passes=64, verbose=True):
     return results, totals
 
 
-def self_test():
-    """The ontology-native result must reproduce the number the pinned engine reports.
+SPACES = os.path.join(FIXTURES, "profile_variation_spaces_v1_0_0.ttl")
+EX = "http://purl.org/pib/example#"
 
-    The capstone space is the reference case: the engine reports a Variation Capacity of 9 for
-    it. If this path disagrees, the path is wrong — the check is the whole point of keeping a
-    known answer around.
+# Reference answers, checked space by space. The capstone figure is the pinned engine's own answer,
+# kept as the number the ontology must keep reproducing.
+EXPECTED = {
+    EX + "CapstoneSpace":             (64, 9),
+    EX + "OntologyDevelopmentSpace":  (8, 1),
+}
+
+
+def self_test():
+    """Every declared space must reproduce its reference answer, looked up by the space's name.
+
+    A space missing from the results is a failure, not a pass: silence cannot count as agreement.
     """
-    space = os.path.join(FIXTURES, "space_capstone_v1_0_0.ttl")
-    results, totals = compute([space], verbose=True)
-    cap = next(iter(results.values())) if results else 0
-    total = next(iter(totals.values())) if totals else 0
-    expected_total, expected_cap = 64, 9   # 2^6 complete candidates; 9 admissible
-    print(f"  expected: {expected_total} complete candidates, capacity {expected_cap}")
-    ok = (total == expected_total) and (cap == expected_cap)
-    print(f"  matches the pinned engine's answer: {ok}")
+    results, totals = compute([SPACES], verbose=True)
+    ok = True
+    for space, (exp_total, exp_cap) in EXPECTED.items():
+        name = space.split("#")[-1]
+        got_total, got_cap = totals.get(space), results.get(space)
+        match = (got_total == exp_total) and (got_cap == exp_cap)
+        ok &= match
+        print(f"  {name}: expected {exp_total} complete / capacity {exp_cap}; "
+              f"got {got_total} / {got_cap}  -> {'match' if match else 'MISMATCH'}")
+    unexpected = sorted(set(totals) - set(EXPECTED))
+    if unexpected:
+        print(f"  note: spaces without a reference answer, reported but not checked: "
+              f"{[u.split('#')[-1] for u in unexpected]}")
+    print(f"  every space reproduces its reference answer: {ok}")
     return 0 if ok else 1
 
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    print("PIB variation capacity — computed in the ontology, v1.0.0")
+    print("PIB variation capacity — computed in the ontology, v1.0.0.1")
     if "--self-test" in sys.argv or not args:
         return self_test()
     compute(args)

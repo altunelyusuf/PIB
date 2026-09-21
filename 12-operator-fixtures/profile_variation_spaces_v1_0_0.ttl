@@ -1,0 +1,72 @@
+@prefix pibe: <http://purl.org/pib/enumeration#> .
+@prefix ex:   <http://purl.org/pib/example#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# PIB profile variation spaces — every profile's wiring space, declared as data, in one file.
+#
+# One file for all of them, not one per profile: a new profile's space is added here. This file's
+# name still describes its whole content honestly and singularly when a space is added, which is
+# the test for extending rather than creating (consolidate before creating).
+#
+# Each space is independent in the graph: its candidates are named from its own identifier, so
+# several spaces enumerate side by side and are counted separately.
+#
+# Reference answers, which the capacity self-test checks space by space:
+#   Capstone wiring variation space              — 64 complete candidates, capacity 9
+#   Ontology-development profile wiring space    —  8 complete candidates, capacity 1
+
+# --- Capstone: the worked example; the pinned engine's reference case (capacity 9) ---
+
+ex:CapstoneSpace a pibe:VariationSpace ;
+    rdfs:label "Capstone wiring variation space"@en ;
+    pibe:featureCount 6 ;
+    pibe:hasFeature ex:f1_o4sdlc_produces_ad , ex:f2_radar_consumes_ad ,
+                    ex:f3_radar_measures , ex:f4_pamg_measures ,
+                    ex:f5_o4ucm_analysis , ex:f6_o4df_design .
+
+ex:f1_o4sdlc_produces_ad pibe:featureIndex 1 ; rdfs:label "O4SDLC produces the analysis and design vocabulary"@en .
+ex:f2_radar_consumes_ad  pibe:featureIndex 2 ; rdfs:label "RADAR consumes the analysis and design vocabulary"@en .
+ex:f3_radar_measures     pibe:featureIndex 3 ; rdfs:label "RADAR performs adequacy measurement"@en .
+ex:f4_pamg_measures      pibe:featureIndex 4 ; rdfs:label "PAMG performs measurement itself"@en .
+ex:f5_o4ucm_analysis     pibe:featureIndex 5 ; rdfs:label "Analysis model supplied by the use-case module"@en .
+ex:f6_o4df_design        pibe:featureIndex 6 ; rdfs:label "Design model supplied by the design module"@en .
+
+ex:MandatoryProduce a pibe:MandatoryConstraint ; pibe:inSpace ex:CapstoneSpace ;
+    pibe:requires ex:f1_o4sdlc_produces_ad ;
+    rdfs:label "The analysis and design vocabulary must be produced"@en .
+ex:MandatoryConsume a pibe:MandatoryConstraint ; pibe:inSpace ex:CapstoneSpace ;
+    pibe:requires ex:f2_radar_consumes_ad ;
+    rdfs:label "The analysis and design vocabulary must be consumed"@en .
+
+ex:SoleMeasurer a pibe:ExclusiveConstraint ; pibe:inSpace ex:CapstoneSpace ;
+    pibe:groupMember ex:f3_radar_measures , ex:f4_pamg_measures ;
+    rdfs:label "At most one system may measure"@en .
+
+ex:SomeAnalysisDesignSource a pibe:OrConstraint ; pibe:inSpace ex:CapstoneSpace ;
+    pibe:groupMember ex:f5_o4ucm_analysis , ex:f6_o4df_design ;
+    rdfs:label "At least one analysis or design source must supply the model"@en .
+
+ex:ConsumeNeedsProduce a pibe:DependencyConstraint ; pibe:inSpace ex:CapstoneSpace ;
+    pibe:dependent ex:f2_radar_consumes_ad ; pibe:prerequisite ex:f1_o4sdlc_produces_ad ;
+    rdfs:label "Consuming the vocabulary requires producing it"@en .
+
+# --- Ontology development: an assessment profile pinning one wiring (capacity 1) ---
+
+ex:OntologyDevelopmentSpace a pibe:VariationSpace ;
+    rdfs:label "Ontology-development profile wiring space"@en ;
+    pibe:featureCount 3 ;
+    pibe:hasFeature ex:d1_analysis_design , ex:d2_ontology_quality , ex:d3_grade .
+
+ex:d1_analysis_design  pibe:featureIndex 1 ; rdfs:label "Analysis and design model supplied"@en .
+ex:d2_ontology_quality pibe:featureIndex 2 ; rdfs:label "Ontology-quality measurement supplied by the ecosystem"@en .
+ex:d3_grade            pibe:featureIndex 3 ; rdfs:label "Institutional grade produced"@en .
+
+ex:DevNeedsAD a pibe:MandatoryConstraint ; pibe:inSpace ex:OntologyDevelopmentSpace ;
+    pibe:requires ex:d1_analysis_design ; rdfs:label "The analysis and design model is required"@en .
+ex:DevNeedsQuality a pibe:MandatoryConstraint ; pibe:inSpace ex:OntologyDevelopmentSpace ;
+    pibe:requires ex:d2_ontology_quality ; rdfs:label "Ontology-quality measurement is required"@en .
+ex:DevNeedsGrade a pibe:MandatoryConstraint ; pibe:inSpace ex:OntologyDevelopmentSpace ;
+    pibe:requires ex:d3_grade ; rdfs:label "A grade must be produced"@en .
+ex:GradeNeedsQuality a pibe:DependencyConstraint ; pibe:inSpace ex:OntologyDevelopmentSpace ;
+    pibe:dependent ex:d3_grade ; pibe:prerequisite ex:d2_ontology_quality ;
+    rdfs:label "Grading requires the ontology-quality measurement"@en .

@@ -80,7 +80,7 @@ than papered over — see `04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_
 pip install rdflib pyshacl owlready2 --break-system-packages
 
 # 1. Variation Capacity, computed in the ontology (no engine, no external source needed)
-python3 03-tooling/variation_capacity_v1_0_0.py --self-test
+python3 03-tooling/variation_capacity_v1_0_0_1.py --self-test
 
 # 2. invariants over the FULL package — 01-ontologies/ plus 07-spoke-contributions/
 python3 - <<'PY'
