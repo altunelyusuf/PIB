@@ -38,7 +38,7 @@ history** — they compose, never conflated.
 | Gate | Scope | Tool | What it checks |
 |---|---|---|---|
 | **Self-coverage** | per node, profile-INDEPENDENT | `self_coverage_checker_v1_0_0.py` | each ontology parses, is SHACL-conformant (and optionally DL-consistent) **standalone**, no consumed ontology merged |
-| **Wiring validity** | per profile | `variation_capacity_v1_0_0_1.py` (drives the ontology's enumeration rules) | operator constraints hold + every active `consumes` matched by an active `produces`; reports Variation Capacity |
+| **Wiring validity** | per profile | `variation_capacity_v1_1_0.py` (drives the ontology's enumeration rules) | operator constraints hold + every active `consumes` matched by an active `produces`; reports Variation Capacity |
 
 A wiring is adoptable **only if BOTH gates pass.** Self-coverage has teeth: the SHACL invariant G3 refuses
 any interface lacking a `SelfCoverageAttestation` (demonstrated — the worked example's three interfaces all
@@ -94,3 +94,13 @@ equivalence was measured before the switch and is re-checked on every run: the w
 admissible wirings of 64 complete candidates — the same 9 the engine reported.
 
 The design intent is unchanged, so the text above is left as written rather than edited in place.
+
+---
+
+## Status note appended 2026-09-21 (v2.1.0) — do not rewrite the notes above
+
+The calculation still runs in the ontology, now in `02-shacl-safeguards/pib_enumeration_rules_v2_0_0.ttl`
+(the note above correctly names the v1.0.0 file that was current when it was written). The rules now
+prune as they generate and run in two declared phases, so complete candidates are exactly the admissible
+ones: the worked capstone yields 9 of 9, not 9 of 64. Median time on the real profile spaces fell from
+21.5 s to 4.7 s with identical answers.

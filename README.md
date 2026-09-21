@@ -80,7 +80,7 @@ than papered over — see `04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_
 pip install rdflib pyshacl owlready2 --break-system-packages
 
 # 1. Variation Capacity, computed in the ontology (no engine, no external source needed)
-python3 03-tooling/variation_capacity_v1_0_0_1.py --self-test
+python3 03-tooling/variation_capacity_v1_1_0.py --self-test
 
 # 2. invariants over the FULL package — 01-ontologies/ plus 07-spoke-contributions/
 python3 - <<'PY'
@@ -96,7 +96,7 @@ PY
 
 **The calculation runs in the ontology.** Candidate generation, admissibility against the algebra's
 operators, and counting are SHACL rules and SPARQL — see
-`02-shacl-safeguards/pib_enumeration_rules_v1_0_0.ttl`. The Python files are harnesses: they load
+`02-shacl-safeguards/pib_enumeration_rules_v2_0_0.ttl`. The Python files are harnesses: they load
 graphs, drive the rule engine to a fixpoint, run a query and print. No constraint's meaning lives in
 code. The previously required enumeration engine has been retired from this path; see
 `03-tooling/RETIRED_wiring_validator_v1_0_0.md` for the equivalence measured before removing it.

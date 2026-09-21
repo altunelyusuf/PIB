@@ -1,0 +1,246 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix pibe: <http://purl.org/pib/enumeration#> .
+@prefix va:   <http://example.org/variant-algebra#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================================
+# PIB Enumeration Rules v2.0.0 — variant enumeration and admissibility, computed in the ontology.
+#
+# MAJOR from v1.0.0: the generation shapes are replaced (branching split into include and exclude
+# rules; the separate inheritance rule removed). The admissibility checks are unchanged, verbatim.
+#
+# What changed and why, measured before adoption:
+#  - PRUNING: a branch is not created when, given the features already decided, it already breaks a
+#    constraint. Adapted from the variant algebra's own partial-assignment check and propagation rule.
+#    Complete candidates are then exactly the admissible ones.
+#  - ATOMIC INHERITANCE: a successor is created together with all its parent's selections, so pruning
+#    never reads an incomplete selection set — which would discard valid wirings without any error.
+#  - FRONTIER TARGETING: the engine visits only candidates that still need a rule. Separate per branch,
+#    or the first branch to run in a pass would hide the candidate from the second.
+#  - PHASES: every shape declares its phase. Generation runs to a fixpoint; the checks then run once, as
+#    a net that must reject nothing when pruning is exact.
+#
+# Same answers, verified: the two real profile spaces (9 and 1), four scaling spaces (3^k each), and four
+# targeted spaces exercising budget, later-prerequisite dependency, spread or-group, and all combined —
+# each agreeing with the unpruned v1.0.0 rules. Median time on the real spaces fell from 21.5 s to 4.7 s.
+# ============================================================================
+
+<http://purl.org/pib/enumeration/rules>
+    a owl:Ontology ;
+    owl:versionInfo "2.0.0" ;
+    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.0.0> ;
+    owl:priorVersion <http://purl.org/pib/enumeration/rules/1.0.0> ;
+    rdfs:label "PIB enumeration rules — variant generation and admissibility in the ontology"@en ;
+    dcterms:description "Generates every admissible candidate selection over a declared variation space, pruning as it goes, then checks admissibility as a safety net and leaves the admissible set standing to be counted."@en .
+
+pibe:phase a owl:DatatypeProperty ;
+    rdfs:label "rule phase"@en ;
+    skos:definition "Which phase a rule shape belongs to: 'generation' shapes run repeatedly until the graph stops growing; 'check' shapes run once afterwards. Declared here so the phase order is part of the ontology, not of the harness."@en .
+
+# ---------------------------------------------------------------------------
+# GENERATION
+# ---------------------------------------------------------------------------
+
+pibe:SeedRuleShape a sh:NodeShape ;
+    pibe:phase "generation" ;
+    rdfs:label "Seed: every variation space starts with one undecided candidate"@en ;
+    sh:targetClass pibe:VariationSpace ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { ?seed a pibe:Candidate ; pibe:inSpace $this ; pibe:decidedUpTo 0 . }
+        WHERE { BIND(IRI(CONCAT(STR($this), "__c")) AS ?seed)
+                FILTER NOT EXISTS { ?seed pibe:inSpace $this } }
+    """ ] .
+
+pibe:IncludeBranchRuleShape a sh:NodeShape ;
+    pibe:phase "generation" ;
+    rdfs:label "Include branch: add the next feature, unless doing so already breaks a constraint"@en ;
+    sh:target [ a sh:SPARQLTarget ; sh:select """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        SELECT $this WHERE { $this a pibe:Candidate ; pibe:inSpace ?s ; pibe:decidedUpTo ?k .
+            ?s pibe:featureCount ?n . FILTER(?k < ?n)
+            BIND(IRI(CONCAT(STR($this), "_", STR(?k + 1), "i")) AS ?child)
+            FILTER NOT EXISTS { ?child pibe:inSpace ?s } }
+    """ ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT {
+            ?in a pibe:Candidate ; pibe:inSpace ?space ; pibe:decidedUpTo ?next ;
+                pibe:includes ?feature ; pibe:derivedFrom $this .
+            ?in pibe:includes ?pf .
+        }
+        WHERE {
+            $this pibe:inSpace ?space ; pibe:decidedUpTo ?k .
+            ?space pibe:hasFeature ?feature . ?feature pibe:featureIndex ?idx .
+            FILTER(?idx = ?k + 1)
+            BIND(?k + 1 AS ?next)
+            BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "i")) AS ?in)
+            FILTER NOT EXISTS { ?in pibe:inSpace ?space }
+            # exclusive: a group-mate is already selected
+            FILTER NOT EXISTS { ?op a pibe:ExclusiveConstraint ; pibe:inSpace ?space ;
+                                    pibe:groupMember ?feature , ?mate .
+                                FILTER(?mate != ?feature) $this pibe:includes ?mate }
+            # dependency: this feature needs a prerequisite already decided and not selected
+            FILTER NOT EXISTS { ?op a pibe:DependencyConstraint ; pibe:inSpace ?space ;
+                                    pibe:dependent ?feature ; pibe:prerequisite ?pre .
+                                ?pre pibe:featureIndex ?pi . FILTER(?pi <= ?k)
+                                FILTER NOT EXISTS { $this pibe:includes ?pre } }
+            # repetition: the group's budget is already used up
+            FILTER NOT EXISTS { ?op a pibe:RepetitionConstraint ; pibe:inSpace ?space ;
+                                    pibe:budgetGroup ?g ; pibe:maxSelected ?max .
+                                ?feature pibe:contributesToGroup ?g .
+                                { SELECT ?g (COUNT(?sel) AS ?used) WHERE {
+                                    $this pibe:includes ?sel . ?sel pibe:contributesToGroup ?g } GROUP BY ?g }
+                                FILTER(?used >= ?max) }
+            OPTIONAL { $this pibe:includes ?pf }
+        }
+    """ ] .
+
+pibe:ExcludeBranchRuleShape a sh:NodeShape ;
+    pibe:phase "generation" ;
+    rdfs:label "Exclude branch: leave the next feature out, unless doing so already breaks a constraint"@en ;
+    sh:target [ a sh:SPARQLTarget ; sh:select """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        SELECT $this WHERE { $this a pibe:Candidate ; pibe:inSpace ?s ; pibe:decidedUpTo ?k .
+            ?s pibe:featureCount ?n . FILTER(?k < ?n)
+            BIND(IRI(CONCAT(STR($this), "_", STR(?k + 1), "o")) AS ?child)
+            FILTER NOT EXISTS { ?child pibe:inSpace ?s } }
+    """ ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT {
+            ?out a pibe:Candidate ; pibe:inSpace ?space ; pibe:decidedUpTo ?next ;
+                 pibe:derivedFrom $this .
+            ?out pibe:includes ?pf .
+        }
+        WHERE {
+            $this pibe:inSpace ?space ; pibe:decidedUpTo ?k .
+            ?space pibe:hasFeature ?feature . ?feature pibe:featureIndex ?idx .
+            FILTER(?idx = ?k + 1)
+            BIND(?k + 1 AS ?next)
+            BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "o")) AS ?out)
+            FILTER NOT EXISTS { ?out pibe:inSpace ?space }
+            # mandatory: this feature is required
+            FILTER NOT EXISTS { ?op a pibe:MandatoryConstraint ; pibe:inSpace ?space ; pibe:requires ?feature }
+            # dependency: an already-selected feature needs this one
+            FILTER NOT EXISTS { ?op a pibe:DependencyConstraint ; pibe:inSpace ?space ;
+                                    pibe:prerequisite ?feature ; pibe:dependent ?dep .
+                                ?dep pibe:featureIndex ?di . FILTER(?di <= ?k)
+                                $this pibe:includes ?dep }
+            # or: this is the group's last undecided member and none of the others is selected
+            FILTER NOT EXISTS { ?op a pibe:OrConstraint ; pibe:inSpace ?space ; pibe:groupMember ?feature .
+                                FILTER NOT EXISTS { ?op pibe:groupMember ?later . ?later pibe:featureIndex ?li .
+                                                    FILTER(?li > ?idx) }
+                                FILTER NOT EXISTS { ?op pibe:groupMember ?m . $this pibe:includes ?m } }
+            OPTIONAL { $this pibe:includes ?pf }
+        }
+    """ ] .
+
+pibe:CompleteRuleShape a sh:NodeShape ;
+    pibe:phase "generation" ;
+    rdfs:label "Complete: a candidate that has decided every feature of its space is a full variant"@en ;
+    sh:target [ a sh:SPARQLTarget ; sh:select """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        SELECT $this WHERE { $this a pibe:Candidate ; pibe:inSpace ?s ; pibe:decidedUpTo ?k .
+            ?s pibe:featureCount ?n . FILTER(?k = ?n) FILTER NOT EXISTS { $this a pibe:CompleteCandidate } }
+    """ ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this a pibe:CompleteCandidate }
+        WHERE { $this pibe:inSpace ?space ; pibe:decidedUpTo ?k . ?space pibe:featureCount ?n .
+                FILTER(?k = ?n) FILTER NOT EXISTS { $this a pibe:CompleteCandidate } }
+    """ ] .
+
+# ---------------------------------------------------------------------------
+# ADMISSIBILITY — the algebra's operators, decided per candidate.
+# Each rule marks a candidate inadmissible; silence means the operator is satisfied.
+# ---------------------------------------------------------------------------
+
+pibe:MandatoryCheckShape a sh:NodeShape ;
+    pibe:phase "check" ;
+    rdfs:label "Mandatory: a complete candidate missing a required feature is inadmissible"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:MandatoryConstraint ; pibe:inSpace ?space ; pibe:requires ?f .
+                FILTER NOT EXISTS { $this pibe:includes ?f }
+            }
+        """ ] .
+
+pibe:ExclusiveCheckShape a sh:NodeShape ;
+    pibe:phase "check" ;
+    rdfs:label "Exclusive: a candidate including two members of an exclusive group is inadmissible"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:ExclusiveConstraint ; pibe:inSpace ?space ;
+                    pibe:groupMember ?m1 , ?m2 .
+                FILTER(STR(?m1) < STR(?m2))
+                $this pibe:includes ?m1 , ?m2 .
+            }
+        """ ] .
+
+pibe:OrCheckShape a sh:NodeShape ;
+    pibe:phase "check" ;
+    rdfs:label "Or: a candidate including no member of an or-group is inadmissible"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:OrConstraint ; pibe:inSpace ?space .
+                FILTER NOT EXISTS { ?op pibe:groupMember ?m . $this pibe:includes ?m }
+            }
+        """ ] .
+
+pibe:DependencyCheckShape a sh:NodeShape ;
+    pibe:phase "check" ;
+    rdfs:label "Dependency: a candidate including a dependent without its prerequisite is inadmissible"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:DependencyConstraint ; pibe:inSpace ?space ;
+                    pibe:dependent ?d ; pibe:prerequisite ?p .
+                $this pibe:includes ?d .
+                FILTER NOT EXISTS { $this pibe:includes ?p }
+            }
+        """ ] .
+
+pibe:RepetitionCheckShape a sh:NodeShape ;
+    pibe:phase "check" ;
+    rdfs:label "Repetition: a candidate exceeding a group's budget is inadmissible (the k-of-n bound)"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:RepetitionConstraint ; pibe:inSpace ?space ;
+                    pibe:budgetGroup ?g ; pibe:maxSelected ?max .
+                {
+                    SELECT $this ?g (COUNT(?f) AS ?n) WHERE {
+                        $this pibe:includes ?f . ?f pibe:contributesToGroup ?g .
+                    } GROUP BY $this ?g
+                }
+                FILTER(?n > ?max)
+            }
+        """ ] .
