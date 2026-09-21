@@ -1,11 +1,12 @@
-# PIB v2.0.3 — SHA-256 Manifest
-# PATCH from v2.0.2 (2026-09-21): dependency maintenance + handover processed. No vocabulary change.
-#   - 11-vendored-operator-rules: the algebra retired the properties file PIB vendored (its v2.18.0
-#     merged eight property files into one). Re-vendored the consolidated file after verifying it is a
-#     strict superset for every term the rules use (21/21 present, no axiom changed); operator gate
-#     re-run against the new file ALONE before the old copy was removed. Rules file unchanged upstream.
-#   - 09-handover-inbox: OE's registration-staleness handover accepted, verification recorded.
-#   Gates: capacity 9 and 1 by name; operator gate rejects its violating fixture; invariants 0 violations.
+# PIB v2.0.4 — SHA-256 Manifest
+# PATCH from v2.0.3 (2026-09-21): criticality A/B test-drive added. Reference only; no governed change.
+#   - ADD 10-experiments/probe_criticality_ab_test_drive + findings: standard vs high against OE's own
+#     four criticality gates, using PIB's real evidence (4 tests re-run, 1 timed measurement, 12 releases
+#     each recording a gate result, 5 risks with only their recorded treatments).
+#   - Result: standard passes; high fails only the risk gate, on two risks with no recorded treatment.
+#     Nothing registered passes both levels. Surfaced a real, unmeasured risk: capacity computation
+#     takes a median 20.5 s, with candidates doubling per feature.
+#   Gates: operator gate rejects its violating fixture; invariants 0 violations.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -47,8 +48,10 @@ a8b4abe6fcd37f8864776bbf326943e46205310b6551eae1d4b9a2b4bfb859d1  09-handover-in
 9532f94b41e34e33bb451149fdd3bc10b5b55bc75b373f5a619e29e9114bc6d4  09-handover-inbox/deferred/README.md  (127b)
 c554652270bc22e7e7ec2fe6a8011de4967a946bb623b87a90ebd1fe90afaa0a  09-handover-inbox/pending/README.md  (126b)
 ca1a494270177073fb285e04e451e5a0f81c6de5bd9bc24885e24aae1fe79a9a  09-handover-inbox/rejected/README.md  (127b)
+35debb4ca0d4430c2a16a863de862c67e9e5fa66645f18a98728b10b77890040  10-experiments/FINDINGS_criticality_ab_test_drive_v1_0_0.md  (6170b)
 753acdbd6067fc0a3302e4fbeeeb20f4b061c84b6bfb2a05f9506f37c1f9f152  10-experiments/FINDINGS_round3_algebra_is_an_expression_language_v1_0_0.md  (6585b)
 f35b182160ee29174d69fb57ab724e8a36ecc581276bd0d94972de9c05d4c114  10-experiments/FINDINGS_variant_calculus_full_operator_set_v1_0_0.md  (7120b)
+ef292cae280f5fbd37f0937161db16ecda7c9d6eac9769764e57e92c11dd4960  10-experiments/probe_criticality_ab_test_drive_v1_0_0.py  (9474b)
 40c53ddd7238b435f570296f280e4ba3cfde2fcc2baf8d0f091e1b49ea9f510f  10-experiments/probe_round1_operator_use_cases_v1_0_0.py  (5784b)
 16abe080bc782712f542b6bc046632e018444b9ff6f54044e201c73134e5e3d9  10-experiments/probe_round2_intersection_and_necessity_v1_0_0.py  (4003b)
 741222119fba9999cc1a483b2499c4e5e6408903a4c0b6b1ce155534779d366d  10-experiments/probe_round3_shipped_operator_rules_v1_0_0.py  (5863b)
@@ -63,4 +66,4 @@ f91114d9e1b921a7860cad9a687078e95bf1dea88293624f287d10e53038423a  GOVERNANCE.md 
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 b1042f3ed8f32cb4360401fe226fa1672cdde083e32538071f8a837cdccbad2f  README.md  (7693b)
-be695fc8092ad3706d7d7d3b5104e1eaf8fe69666e5958e375c9952a06fa9514  VERSION.txt  (6b)
+137f467241023dadfa605db00e630b25a9394d0fc7232718812983ba24b93945  VERSION.txt  (6b)
