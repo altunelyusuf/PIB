@@ -1,6 +1,9 @@
 # PIB/HUB — Registration status (ORCP round, CLOSED)
 
-**Status: REGISTERED — accepted external registrant. Round CLOSED.**
+**Status: REGISTERED — accepted external registrant. Round one CLOSED (standard). Round two SUBMITTED
+(high criticality), awaiting OEE's gating — see `PIB_ORCP_round2_fit_gap_note_v1_0_0.md`.**
+
+The table and notes below describe round one, and are kept as its record.
 
 PIB/HUB completed a full Ontology Registration & Conformance Protocol (ORCP) round with OEE governance.
 

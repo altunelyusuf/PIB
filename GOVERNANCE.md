@@ -54,8 +54,9 @@ package alone; pinning rather than absorbing keeps that lineage with its owner.
 
 ## Registration status
 
-PIB is a **registered, accepted external registrant** of the OEE ecosystem (ORCP round CLOSED;
-criticality `core:Profile_Standard`; `pibreg:` instance IRIs accepted as-is). It is **not** a governed
+PIB is a **registered, accepted external registrant** of the OEE ecosystem. Round one closed at
+criticality standard; **round two is submitted at criticality high** (owner's decision, 2026-09-21) and
+awaits OEE's gating. `pibreg:` instance IRIs were accepted as-is in round one. It is **not** a governed
 member of the OEE 12-facet roster — promotion would be a separate governor decision. Evidence and the
 returned contract are in `08-registration/`.
 

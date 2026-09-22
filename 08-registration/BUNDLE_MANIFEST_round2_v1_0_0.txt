@@ -1,0 +1,7 @@
+# PIB ORCP round two — bundle manifest v1.0.0
+# Registrant: PIB. Declared criticality: high. Proposes only; no OEE artifact edited, no OEE vocabulary minted.
+# Validated: core, release history, risk, performance, testing, configuration suites — 0 violations each
+# (pySHACL 0.40.1, advanced, inference off, full suites, submission + core + facet vocabulary).
+771cdc2321de0c0806d60f9187e72c886a0fb99d2965f0c156f34b5eb432c0e4  build_pib_orcp_submission_v2_0_0.py  (11413b)
+291b21ffcc1a4ff9f94a1b1dcf73efb09f684a54764b39909a538bc1137d03e4  pib_orcp_submission_v2_0_0.ttl  (12517b)
+461efa7cecd66e7ccdeecfb83bf4b21bb05c101456489963d8d76aac41156d00  PIB_ORCP_round2_fit_gap_note_v1_0_0.md  (6001b)
