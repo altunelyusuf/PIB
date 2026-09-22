@@ -1,14 +1,9 @@
-# PIB v2.2.0 — SHA-256 Manifest
-# MINOR from v2.1.0 (2026-09-21): partitioning, in the ontology. Cost now grows with independent groups.
-#   - Enumeration rules 2.0.0 -> 2.1.0: partition phase (couple, group, scope constraints) and combine phase
-#     (group capacities, running product, space capacity); 'next feature' generalised to the next index
-#     present, so groups may hold non-contiguous features. Budget contributors are COUPLED — the one
-#     deliberate difference from the algebra's decomposition; without it 'at most 2 of 4' gives 16, not 11.
-#   - Capacity harness 1.1.0 -> 1.2.0: runs the phases in the order the rules declare; reads the capacity
-#     from the graph; self-test covers 8 spaces incl. 6 conformance cases, and fails on a wrong expectation.
-#   - ADD 12-operator-fixtures/enumeration_conformance_spaces: cases with independently known capacities.
-#   Scaling: 20 features 15.5 s, 40 features (3.49e9 wirings) 58 s; previously 10 features exceeded 70 s.
-#   Gates: all 8 spaces match; operator gate rejects its violating fixture; invariants 0 violations.
+# PIB v2.2.1 — SHA-256 Manifest
+# PATCH from v2.2.0 (2026-09-21): reference evidence for a proposal to the variant algebra. No governed change.
+#   - ADD 10-experiments/probe_vaf_profile_families_differential: every profile family in the algebra's
+#     shipped examples counted by its unmodified Python enumerator and by PIB's rules. 21 of 21 expressible
+#     families agree; 2 use multiplicity repetition, which PIB's include/exclude candidates cannot express.
+#   Gates: all 8 capacity spaces match; operator gate rejects its violating fixture.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -60,6 +55,7 @@ ef292cae280f5fbd37f0937161db16ecda7c9d6eac9769764e57e92c11dd4960  10-experiments
 40c53ddd7238b435f570296f280e4ba3cfde2fcc2baf8d0f091e1b49ea9f510f  10-experiments/probe_round1_operator_use_cases_v1_0_0.py  (5784b)
 16abe080bc782712f542b6bc046632e018444b9ff6f54044e201c73134e5e3d9  10-experiments/probe_round2_intersection_and_necessity_v1_0_0.py  (4003b)
 741222119fba9999cc1a483b2499c4e5e6408903a4c0b6b1ce155534779d366d  10-experiments/probe_round3_shipped_operator_rules_v1_0_0.py  (5863b)
+558d63a0a7098acaf7189671e690628afb2fc0a40c57948e8483148e996cb757  10-experiments/probe_vaf_profile_families_differential_v1_0_0.py  (4647b)
 396b4d0a5b834b931df6af2b9c645b89df33a20d0e9436bb2a702f8777e5414c  11-vendored-operator-rules/VENDORED_PINS_v1_0_0.md  (2643b)
 b9e4cd27d884a83bfd52a1d84d256630cdce345c8ac3ae789f16bde25deccef0  11-vendored-operator-rules/variant_algebra_operator_rules_v1_0_0.ttl  (7907b)
 225e1de2b3478cd8caf9060b784259d8822271ee39485b108f53e1067f01a1f0  11-vendored-operator-rules/variant_algebra_v3_extended_properties_v1_0_0.ttl  (113858b)
@@ -72,4 +68,4 @@ f886d2d09f9fd7a6b52a5098eefb2a5e3a76526b4e5b9e6433071ad48c6f3cc0  12-operator-fi
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 a5169a899326ca7c1762b56787ce588a692ab51e47424c2042a23593c52c96d9  README.md  (7929b)
-c4a2383a03bdb6739d16a0e24058e4b9c7da4e63d203e0be2f448868cc03c530  VERSION.txt  (6b)
+fe650098093fad42070e8a2cacfb216a6c416af57bd26dd6ff479fef69f8bc71  VERSION.txt  (6b)
