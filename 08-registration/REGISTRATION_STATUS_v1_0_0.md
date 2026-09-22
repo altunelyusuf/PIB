@@ -1,7 +1,10 @@
 # PIB/HUB — Registration status (ORCP round, CLOSED)
 
-**Status: REGISTERED — accepted external registrant. Round one CLOSED (standard). Round two SUBMITTED
-(high criticality), awaiting OEE's gating — see `PIB_ORCP_round2_fit_gap_note_v1_0_0.md`.**
+**Status: REGISTERED — accepted external registrant. Round one CLOSED (standard). Round two RATIFIED
+at high criticality (OE Pack v20.78.0, 2026-09-22) — see `PIB_ORCP_round2_fit_gap_note_v1_0_0.md` and the
+returned contract in `09-handover-inbox/accepted/OEE_to_PIB_round2_contract_v1_0_0.md`. OE's
+registration-maintenance registry now baselines PIB at v2.3.0; it next flags PIB on a major version
+change or five accumulated minor bumps.**
 
 The table and notes below describe round one, and are kept as its record.
 

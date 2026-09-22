@@ -1,7 +1,7 @@
 # PIB — Profile + Integration-Interface Blueprint v1.4.0
 
 **Status:** Phases 1–3 complete (vocabulary published, interfaces composed, per-profile wirings validated);
-reproducibility gap closed (vendored spoke pins, `07-`); **ORCP round one CLOSED; round two submitted at high criticality** — PIB is an
+reproducibility gap closed (vendored spoke pins, `07-`); **ORCP round one CLOSED; round two RATIFIED at high criticality** — PIB is an
 accepted external registrant of the OEE ecosystem (`08-registration/`). Verified against OE Pack v20.23.4. **v1.4.0:** four canonical assessment profiles materialized & published (`01-ontologies/pib_assessment_profiles`, `04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION`) — OBAF retired; PAMG-as-grader on OEE facets, profile-driven; ZeroTime deferred.
 
 Subject-based package (OE numbered-dash convention) defining how the generic ontology ecosystem
