@@ -25,7 +25,7 @@ VERSION.txt MANIFEST_SHA256.txt
 ```
 
 ## Quick verification (what was proven here)
-- `python3 03-tooling/variation_capacity_v1_1_0.py --self-test` → capstone capacity 9 and ontology-development capacity 1, computed by rules in the
+- `python3 03-tooling/variation_capacity_v1_2_0.py --self-test` → capstone capacity 9 and ontology-development capacity 1, computed by rules in the
   ontology that prune as they generate (every complete candidate admissible); needs nothing outside this package.
 - SHACL invariants run; G3 correctly refuses the worked example's interfaces until they carry
   self-coverage attestations (the gate has teeth).

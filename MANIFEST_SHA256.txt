@@ -1,31 +1,32 @@
-# PIB v2.1.0 — SHA-256 Manifest
-# MINOR from v2.0.4 (2026-09-21): capacity computation made 4.6x faster, same answers.
-#   - 02-shacl-safeguards: enumeration rules 1.0.0 -> 2.0.0 (MAJOR for the rules file: generation shapes
-#     replaced). Prune branches that already break a constraint; inherit atomically; visit only the
-#     frontier; every shape declares its phase. Checks unchanged. Median 21.5 s -> 4.7 s.
-#   - 03-tooling: capacity harness 1.0.0.1 -> 1.1.0: two phases read from the rules file; reference is the
-#     capacity only, plus an exact-pruning check; plants an inadmissible candidate to prove the checks.
-#   - Same answers verified on the real spaces, four scaling spaces and four targeted constraint spaces.
-#   - 10-experiments: cost-reduction probe + findings, incl. partitioning (linear growth, not yet built
-#     in the ontology). Gates: capacity 9 and 1, pruning exact; operator gate; invariants 0 violations.
+# PIB v2.2.0 — SHA-256 Manifest
+# MINOR from v2.1.0 (2026-09-21): partitioning, in the ontology. Cost now grows with independent groups.
+#   - Enumeration rules 2.0.0 -> 2.1.0: partition phase (couple, group, scope constraints) and combine phase
+#     (group capacities, running product, space capacity); 'next feature' generalised to the next index
+#     present, so groups may hold non-contiguous features. Budget contributors are COUPLED — the one
+#     deliberate difference from the algebra's decomposition; without it 'at most 2 of 4' gives 16, not 11.
+#   - Capacity harness 1.1.0 -> 1.2.0: runs the phases in the order the rules declare; reads the capacity
+#     from the graph; self-test covers 8 spaces incl. 6 conformance cases, and fails on a wrong expectation.
+#   - ADD 12-operator-fixtures/enumeration_conformance_spaces: cases with independently known capacities.
+#   Scaling: 20 features 15.5 s, 40 features (3.49e9 wirings) 58 s; previously 10 features exceeded 70 s.
+#   Gates: all 8 spaces match; operator gate rejects its violating fixture; invariants 0 violations.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
 7dbc559e2f70b04d285048c99b8bbe0e03c7e4edb8220fda17b9518a499e257c  01-ontologies/pib_wiring_composition_v1_0_0.ttl  (3804b)
 de713f19fb2dc40c486a12f30f707819b1e8bae0dc60d223c61b4ee09bb86ecd  01-ontologies/pib_wiring_expressions_v1_0_0.ttl  (8407b)
 0a578caf116cea7ab61e7ab324daba16ad43a6602de6103f7c24f2a71908a6a1  01-ontologies/profile_tbox_v1_0_0_1.ttl  (5745b)
-8e316b08af9320adf004822c0b7307c011fba6eb0ab772197d3e6f5d08c021ae  02-shacl-safeguards/pib_enumeration_rules_v2_0_0.ttl  (13384b)
+5623a6483d8593512d1592ab2690f41e1053915b1ce08b7c3f48ce8ab74b2017  02-shacl-safeguards/pib_enumeration_rules_v2_1_0.ttl  (23548b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
 266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
 cbcea025772db27f207d6a5dec494b362a8cb0bb392a9ff5e584f52c8a52a741  03-tooling/operator_rule_runner_v1_0_0.py  (5110b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
-6edf20a2857a242fcbd65c071f42ca83704f061df314fe056ac4e428917aac51  03-tooling/variation_capacity_v1_1_0.py  (8036b)
+18e8acdd6bf30f9d7ac9840b5477aab2848c5857b6503236dbfaa1dc7e233507  03-tooling/variation_capacity_v1_2_0.py  (9957b)
 399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
-b6b2e08f915941386dec7f3dc1eca1f32a31ce13ecc7f65dfc14c5125dae5a41  04-documentation/BLUEPRINT_v1_0_0.md  (7593b)
+b95a2ee40d7ae56665f5ea5f8e6353f478e762e1a64f3adba7b915f249f90766  04-documentation/BLUEPRINT_v1_0_0.md  (8099b)
 46fa7f5262078bed29d9268a721403d3ac8dc2dd21f67079acbb9346382ccebc  04-documentation/PHASE3_COMPOSITION_RECORD_v1_0_0.md  (4984b)
 10b39ee97f897b5f46116bbc86e3fdd743429409069189ff493476d6741d4614  04-documentation/PROPOSAL_DISPOSITION_v1_0_0.md  (1814b)
 35b5daf6d14059a3d9fd0ea68644f49c81836ec73ef55af381c9aa1e40c6a132  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (3351b)
-4317090769cfdb6f9b818ed172ba1e453b880deb5d0ea242ce93a2c2e9ba6c3f  04-documentation/README.md  (4302b)
+46692a000474c5db1df79cdfcc3dd438e3647f4209ae5ab7efb232e554a9bb1e  04-documentation/README.md  (4302b)
 22d05f6eafddf17af66ab275b8fe46a56d142ee29fc669fe222701203935ee2e  05-prov-records/prov_v1_1_0.ttl  (1507b)
 27f1bcd775925b746bdb96c3b8fad136a8132171f95e481be3f398e1d409dbf3  06-vaf-engine-pin/VAF_DEPENDENCY_PIN_v1_0_0.md  (3566b)
 253b09f5693eceefe79daee2331e68fa3107797ee11e1312a8e033f8461e1b8c  07-spoke-contributions/VENDORED_PINS_v1_0_0.md  (2039b)
@@ -49,7 +50,7 @@ a8b4abe6fcd37f8864776bbf326943e46205310b6551eae1d4b9a2b4bfb859d1  09-handover-in
 9532f94b41e34e33bb451149fdd3bc10b5b55bc75b373f5a619e29e9114bc6d4  09-handover-inbox/deferred/README.md  (127b)
 c554652270bc22e7e7ec2fe6a8011de4967a946bb623b87a90ebd1fe90afaa0a  09-handover-inbox/pending/README.md  (126b)
 ca1a494270177073fb285e04e451e5a0f81c6de5bd9bc24885e24aae1fe79a9a  09-handover-inbox/rejected/README.md  (127b)
-86fdacb5be487697464f17a029df9b817fe9e0c062754fd0c5a28cd74be5f435  10-experiments/FINDINGS_capacity_cost_reduction_v1_0_0.md  (4833b)
+1c308a6a281a74dabcf6eac86840d1becaa42713dc68554af7cedd4cfce01192  10-experiments/FINDINGS_capacity_cost_reduction_v1_0_0.md  (7733b)
 35debb4ca0d4430c2a16a863de862c67e9e5fa66645f18a98728b10b77890040  10-experiments/FINDINGS_criticality_ab_test_drive_v1_0_0.md  (6170b)
 753acdbd6067fc0a3302e4fbeeeb20f4b061c84b6bfb2a05f9506f37c1f9f152  10-experiments/FINDINGS_round3_algebra_is_an_expression_language_v1_0_0.md  (6585b)
 f35b182160ee29174d69fb57ab724e8a36ecc581276bd0d94972de9c05d4c114  10-experiments/FINDINGS_variant_calculus_full_operator_set_v1_0_0.md  (7120b)
@@ -64,10 +65,11 @@ b9e4cd27d884a83bfd52a1d84d256630cdce345c8ac3ae789f16bde25deccef0  11-vendored-op
 225e1de2b3478cd8caf9060b784259d8822271ee39485b108f53e1067f01a1f0  11-vendored-operator-rules/variant_algebra_v3_extended_properties_v1_0_0.ttl  (113858b)
 f886d2d09f9fd7a6b52a5098eefb2a5e3a76526b4e5b9e6433071ad48c6f3cc0  12-operator-fixtures/candidate_negative_v1_0_0.ttl  (993b)
 826e572d07ce16ba6ae2924e67c4adbd7300e61fc3c764c9945358f44924d898  12-operator-fixtures/candidate_positive_v1_0_0.ttl  (854b)
+2ce7087d65eb600fba5b3fb309386e8d583c82875b42c5dbb52fbbf94fcb7e6f  12-operator-fixtures/enumeration_conformance_spaces_v1_0_0.ttl  (6188b)
 7966a3da38d8a74a05ad008b750faf3aa290b6f66e179db1233eefec9a1dfcf4  12-operator-fixtures/profile_variation_spaces_v1_0_0.ttl  (4486b)
-13f8766fa5721e323c8b8300950bf6f6ce108fbbf4dc4fbd201d0fa70b35aff8  GOVERNANCE.md  (4332b)
+6b2d4cbe45b436850b7a772b733198cffa6cb1b8584d06b5e26ae3901e350267  GOVERNANCE.md  (4332b)
 3d834db15fd6499713ce94d35f4f4a4f8e2548287c1e526c0b46cb7f71e68dac  LICENSE  (19202b)
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
-a2223f17f7c349e24c2e6c76d24969795746d6b0ee1fbba136488cd4d9a23c4b  README.md  (7691b)
-c89b87c262e9d5ffd20e73aac74a1772adcc9f5a21682cc33adcf5086e5fef5c  VERSION.txt  (6b)
+a5169a899326ca7c1762b56787ce588a692ab51e47424c2042a23593c52c96d9  README.md  (7929b)
+c4a2383a03bdb6739d16a0e24058e4b9c7da4e63d203e0be2f448868cc03c530  VERSION.txt  (6b)

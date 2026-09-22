@@ -38,7 +38,7 @@ history** — they compose, never conflated.
 | Gate | Scope | Tool | What it checks |
 |---|---|---|---|
 | **Self-coverage** | per node, profile-INDEPENDENT | `self_coverage_checker_v1_0_0.py` | each ontology parses, is SHACL-conformant (and optionally DL-consistent) **standalone**, no consumed ontology merged |
-| **Wiring validity** | per profile | `variation_capacity_v1_1_0.py` (drives the ontology's enumeration rules) | operator constraints hold + every active `consumes` matched by an active `produces`; reports Variation Capacity |
+| **Wiring validity** | per profile | `variation_capacity_v1_2_0.py` (drives the ontology's enumeration rules) | operator constraints hold + every active `consumes` matched by an active `produces`; reports Variation Capacity |
 
 A wiring is adoptable **only if BOTH gates pass.** Self-coverage has teeth: the SHACL invariant G3 refuses
 any interface lacking a `SelfCoverageAttestation` (demonstrated — the worked example's three interfaces all
@@ -104,3 +104,12 @@ The calculation still runs in the ontology, now in `02-shacl-safeguards/pib_enum
 prune as they generate and run in two declared phases, so complete candidates are exactly the admissible
 ones: the worked capstone yields 9 of 9, not 9 of 64. Median time on the real profile spaces fell from
 21.5 s to 4.7 s with identical answers.
+
+---
+
+## Status note appended 2026-09-21 (v2.2.0) — do not rewrite the notes above
+
+Capacity is now computed with partitioning, in the ontology: each space is split into independent groups of
+coupled features, each group is enumerated on its own, and the group capacities are multiplied by a running
+product in the rules (`02-shacl-safeguards/pib_enumeration_rules_v2_1_0.ttl`). The capacity is read from the
+graph; the harness no longer counts it. Answers unchanged: capstone 9, ontology development 1.

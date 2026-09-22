@@ -1,0 +1,87 @@
+@prefix pibe: <http://purl.org/pib/enumeration#> .
+@prefix ex: <http://purl.org/pib/example#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# PIB enumeration conformance spaces — synthetic cases whose capacities are known independently.
+# Separate from the profile spaces, whose file name would misdescribe synthetic engine test cases.
+# Each case guards a specific behaviour; expected capacities are checked by the capacity self-test.
+#
+#   Budget2of4        11   k-of-n budget: at most 2 of 4 contributors (1 + 4 + 6). GUARDS PIB'S ONE
+#                          DELIBERATE DIFFERENCE from the algebra's decomposition: budget contributors are
+#                          coupled. Without that coupling each contributor becomes its own group and the
+#                          answer is 2^4 = 16.
+#   LaterPrereq        6   dependency whose prerequisite has the later index (2^3 - 2)
+#   OrSpread          12   or-group with members far apart (2^4 - 4)
+#   Combined           3   every constraint kind interacting at once (agrees with the unpruned rules)
+#   Independent5     243   five independent exclusive pairs: 3^5, from five groups
+#   Unsatisfiable      0   one group admits nothing, so the whole product is zero, not skipped
+
+ex:Budget2of4 a pibe:VariationSpace ; rdfs:label "At most two of four budget contributors"@en ; pibe:featureCount 4 ;
+    pibe:hasFeature ex:Budget2of4_f1, ex:Budget2of4_f2, ex:Budget2of4_f3, ex:Budget2of4_f4 .
+ex:Budget2of4_f1 pibe:featureIndex 1 .
+ex:Budget2of4_f2 pibe:featureIndex 2 .
+ex:Budget2of4_f3 pibe:featureIndex 3 .
+ex:Budget2of4_f4 pibe:featureIndex 4 .
+ex:Budget2of4_f1 pibe:contributesToGroup ex:Budget2of4_g .
+ex:Budget2of4_f2 pibe:contributesToGroup ex:Budget2of4_g .
+ex:Budget2of4_f3 pibe:contributesToGroup ex:Budget2of4_g .
+ex:Budget2of4_f4 pibe:contributesToGroup ex:Budget2of4_g .
+ex:Budget2of4_r a pibe:RepetitionConstraint ; pibe:inSpace ex:Budget2of4 ; pibe:budgetGroup ex:Budget2of4_g ; pibe:maxSelected 2 .
+
+ex:LaterPrereq a pibe:VariationSpace ; rdfs:label "Dependency on a later prerequisite"@en ; pibe:featureCount 3 ;
+    pibe:hasFeature ex:LaterPrereq_f1, ex:LaterPrereq_f2, ex:LaterPrereq_f3 .
+ex:LaterPrereq_f1 pibe:featureIndex 1 .
+ex:LaterPrereq_f2 pibe:featureIndex 2 .
+ex:LaterPrereq_f3 pibe:featureIndex 3 .
+ex:LaterPrereq_d a pibe:DependencyConstraint ; pibe:inSpace ex:LaterPrereq ; pibe:dependent ex:LaterPrereq_f1 ; pibe:prerequisite ex:LaterPrereq_f3 .
+
+ex:OrSpread a pibe:VariationSpace ; rdfs:label "Or-group with spread members"@en ; pibe:featureCount 4 ;
+    pibe:hasFeature ex:OrSpread_f1, ex:OrSpread_f2, ex:OrSpread_f3, ex:OrSpread_f4 .
+ex:OrSpread_f1 pibe:featureIndex 1 .
+ex:OrSpread_f2 pibe:featureIndex 2 .
+ex:OrSpread_f3 pibe:featureIndex 3 .
+ex:OrSpread_f4 pibe:featureIndex 4 .
+ex:OrSpread_o a pibe:OrConstraint ; pibe:inSpace ex:OrSpread ; pibe:groupMember ex:OrSpread_f1 , ex:OrSpread_f4 .
+
+ex:Combined a pibe:VariationSpace ; rdfs:label "Every constraint kind at once"@en ; pibe:featureCount 5 ;
+    pibe:hasFeature ex:Combined_f1, ex:Combined_f2, ex:Combined_f3, ex:Combined_f4, ex:Combined_f5 .
+ex:Combined_f1 pibe:featureIndex 1 .
+ex:Combined_f2 pibe:featureIndex 2 .
+ex:Combined_f3 pibe:featureIndex 3 .
+ex:Combined_f4 pibe:featureIndex 4 .
+ex:Combined_f5 pibe:featureIndex 5 .
+ex:Combined_m a pibe:MandatoryConstraint ; pibe:inSpace ex:Combined ; pibe:requires ex:Combined_f2 .
+ex:Combined_x a pibe:ExclusiveConstraint ; pibe:inSpace ex:Combined ; pibe:groupMember ex:Combined_f1 , ex:Combined_f5 .
+ex:Combined_d a pibe:DependencyConstraint ; pibe:inSpace ex:Combined ; pibe:dependent ex:Combined_f3 ; pibe:prerequisite ex:Combined_f5 .
+ex:Combined_o a pibe:OrConstraint ; pibe:inSpace ex:Combined ; pibe:groupMember ex:Combined_f3 , ex:Combined_f4 .
+ex:Combined_f1 pibe:contributesToGroup ex:Combined_g .
+ex:Combined_f3 pibe:contributesToGroup ex:Combined_g .
+ex:Combined_f4 pibe:contributesToGroup ex:Combined_g .
+ex:Combined_r a pibe:RepetitionConstraint ; pibe:inSpace ex:Combined ; pibe:budgetGroup ex:Combined_g ; pibe:maxSelected 1 .
+
+ex:Independent5 a pibe:VariationSpace ; rdfs:label "Five independent exclusive pairs"@en ; pibe:featureCount 10 ;
+    pibe:hasFeature ex:Independent5_f1, ex:Independent5_f2, ex:Independent5_f3, ex:Independent5_f4, ex:Independent5_f5, ex:Independent5_f6, ex:Independent5_f7, ex:Independent5_f8, ex:Independent5_f9, ex:Independent5_f10 .
+ex:Independent5_f1 pibe:featureIndex 1 .
+ex:Independent5_f2 pibe:featureIndex 2 .
+ex:Independent5_f3 pibe:featureIndex 3 .
+ex:Independent5_f4 pibe:featureIndex 4 .
+ex:Independent5_f5 pibe:featureIndex 5 .
+ex:Independent5_f6 pibe:featureIndex 6 .
+ex:Independent5_f7 pibe:featureIndex 7 .
+ex:Independent5_f8 pibe:featureIndex 8 .
+ex:Independent5_f9 pibe:featureIndex 9 .
+ex:Independent5_f10 pibe:featureIndex 10 .
+ex:Independent5_x0 a pibe:ExclusiveConstraint ; pibe:inSpace ex:Independent5 ; pibe:groupMember ex:Independent5_f1 , ex:Independent5_f2 .
+ex:Independent5_x1 a pibe:ExclusiveConstraint ; pibe:inSpace ex:Independent5 ; pibe:groupMember ex:Independent5_f3 , ex:Independent5_f4 .
+ex:Independent5_x2 a pibe:ExclusiveConstraint ; pibe:inSpace ex:Independent5 ; pibe:groupMember ex:Independent5_f5 , ex:Independent5_f6 .
+ex:Independent5_x3 a pibe:ExclusiveConstraint ; pibe:inSpace ex:Independent5 ; pibe:groupMember ex:Independent5_f7 , ex:Independent5_f8 .
+ex:Independent5_x4 a pibe:ExclusiveConstraint ; pibe:inSpace ex:Independent5 ; pibe:groupMember ex:Independent5_f9 , ex:Independent5_f10 .
+
+ex:Unsatisfiable a pibe:VariationSpace ; rdfs:label "One group admits nothing"@en ; pibe:featureCount 3 ;
+    pibe:hasFeature ex:Unsatisfiable_f1, ex:Unsatisfiable_f2, ex:Unsatisfiable_f3 .
+ex:Unsatisfiable_f1 pibe:featureIndex 1 .
+ex:Unsatisfiable_f2 pibe:featureIndex 2 .
+ex:Unsatisfiable_f3 pibe:featureIndex 3 .
+ex:Unsatisfiable_m1 a pibe:MandatoryConstraint ; pibe:inSpace ex:Unsatisfiable ; pibe:requires ex:Unsatisfiable_f1 .
+ex:Unsatisfiable_m2 a pibe:MandatoryConstraint ; pibe:inSpace ex:Unsatisfiable ; pibe:requires ex:Unsatisfiable_f2 .
+ex:Unsatisfiable_x a pibe:ExclusiveConstraint ; pibe:inSpace ex:Unsatisfiable ; pibe:groupMember ex:Unsatisfiable_f1 , ex:Unsatisfiable_f2 .

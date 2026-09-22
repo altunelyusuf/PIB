@@ -43,7 +43,7 @@ invariants, the wiring enumeration, and the profile set are all re-runnable from
 ## External dependency
 
 PIB's calculation runs **in the ontology**: candidate generation, admissibility and counting are SHACL
-rules and SPARQL (`02-shacl-safeguards/pib_enumeration_rules_v2_0_0.ttl`). The Python files are
+rules and SPARQL (`02-shacl-safeguards/pib_enumeration_rules_v2_1_0.ttl`). The Python files are
 harnesses — they drive the rule engine and report; no constraint's meaning lives in code.
 
 The variant-algebra **engine is no longer a runtime dependency**: as of v2.0.0 nothing in this package

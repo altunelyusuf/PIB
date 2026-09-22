@@ -8,7 +8,21 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 # ============================================================================
-# PIB Enumeration Rules v2.0.0 — variant enumeration and admissibility, computed in the ontology.
+# PIB Enumeration Rules v2.1.0 — variant enumeration and admissibility, computed in the ontology.
+#
+# MINOR from v2.0.0: PARTITIONING. A space is split into independent groups — features coupled by a
+# shared constraint — each group is enumerated on its own, and the group capacities are multiplied.
+# Growth then follows the number of groups rather than the number of features. Adapted from the variant
+# algebra's decomposition backend (connected components over constraint coupling), with one deliberate
+# difference: the algebra treats repetition as binding a single feature, but PIB's repetition is a
+# BUDGET shared by several contributors, so here the contributors of one budget are coupled. Splitting
+# them would count wrongly without any error.
+#
+# To let a group hold non-contiguous features, "the next feature" is now the next index present in the
+# space rather than the previous index plus one; for a contiguous space the two coincide, so every
+# earlier answer is unchanged. The feature count is no longer read.
+#
+# PREVIOUS HEADER (v2.0.0), kept for the record:
 #
 # MAJOR from v1.0.0: the generation shapes are replaced (branching split into include and exclude
 # rules; the separate inheritance rule removed). The admissibility checks are unchanged, verbatim.
@@ -31,9 +45,9 @@
 
 <http://purl.org/pib/enumeration/rules>
     a owl:Ontology ;
-    owl:versionInfo "2.0.0" ;
-    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.0.0> ;
-    owl:priorVersion <http://purl.org/pib/enumeration/rules/1.0.0> ;
+    owl:versionInfo "2.1.0" ;
+    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.1.0> ;
+    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.0.0> ;
     rdfs:label "PIB enumeration rules — variant generation and admissibility in the ontology"@en ;
     dcterms:description "Generates every admissible candidate selection over a declared variation space, pruning as it goes, then checks admissibility as a safety net and leaves the admissible set standing to be counted."@en .
 
@@ -53,7 +67,8 @@ pibe:SeedRuleShape a sh:NodeShape ;
         PREFIX pibe: <http://purl.org/pib/enumeration#>
         CONSTRUCT { ?seed a pibe:Candidate ; pibe:inSpace $this ; pibe:decidedUpTo 0 . }
         WHERE { BIND(IRI(CONCAT(STR($this), "__c")) AS ?seed)
-                FILTER NOT EXISTS { ?seed pibe:inSpace $this } }
+                FILTER NOT EXISTS { ?seed pibe:inSpace $this }
+                FILTER NOT EXISTS { $this pibe:isPartitioned true } }
     """ ] .
 
 pibe:IncludeBranchRuleShape a sh:NodeShape ;
@@ -62,8 +77,10 @@ pibe:IncludeBranchRuleShape a sh:NodeShape ;
     sh:target [ a sh:SPARQLTarget ; sh:select """
         PREFIX pibe: <http://purl.org/pib/enumeration#>
         SELECT $this WHERE { $this a pibe:Candidate ; pibe:inSpace ?s ; pibe:decidedUpTo ?k .
-            ?s pibe:featureCount ?n . FILTER(?k < ?n)
-            BIND(IRI(CONCAT(STR($this), "_", STR(?k + 1), "i")) AS ?child)
+            ?s pibe:hasFeature ?nf . ?nf pibe:featureIndex ?idx . FILTER(?idx > ?k)
+            FILTER NOT EXISTS { ?s pibe:hasFeature ?nearer . ?nearer pibe:featureIndex ?ni .
+                                FILTER(?ni > ?k && ?ni < ?idx) }
+            BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "i")) AS ?child)
             FILTER NOT EXISTS { ?child pibe:inSpace ?s } }
     """ ] ;
     sh:rule [ a sh:SPARQLRule ; sh:construct """
@@ -76,8 +93,10 @@ pibe:IncludeBranchRuleShape a sh:NodeShape ;
         WHERE {
             $this pibe:inSpace ?space ; pibe:decidedUpTo ?k .
             ?space pibe:hasFeature ?feature . ?feature pibe:featureIndex ?idx .
-            FILTER(?idx = ?k + 1)
-            BIND(?k + 1 AS ?next)
+            FILTER(?idx > ?k)
+            FILTER NOT EXISTS { ?space pibe:hasFeature ?nearer . ?nearer pibe:featureIndex ?ni .
+                                FILTER(?ni > ?k && ?ni < ?idx) }
+            BIND(?idx AS ?next)
             BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "i")) AS ?in)
             FILTER NOT EXISTS { ?in pibe:inSpace ?space }
             # exclusive: a group-mate is already selected
@@ -106,8 +125,10 @@ pibe:ExcludeBranchRuleShape a sh:NodeShape ;
     sh:target [ a sh:SPARQLTarget ; sh:select """
         PREFIX pibe: <http://purl.org/pib/enumeration#>
         SELECT $this WHERE { $this a pibe:Candidate ; pibe:inSpace ?s ; pibe:decidedUpTo ?k .
-            ?s pibe:featureCount ?n . FILTER(?k < ?n)
-            BIND(IRI(CONCAT(STR($this), "_", STR(?k + 1), "o")) AS ?child)
+            ?s pibe:hasFeature ?nf . ?nf pibe:featureIndex ?idx . FILTER(?idx > ?k)
+            FILTER NOT EXISTS { ?s pibe:hasFeature ?nearer . ?nearer pibe:featureIndex ?ni .
+                                FILTER(?ni > ?k && ?ni < ?idx) }
+            BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "o")) AS ?child)
             FILTER NOT EXISTS { ?child pibe:inSpace ?s } }
     """ ] ;
     sh:rule [ a sh:SPARQLRule ; sh:construct """
@@ -120,8 +141,10 @@ pibe:ExcludeBranchRuleShape a sh:NodeShape ;
         WHERE {
             $this pibe:inSpace ?space ; pibe:decidedUpTo ?k .
             ?space pibe:hasFeature ?feature . ?feature pibe:featureIndex ?idx .
-            FILTER(?idx = ?k + 1)
-            BIND(?k + 1 AS ?next)
+            FILTER(?idx > ?k)
+            FILTER NOT EXISTS { ?space pibe:hasFeature ?nearer . ?nearer pibe:featureIndex ?ni .
+                                FILTER(?ni > ?k && ?ni < ?idx) }
+            BIND(?idx AS ?next)
             BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "o")) AS ?out)
             FILTER NOT EXISTS { ?out pibe:inSpace ?space }
             # mandatory: this feature is required
@@ -146,13 +169,15 @@ pibe:CompleteRuleShape a sh:NodeShape ;
     sh:target [ a sh:SPARQLTarget ; sh:select """
         PREFIX pibe: <http://purl.org/pib/enumeration#>
         SELECT $this WHERE { $this a pibe:Candidate ; pibe:inSpace ?s ; pibe:decidedUpTo ?k .
-            ?s pibe:featureCount ?n . FILTER(?k = ?n) FILTER NOT EXISTS { $this a pibe:CompleteCandidate } }
+            FILTER NOT EXISTS { ?s pibe:hasFeature ?lf . ?lf pibe:featureIndex ?j . FILTER(?j > ?k) }
+            FILTER NOT EXISTS { $this a pibe:CompleteCandidate } }
     """ ] ;
     sh:rule [ a sh:SPARQLRule ; sh:construct """
         PREFIX pibe: <http://purl.org/pib/enumeration#>
         CONSTRUCT { $this a pibe:CompleteCandidate }
-        WHERE { $this pibe:inSpace ?space ; pibe:decidedUpTo ?k . ?space pibe:featureCount ?n .
-                FILTER(?k = ?n) FILTER NOT EXISTS { $this a pibe:CompleteCandidate } }
+        WHERE { $this pibe:inSpace ?space ; pibe:decidedUpTo ?k . 
+                FILTER NOT EXISTS { ?space pibe:hasFeature ?lf . ?lf pibe:featureIndex ?j . FILTER(?j > ?k) }
+                FILTER NOT EXISTS { $this a pibe:CompleteCandidate } }
     """ ] .
 
 # ---------------------------------------------------------------------------
@@ -244,3 +269,156 @@ pibe:RepetitionCheckShape a sh:NodeShape ;
                 FILTER(?n > ?max)
             }
         """ ] .
+
+# ---------------------------------------------------------------------------
+# PHASE ORDER — declared here so the sequence is part of the ontology, not the harness.
+# Each phase runs to a fixpoint before the next begins.
+# ---------------------------------------------------------------------------
+
+pibe:Phase a owl:Class ; rdfs:label "Rule phase"@en .
+pibe:phaseName a owl:DatatypeProperty ; rdfs:label "phase name"@en .
+pibe:phaseOrder a owl:DatatypeProperty ; rdfs:label "phase order"@en .
+
+pibe:PartitionPhase  a pibe:Phase ; pibe:phaseName "partition"  ; pibe:phaseOrder 1 ;
+    rdfs:label "Partition: split each space into independent groups of coupled features"@en .
+pibe:GenerationPhase a pibe:Phase ; pibe:phaseName "generation" ; pibe:phaseOrder 2 ;
+    rdfs:label "Generation: enumerate the admissible selections of each group, pruning as it goes"@en .
+pibe:CheckPhase      a pibe:Phase ; pibe:phaseName "check"      ; pibe:phaseOrder 3 ;
+    rdfs:label "Check: confirm admissibility of every complete candidate — a safety net"@en .
+pibe:CombinePhase    a pibe:Phase ; pibe:phaseName "combine"    ; pibe:phaseOrder 4 ;
+    rdfs:label "Combine: multiply the group capacities into each space's capacity"@en .
+
+pibe:GroupSpace a owl:Class ; rdfs:subClassOf pibe:VariationSpace ;
+    rdfs:label "Group space — an independent group of coupled features, enumerated on its own"@en .
+pibe:coupledWith a owl:ObjectProperty ; rdfs:label "coupled with — shares a constraint with"@en .
+pibe:groupOf a owl:ObjectProperty ; rdfs:label "group of — the space this group was split from"@en .
+pibe:groupOrder a owl:DatatypeProperty ; rdfs:label "group order — the lowest feature index in the group"@en .
+pibe:isPartitioned a owl:DatatypeProperty ; rdfs:label "is partitioned — enumerated through its groups"@en .
+pibe:groupCapacity a owl:DatatypeProperty ; rdfs:label "group capacity — admissible selections of one group"@en .
+pibe:runningProduct a owl:DatatypeProperty ; rdfs:label "running product of group capacities, in group order"@en .
+pibe:variationCapacity a owl:DatatypeProperty ; rdfs:label "variation capacity — admissible wirings of a whole space"@en .
+
+# ---------------------------------------------------------------------------
+# PARTITION
+# ---------------------------------------------------------------------------
+
+pibe:CouplingRuleShape a sh:NodeShape ;
+    pibe:phase "partition" ;
+    rdfs:label "Coupling: two features are coupled when a constraint of the space binds them both"@en ;
+    sh:targetClass pibe:VariationSpace ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { ?a pibe:coupledWith ?b . ?b pibe:coupledWith ?a }
+        WHERE {
+            FILTER NOT EXISTS { $this pibe:groupOf ?anyParent }
+            {   ?op pibe:inSpace $this ; pibe:groupMember ?a , ?b .           # exclusive and or
+                FILTER(?a != ?b)
+            } UNION {
+                ?op pibe:inSpace $this ; pibe:dependent ?a ; pibe:prerequisite ?b .
+            } UNION {
+                # PIB's repetition is a budget shared by its contributors: they are coupled
+                ?op a pibe:RepetitionConstraint ; pibe:inSpace $this ; pibe:budgetGroup ?g .
+                ?a pibe:contributesToGroup ?g . ?b pibe:contributesToGroup ?g .
+                $this pibe:hasFeature ?a , ?b .
+                FILTER(?a != ?b)
+            }
+        }
+    """ ] .
+
+pibe:GroupRuleShape a sh:NodeShape ;
+    pibe:phase "partition" ;
+    rdfs:label "Group: each feature belongs to the group named by the lowest index it is coupled to, directly or not"@en ;
+    sh:target [ a sh:SPARQLTarget ; sh:select """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        SELECT $this WHERE { $this a pibe:VariationSpace . FILTER NOT EXISTS { $this pibe:groupOf ?anyParent } }
+    """ ] ;
+    rdfs:comment "Groups are excluded at the TARGET, not inside the query: the aggregate subquery below does not see the current node bound, so a filter placed there would silently exclude nothing and every group would be split again and marked partitioned."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT {
+            ?grp a pibe:VariationSpace , pibe:GroupSpace ;
+                 pibe:groupOf $this ; pibe:groupOrder ?minj ; pibe:hasFeature ?f .
+            $this pibe:isPartitioned true .
+        }
+        WHERE {
+            {   SELECT $this ?f (MIN(?j) AS ?minj) WHERE {
+                    $this pibe:hasFeature ?f .
+                    ?f pibe:coupledWith* ?r .
+                    $this pibe:hasFeature ?r . ?r pibe:featureIndex ?j .
+                } GROUP BY $this ?f
+            }
+            BIND(IRI(CONCAT(STR($this), "__g", STR(?minj))) AS ?grp)
+        }
+    """ ] .
+
+pibe:ConstraintScopingRuleShape a sh:NodeShape ;
+    pibe:phase "partition" ;
+    rdfs:label "Scope: each constraint also applies within the group holding the features it binds"@en ;
+    sh:targetClass pibe:GroupSpace ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { ?op pibe:inSpace $this }
+        WHERE {
+            $this pibe:groupOf ?parent ; pibe:hasFeature ?f .
+            ?op pibe:inSpace ?parent .
+            {   ?op pibe:requires ?f } UNION { ?op pibe:groupMember ?f } UNION { ?op pibe:dependent ?f }
+            UNION { ?op pibe:budgetGroup ?g . ?f pibe:contributesToGroup ?g }
+        }
+    """ ] .
+
+# ---------------------------------------------------------------------------
+# COMBINE — capacities multiply across independent groups. The query language has no product
+# aggregate, so the product is built as a running product along the group order.
+# ---------------------------------------------------------------------------
+
+pibe:GroupCapacityRuleShape a sh:NodeShape ;
+    pibe:phase "combine" ;
+    rdfs:label "Group capacity: the number of admissible complete candidates of a group, zero included"@en ;
+    sh:targetClass pibe:GroupSpace ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this pibe:groupCapacity ?n }
+        WHERE {
+            {   SELECT $this (COUNT(DISTINCT ?c) AS ?n) WHERE {
+                    $this a pibe:GroupSpace .
+                    OPTIONAL { ?c a pibe:CompleteCandidate ; pibe:inSpace $this .
+                               FILTER NOT EXISTS { ?c pibe:isInadmissible true } }
+                } GROUP BY $this
+            }
+            FILTER NOT EXISTS { $this pibe:groupCapacity ?already }
+        }
+    """ ] .
+
+pibe:RunningProductRuleShape a sh:NodeShape ;
+    pibe:phase "combine" ;
+    rdfs:label "Running product: each group multiplies its capacity into the product of the groups before it"@en ;
+    sh:targetClass pibe:GroupSpace ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this pibe:runningProduct ?p }
+        WHERE {
+            $this pibe:groupOf ?parent ; pibe:groupOrder ?o ; pibe:groupCapacity ?n .
+            FILTER NOT EXISTS { $this pibe:runningProduct ?already }
+            OPTIONAL {
+                ?prev pibe:groupOf ?parent ; pibe:groupOrder ?po . FILTER(?po < ?o)
+                FILTER NOT EXISTS { ?mid pibe:groupOf ?parent ; pibe:groupOrder ?mo . FILTER(?mo > ?po && ?mo < ?o) }
+            }
+            OPTIONAL { ?prev pibe:runningProduct ?pp }
+            FILTER(!BOUND(?prev) || BOUND(?pp))
+            BIND(IF(BOUND(?prev), ?pp * ?n, ?n) AS ?p)
+        }
+    """ ] .
+
+pibe:SpaceCapacityRuleShape a sh:NodeShape ;
+    pibe:phase "combine" ;
+    rdfs:label "Space capacity: the running product at the space's last group"@en ;
+    sh:targetClass pibe:GroupSpace ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { ?parent pibe:variationCapacity ?p }
+        WHERE {
+            $this pibe:groupOf ?parent ; pibe:groupOrder ?o ; pibe:runningProduct ?p .
+            FILTER NOT EXISTS { ?later pibe:groupOf ?parent ; pibe:groupOrder ?lo . FILTER(?lo > ?o) }
+            FILTER NOT EXISTS { ?parent pibe:variationCapacity ?already }
+        }
+    """ ] .

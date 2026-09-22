@@ -87,3 +87,46 @@ groups** from which features share a constraint (the algebra's own backend does 
 The unrecorded cost risk now has a real treatment available rather than only a feature limit: pruning is
 adopted, and partitioning would make cost grow with the number of independent groups rather than
 exponentially with features. Exponential growth would then remain only inside a single tightly-coupled group.
+
+---
+
+## Appended 2026-09-21 (PIB v2.2.0) — partitioning built into the ontology
+
+Built as proposed above, and adopted. Enumeration rules v2.1.0 add two phases around generation and checking:
+**partition** (couple features that share a constraint; group each feature under the lowest index it reaches
+through couplings; scope each constraint to its group) and **combine** (count each group's admissible
+selections, zero included; multiply along the group order with a running product; record the space's
+capacity). The harness now only reads the capacity from the graph.
+
+**Fully ontology-native scaling** — groups found and counts multiplied by the rules, nothing declared by hand:
+
+| Features | True capacity | Before partitioning | Now | Candidates |
+|---|---|---|---|---|
+| 4 | 9 | 2.7 s | 2.6 s | 6 |
+| 10 | 243 | over 70 s | 6.2 s | 15 |
+| 20 | 59,049 | impractical | 15.5 s | 30 |
+| 40 | 3,486,784,401 | impractical | 58.0 s | 60 |
+
+Growth is now roughly **quadratic in the number of independent groups**, not exponential in features: the
+running product needs one pass per group and each pass revisits every group. Building the product as a tree
+rather than a chain would reduce that further; it is not needed at current profile sizes.
+
+**PIB's one deliberate difference from the algebra's decomposition, and proof it matters.** The algebra treats
+repetition as binding a single feature and adds no coupling for it. PIB's repetition is a budget shared by
+several contributors, so here those contributors are coupled. With that coupling removed — following the
+algebra's rule literally — the budget case "at most 2 of 4" returns **16 instead of 11, with no error**. It is
+now a permanent case in the capacity self-test.
+
+**Two defects in my own build were caught before release:**
+- The group rule excluded group spaces with a filter placed inside an aggregate subquery, where the current
+  node is not bound — so the exclusion did nothing, every group was marked partitioned, and nothing was
+  generated. The result was a capacity of **0 with no error**. Fixed by excluding groups at the rule's target.
+- The self-test's exactness check assumed complete candidates equal the capacity, true only while every
+  candidate was a whole wiring. With partitioning they legitimately differ (the capstone needs 7 candidates
+  for a capacity of 9). Replaced by checking the property that actually matters — no inadmissible candidate
+  survives — measured directly as the rejected count.
+
+**Self-test now covers eight spaces**, all reproducing their known capacities: the two profile spaces, plus
+six conformance cases — budget, later prerequisite, spread or-group, all constraints combined, five
+independent groups (243), and an unsatisfiable group whose zero must make the whole product zero rather than
+be skipped. It demonstrably fails when the budget case expects the wrong answer.
