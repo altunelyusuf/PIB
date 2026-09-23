@@ -1,13 +1,10 @@
-# PIB v2.8.0 — SHA-256 Manifest
-# MINOR from v2.7.0 (2026-09-23): the authority model and the HUB/PIB distinction written down.
-#   Re-derived from primary sources, not recollection: the founding charter's statement of the HUB role,
-#   and the profile vocabulary's own description of what it does and does not model.
-#   - GOVERNANCE: HUB is a ROLE (publisher, then composer; never author of a consumer's content); PIB is the
-#     PACKAGE that role maintains. Authority over profiles is split BY LAYER: the shared identity and
-#     criteria belong to the HUB role, system-specific behaviour belongs to each consuming system, and a
-#     profile publishes only when both hold. Nobody may mint a second Profile concept.
-#   - Records the open PAMG divergence as PAMG's decision, not something this package may patch.
-#   No vocabulary changed. Gates: reference check, registration check, capacity, operator, invariants.
+# PIB v2.8.1 — SHA-256 Manifest
+# PATCH from v2.8.0 (2026-09-23): reference evidence for a profile approval design. No governed change.
+#   - ADD 10-experiments/: two probes and findings. Measured with shipped pieces only: a coherent proposed
+#     profile computes 9 admissible wirings (approve), a self-contradictory one computes 0 (reject); but two
+#     proposals claiming the SAME artifact category both compute cleanly (3 and 3), so the algebra cannot
+#     police the identity layer. Recommendation: registry for identity, algebra for variation.
+#   Gates: reference check, capacity self-test, operator gate.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -61,12 +58,15 @@ c554652270bc22e7e7ec2fe6a8011de4967a946bb623b87a90ebd1fe90afaa0a  09-handover-in
 ca1a494270177073fb285e04e451e5a0f81c6de5bd9bc24885e24aae1fe79a9a  09-handover-inbox/rejected/README.md  (127b)
 1c308a6a281a74dabcf6eac86840d1becaa42713dc68554af7cedd4cfce01192  10-experiments/FINDINGS_capacity_cost_reduction_v1_0_0.md  (7733b)
 35debb4ca0d4430c2a16a863de862c67e9e5fa66645f18a98728b10b77890040  10-experiments/FINDINGS_criticality_ab_test_drive_v1_0_0.md  (6170b)
+1f11ff81c460d2930b5224d2df48855da8cb814f48171b42d8e527d8ecf8e00f  10-experiments/FINDINGS_profile_approval_design_v1_0_0.md  (4257b)
 753acdbd6067fc0a3302e4fbeeeb20f4b061c84b6bfb2a05f9506f37c1f9f152  10-experiments/FINDINGS_round3_algebra_is_an_expression_language_v1_0_0.md  (6585b)
 f35b182160ee29174d69fb57ab724e8a36ecc581276bd0d94972de9c05d4c114  10-experiments/FINDINGS_variant_calculus_full_operator_set_v1_0_0.md  (7120b)
 2afd5fa05e0fd959a6d3d39d64d4ea0b746c13d77576ff81bc3443fc2d26ca9d  10-experiments/pib_enumeration_generation_optimized_v1_0_0.ttl  (8008b)
 9eca447c37270a856e4beda2d13b643a8be7a8e082c3101744827c03f7cebf5f  10-experiments/probe_capacity_cost_reduction_v1_0_0.py  (6963b)
 ef292cae280f5fbd37f0937161db16ecda7c9d6eac9769764e57e92c11dd4960  10-experiments/probe_criticality_ab_test_drive_v1_0_0.py  (9474b)
 d93794591671a15371be51aede69101b2b0fbf5f957eeb852853ed1913ed336c  10-experiments/probe_delegate_set_level_operators_v1_0_0.py  (4097b)
+7b464f601287e2c372fe1c2b510c7c0bbe63f4c640224d8b7db408e183d65f1e  10-experiments/probe_identity_layer_limit_v1_0_0.py  (1369b)
+a4db3905385b5bcd9f13ad056c1b99aa58a5eac483e335505b1d19d0856f17cb  10-experiments/probe_profile_approval_feasibility_v1_0_0.py  (1719b)
 40c53ddd7238b435f570296f280e4ba3cfde2fcc2baf8d0f091e1b49ea9f510f  10-experiments/probe_round1_operator_use_cases_v1_0_0.py  (5784b)
 16abe080bc782712f542b6bc046632e018444b9ff6f54044e201c73134e5e3d9  10-experiments/probe_round2_intersection_and_necessity_v1_0_0.py  (4003b)
 741222119fba9999cc1a483b2499c4e5e6408903a4c0b6b1ce155534779d366d  10-experiments/probe_round3_shipped_operator_rules_v1_0_0.py  (5863b)
@@ -88,4 +88,4 @@ f3bd26df955c52ae760c7ef37dac4342635df60985e0ebd56f673aa2550c6f29  GOVERNANCE.md 
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 1fd3c009f09c5a48488352720b963321ea9b359b91175676e31c59d927b938b9  README.md  (8055b)
-dceb827995520dae388b7283c5bc7847ef58a16e8013318c3bb436feeb5dc51e  VERSION.txt  (6b)
+c94b6101b82efbf24da807958404613ad9bd7ecfd875f596f8286fa9638e4aa5  VERSION.txt  (6b)
