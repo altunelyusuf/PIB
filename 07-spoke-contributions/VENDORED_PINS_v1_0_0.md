@@ -22,7 +22,7 @@ Validate the composed graph **from this package, no external files**:
 
 ```
 data  = 01-ontologies/example_capstone_profile_abox_v1_0_0.ttl
-      + 01-ontologies/profile_tbox_v1_0_0_1.ttl
+      + 01-ontologies/profile_tbox_v1_1_0.ttl
       + 01-ontologies/integration_interface_tbox_v1_0_0_2.ttl
       + 01-ontologies/pib_wiring_composition_v1_0_0.ttl
       + 07-spoke-contributions/*.ttl          ← supplies the iif:hasSelfCoverage links (G3)

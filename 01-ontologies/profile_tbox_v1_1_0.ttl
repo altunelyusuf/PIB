@@ -11,9 +11,9 @@
 
 <http://purl.org/pib/profile>
     a owl:Ontology ;
-    owl:versionInfo "1.0.0.1" ;
-    owl:versionIRI <http://purl.org/pib/profile/1.0.0.1> ;
-    owl:priorVersion <http://purl.org/pib/profile/1.0.0> ;
+    owl:versionInfo "1.1.0" ;
+    owl:versionIRI <http://purl.org/pib/profile/1.1.0> ;
+    owl:priorVersion <http://purl.org/pib/profile/1.0.0.1> ;
     rdfs:label "Profile Ontology — shared artifact-category & variant-configuration vocabulary"@en ;
     dcterms:description "Single source of truth for artifact CATEGORY across the generic ontology ecosystem (RDODI generates, RADAR measures, PAMG grades). A Profile binds a category identity, the criteria SHARED across systems, and a selection of one validated integration wiring variant. System-specific behaviour (RDODI generation templates, RADAR measurement dimensions, PAMG grading weights) is NOT modelled here — it is attached by each system to the shared Profile IRI, keeping this vocabulary free of scope-foreign content (OE L-64). PATCH v1.0.0.1: BP-D24 metadata completed (added dcterms:modified, dcterms:identifier, prov:wasAttributedTo, machine-linkable dcterms:creator IRI, and Activity-IRI prov:wasGeneratedBy); no vocabulary change."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
@@ -71,3 +71,44 @@ pib:selectsWiring a owl:ObjectProperty ;
 pib:canonicalProfileOf a owl:ObjectProperty ;
     rdfs:label "canonicalProfileOf"@en ;
     skos:definition "Asserts that a profile is THE canonical profile for an artifact (inverse: artifact hasCanonicalProfile). Exactly-one is the collision-avoidance invariant; checked by SHACL in the consuming context."@en .
+
+# ---------------------------------------------------------------------------
+# RULE SCOPE — general rules versus profile-specific rules (added v1.1.0)
+#
+# Why this is here and not in one consumer's vocabulary: the question belongs to the profile pattern
+# itself. Wherever profiles exist, a rule either binds every profile or only some, and a reader who cannot
+# tell which must read the rule's query to find out. Measured across this ecosystem on 2026-09-23: four
+# shipped shapes condition themselves on a profile, and NONE declares that it does. The scope is real and
+# undeclared everywhere, which is the gap a consuming session reported from its own package after a
+# profile-scoped expectation silently propagated into a live lineage.
+#
+# The default is the safe direction, deliberately: a rule that declares nothing is GENERAL and binds
+# everyone. A rule can only become profile-scoped by saying so. The opposite default — silence meaning
+# "scoped" — is exactly how a requirement disappears without anyone deciding to drop it.
+# ---------------------------------------------------------------------------
+
+pib:RuleScope a owl:Class ;
+    rdfs:label "Rule scope — whether a rule binds every profile or only some"@en ;
+    skos:definition "The declared applicability of a validation rule with respect to profiles. A rule is either general, binding every profile unconditionally, or profile-specific, binding only where a stated condition on the profile holds."@en .
+
+pib:General a pib:RuleScope , owl:NamedIndividual ;
+    rdfs:label "General — binds every profile, unconditionally"@en ;
+    skos:definition "The default for any rule that declares no scope. A rule is general unless it says otherwise, so that a requirement cannot become optional through silence."@en .
+
+pib:hasRuleScope a owl:ObjectProperty ;
+    rdfs:label "has rule scope"@en ;
+    rdfs:range pib:RuleScope ;
+    skos:definition "Declares a rule's applicability. Absent, the rule is general: absence is not a scope, it is the default. Present with a profile condition, the rule binds only where that condition holds."@en .
+
+pib:appliesUnderProfileCondition a owl:ObjectProperty ;
+    rdfs:label "applies under profile condition"@en ;
+    skos:definition "Names the profile property whose value a profile-specific rule depends on, so the dependency is readable as metadata rather than only inside the rule's own query. A rule whose query tests a profile property but declares no condition is the case worth catching: its scope is real but invisible."@en .
+
+pib:conditionProperty a owl:ObjectProperty ;
+    rdfs:label "condition property — the profile property the rule tests"@en .
+pib:conditionValue a owl:DatatypeProperty ;
+    rdfs:label "condition value — the value under which the rule binds"@en .
+
+pib:ProfileSpecific a owl:Class ; rdfs:subClassOf pib:RuleScope ;
+    rdfs:label "Profile-specific — binds only where a stated profile condition holds"@en ;
+    skos:definition "A scope that names the profile property and value under which its rule applies. Declaring it does not weaken the rule; it makes an existing dependency visible to a reader and checkable by a tool."@en .
