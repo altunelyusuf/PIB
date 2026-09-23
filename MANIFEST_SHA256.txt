@@ -1,14 +1,13 @@
-# PIB v2.7.0 — SHA-256 Manifest
-# MINOR from v2.6.1 (2026-09-23): consumers can now register themselves for adaptation.
-#   - ADD 13-consumer-registry/: README, registration template, pending/ and registered/, plain-text
-#     REGISTRY.tsv. Pointers and hashes, never copies — the convention OE itself settled for registrants.
-#   - ADD 02-shacl-safeguards/pib_consumer_registration_shacl_v1_0_0.ttl: what a registration must state,
-#     each requirement tied to a claim PIB could not otherwise verify.
-#   - ADD 03-tooling/consumer_registration_check_v1_0_0.py: validates the record AND fetches the declared
-#     files to compare hashes. UNREACHABLE is reported as unreachable, never as verified. Proven against
-#     the real public repository: correct hash VERIFIED, wrong hash MISMATCH, malformed record rejected.
-#   No consumer is pre-registered: registering on another package's behalf would assert what it never said.
-#   Gates: reference check, capacity self-test, operator gate, invariants 0 violations.
+# PIB v2.8.0 — SHA-256 Manifest
+# MINOR from v2.7.0 (2026-09-23): the authority model and the HUB/PIB distinction written down.
+#   Re-derived from primary sources, not recollection: the founding charter's statement of the HUB role,
+#   and the profile vocabulary's own description of what it does and does not model.
+#   - GOVERNANCE: HUB is a ROLE (publisher, then composer; never author of a consumer's content); PIB is the
+#     PACKAGE that role maintains. Authority over profiles is split BY LAYER: the shared identity and
+#     criteria belong to the HUB role, system-specific behaviour belongs to each consuming system, and a
+#     profile publishes only when both hold. Nobody may mint a second Profile concept.
+#   - Records the open PAMG divergence as PAMG's decision, not something this package may patch.
+#   No vocabulary changed. Gates: reference check, registration check, capacity, operator, invariants.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -84,9 +83,9 @@ e01761046586ace446fd81b0ee8771b17b3ae8fb53c2276a36d2f349ea1e30de  13-consumer-re
 8389763de2e3e7c76ba78697239a8c3f28288594c54741ba938efe8bc2a1f1ac  13-consumer-registry/TEMPLATE_consumer_registration_v1_0_0.ttl  (2456b)
 806d2996e1c1b7515a89594512a518f222f649e0f89e1fe692de09c141904371  13-consumer-registry/pending/README.md  (96b)
 ae81ade3e0aa1d908d066b93cb854a13eb93605dcd88294147441fad5f6a35d2  13-consumer-registry/registered/README.md  (44b)
-25d344b24e43eca75e5432f2b40e6e106d27cf0a00866f05f588b06924b625d7  GOVERNANCE.md  (4945b)
+f3bd26df955c52ae760c7ef37dac4342635df60985e0ebd56f673aa2550c6f29  GOVERNANCE.md  (8549b)
 3d834db15fd6499713ce94d35f4f4a4f8e2548287c1e526c0b46cb7f71e68dac  LICENSE  (19202b)
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 1fd3c009f09c5a48488352720b963321ea9b359b91175676e31c59d927b938b9  README.md  (8055b)
-362148d7721ad4a1bb64981ff8d604ef7f4d22267ea8845042f54f90940f24fd  VERSION.txt  (6b)
+dceb827995520dae388b7283c5bc7847ef58a16e8013318c3bb436feeb5dc51e  VERSION.txt  (6b)

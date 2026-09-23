@@ -25,6 +25,55 @@ These governing artifacts are maintained and versioned outside this package. Rea
 to them can still verify everything this repository asserts about *itself*: the manifest, the SHACL
 invariants, the wiring enumeration, and the profile set are all re-runnable from the files here.
 
+## What HUB and PIB are — and why they are not two things
+
+**HUB is a role; PIB is the package that role maintains.** They are not two systems working differently,
+and the apparent difference is a naming artifact worth stating plainly, because it recurs: this repository
+is `PIB`, the OE registry entry is `pib-hub`, and the retired monorepo directory was `pib-hub/`.
+
+- **PIB** — the *Profile + Integration-Interface Blueprint*: the shipped ontologies, shapes, rules and tools
+  in this repository.
+- **HUB** — the *role in the ecosystem's architecture*, defined by this package's founding charter: the owner
+  of "the shared infrastructure that belongs to no single system — the Profile and Integration-Interface
+  ontologies, the invariants, the validators, the engine pin, and the per-profile wiring composition."
+
+The role has exactly two modes, and it never has a third:
+
+1. **Publisher (first phase).** It publishes the shared vocabulary that consuming systems declare *against*.
+   Nothing can be composed until this exists; that is why the charter made it phase one.
+2. **Composer (third phase).** It takes the interfaces those systems declare, composes each profile's wiring
+   from them, validates it, and publishes only what passes both gates — wiring validity and self-coverage.
+
+What the role explicitly excludes: **it never authors a consuming system's content.** The charter states the
+boundary directly — it "declares the shared LANGUAGE and composes wirings from interfaces the spokes deliver;
+it does not author the spokes' interfaces or touch their content."
+
+## Who is authorized for profile management
+
+Authority is split **by layer, not by system**. This is the whole reason the package exists, and it is stated
+in the profile vocabulary itself:
+
+| Layer | Authorized party | Examples |
+|---|---|---|
+| The shared profile — category identity, the criteria meaningful to **more than one** system, and the single selected wiring | **The HUB role, through this package** | `ArtifactCategory`, `SharedCriterion`, which wiring a profile pins |
+| System-specific behaviour **attached to** the shared profile identity | **Each consuming system, for itself** | grading weights → PAMG; measurement dimensions → RADAR; generation templates → RDODI |
+| Whether a profile may be *published* | **Both**, and both must pass | the HUB runs the gates; the system must have declared an interface that self-covers |
+
+The vocabulary puts it this way: system-specific behaviour "is NOT modelled here — it is attached by each
+system to the shared Profile IRI." So a consuming system is fully sovereign over what a profile *means for it*,
+and has no authority over the shared identity; the HUB is the reverse. Neither can act for the other.
+
+Two consequences that decide real cases:
+
+- **Nobody may mint a second Profile concept.** A parallel profile vocabulary defeats the single shared
+  identity this package exists to provide, and duplicates an authoritative implementation that already exists.
+  *Open case:* the PAMG ontologies currently readable declare their own `Profile` class and reference this
+  package nowhere. That is a genuine divergence, and resolving it is **PAMG's** decision to make in its own
+  registration — not something this package may patch, because patching it would breach the same boundary
+  that protects PAMG's authority over its own content.
+- **The HUB cannot rescue an unwilling consumer.** If a system does not declare an interface, its profile
+  simply cannot be composed. The gate is not a formality that the HUB can waive for convenience.
+
 ## Boundaries that apply here specifically
 
 - **B1 / L-64 — ownership.** `07-spoke-contributions/` holds **vendored, SHA-pinned, read-only**
