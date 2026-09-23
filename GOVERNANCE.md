@@ -114,6 +114,9 @@ returned contract are in `08-registration/`.
 ## Release procedure
 
 1. Re-run the gates: `03-tooling/wiring_validator` against the pinned VAF, `self_coverage_checker`,
+   Also run `03-tooling/handover_inbox_check_v1_0_0.py`: it fails when a dispositioned handover has no
+   log line, when a state directory is missing, or when an item held in `outgoing/` does not say why it
+   was not filed in its target's inbox. It found an unlogged item on its first run.
    Run `03-tooling/reference_check_v1_0_0.py` first: it fails the release if a current document cites a
    file the package no longer ships. It exists because two releases in one day went out citing renamed
    files after that warning was printed and stepped over — a warning nobody stops for is not a safeguard.
