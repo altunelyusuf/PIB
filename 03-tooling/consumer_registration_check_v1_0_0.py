@@ -33,7 +33,7 @@ from pyshacl import validate
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-SHAPES = os.path.join(ROOT, "02-shacl-safeguards", "pib_consumer_registration_shacl_v1_0_0.ttl")
+SHAPES = os.path.join(ROOT, "02-shacl-safeguards", "pib_consumer_registration_shacl_v1_1_0.ttl")
 REGISTRY = os.path.join(ROOT, "13-consumer-registry")
 PIBCR = rdflib.Namespace("http://purl.org/pib/consumer-registry#")
 ORH = rdflib.Namespace("http://example.org/oepack-release-history#")

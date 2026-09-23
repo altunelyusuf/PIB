@@ -1,22 +1,27 @@
-# PIB v2.8.1 — SHA-256 Manifest
-# PATCH from v2.8.0 (2026-09-23): reference evidence for a profile approval design. No governed change.
-#   - ADD 10-experiments/: two probes and findings. Measured with shipped pieces only: a coherent proposed
-#     profile computes 9 admissible wirings (approve), a self-contradictory one computes 0 (reject); but two
-#     proposals claiming the SAME artifact category both compute cleanly (3 and 3), so the algebra cannot
-#     police the identity layer. Recommendation: registry for identity, algebra for variation.
-#   Gates: reference check, capacity self-test, operator gate.
+# PIB v2.9.0 — SHA-256 Manifest
+# MINOR from v2.8.1 (2026-09-23): autonomous profile approval, per the owner's three rulings.
+#   - Registration shapes 1.0.0 -> 1.1.0: profile proposals. A shared criterion must name >= 2 systems,
+#     because the profile vocabulary defines shared as meaningful to more than one system.
+#   - ADD 03-tooling/profile_approval_v1_0_0.py: decides autonomously, no sign-off. Gates: shape, identity
+#     (category collision, since a consumer MAY introduce a new category), variation (capacity via the
+#     algebra), and a parallel-Profile check that really FETCHES and parses the consumer's files.
+#   - ADD 13-consumer-registry/profiles/ + CATEGORIES.tsv + PROFILE_REGISTRY.tsv.
+#   - ADD 09-handover-inbox/outgoing/: recall proposal to PAMG, held for routing (PAMG has no reachable inbox).
+#   Proven discriminating: 1 approved, 3 rejected for three distinct reasons; the parallel-Profile gate
+#   rejects against PAMG's real file fetched live. Unreadable files yield UNCHECKED, never clean.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
 7dbc559e2f70b04d285048c99b8bbe0e03c7e4edb8220fda17b9518a499e257c  01-ontologies/pib_wiring_composition_v1_0_0.ttl  (3804b)
 a60c5caaae626a26ee83181f4d953e6b5fe8ab4776789c86dc2953a7a1aecc3b  01-ontologies/pib_wiring_expressions_v1_0_0_2.ttl  (9478b)
 0a578caf116cea7ab61e7ab324daba16ad43a6602de6103f7c24f2a71908a6a1  01-ontologies/profile_tbox_v1_0_0_1.ttl  (5745b)
-af515ce10baa8d46f36dbee56f634fe14d198aa294accda955caa1f9705999df  02-shacl-safeguards/pib_consumer_registration_shacl_v1_0_0.ttl  (5790b)
+04465f049be2be7f1d0a1b3c5302e44ffc7def72a88faa4d347924aac6e9110d  02-shacl-safeguards/pib_consumer_registration_shacl_v1_1_0.ttl  (9746b)
 c3bda2c1e1e4b524ba2187c174a06b6a0abff0f85678c8ded9690eb9b3f2cce6  02-shacl-safeguards/pib_enumeration_rules_v2_2_0.ttl  (25192b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
 266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
-8fb088ced1999ca44762716bb3847f3f120333120dd865761f84b6be42588627  03-tooling/consumer_registration_check_v1_0_0.py  (8876b)
+4b8bd16bdbc183c1fa2fb750f0aa788de36b6d3b0c3e8a1244033816e800d471  03-tooling/consumer_registration_check_v1_0_0.py  (8876b)
 6cf48a418df1c11066a4493290506876f09d93166ab82fac60ef5a577519446b  03-tooling/operator_rule_runner_v1_0_0.py  (5112b)
+6de5a17005ffd79e031635152f6a667cbe48b85153c6afcbef122653f6de8fd6  03-tooling/profile_approval_v1_0_0.py  (12974b)
 78257e8956e2c08be67bc386e31d07d9233ce60e20d7dbeba068d400f49d417e  03-tooling/reference_check_v1_0_0.py  (4581b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
 d9e6ab0e4c4cd61b3b0f3aaa07c2675d03c26a82ce7dc3b51b57d966e44c5024  03-tooling/taxonomy_vaf_converter_v1_0_0.py  (9813b)
@@ -54,6 +59,7 @@ bc92c551f4a04e56e8b7da7b48ed8680716c1cb5b430096e45f93228e961f203  09-handover-in
 a8b4abe6fcd37f8864776bbf326943e46205310b6551eae1d4b9a2b4bfb859d1  09-handover-inbox/accepted/PROPOSAL_backlog-roadmap-framework_to_pib-hub_vaf-operator-count-unverifiable_v1_0_0.md  (4841b)
 4e66912bc7936434718434b359c967ac38c0e78a7b97727d968e81beeea289eb  09-handover-inbox/accepted/RESPONSE_PIB_to_backlog-roadmap-framework_vaf-operator-count_v1_0_0.md  (4328b)
 9532f94b41e34e33bb451149fdd3bc10b5b55bc75b373f5a619e29e9114bc6d4  09-handover-inbox/deferred/README.md  (127b)
+5c744360b4246be6ec68c2323c78e88f7f5cc4cccf2c1ef1d616926f3a0a8f8c  09-handover-inbox/outgoing/PROPOSAL_PIB_to_PAMG_recall-parallel-profile-class_v1_0_0.md  (2711b)
 c554652270bc22e7e7ec2fe6a8011de4967a946bb623b87a90ebd1fe90afaa0a  09-handover-inbox/pending/README.md  (126b)
 ca1a494270177073fb285e04e451e5a0f81c6de5bd9bc24885e24aae1fe79a9a  09-handover-inbox/rejected/README.md  (127b)
 1c308a6a281a74dabcf6eac86840d1becaa42713dc68554af7cedd4cfce01192  10-experiments/FINDINGS_capacity_cost_reduction_v1_0_0.md  (7733b)
@@ -78,14 +84,17 @@ f886d2d09f9fd7a6b52a5098eefb2a5e3a76526b4e5b9e6433071ad48c6f3cc0  12-operator-fi
 826e572d07ce16ba6ae2924e67c4adbd7300e61fc3c764c9945358f44924d898  12-operator-fixtures/candidate_positive_v1_0_0.ttl  (854b)
 2902c0dc2dd22c6cc197cfd30bcf660f84e923ef2e3061e39608298aec68b1fb  12-operator-fixtures/enumeration_conformance_spaces_v1_0_0.ttl  (6900b)
 7966a3da38d8a74a05ad008b750faf3aa290b6f66e179db1233eefec9a1dfcf4  12-operator-fixtures/profile_variation_spaces_v1_0_0.ttl  (4486b)
-e01761046586ace446fd81b0ee8771b17b3ae8fb53c2276a36d2f349ea1e30de  13-consumer-registry/README.md  (4357b)
+870f1267bfd1315ca19d1043e12d1f666c6a774ed86ae9d342ebb147a51897c5  13-consumer-registry/CATEGORIES.tsv  (524b)
+8c15f918c332d97f4870ca0bb1bacbdc99ced7698a7b10a93e3e73618390ae2c  13-consumer-registry/PROFILE_REGISTRY.tsv  (293b)
+92f2e4b32334eb38b7b4589026a563160d05a06fcc6d046fbcb1dd0b462246ef  13-consumer-registry/README.md  (5832b)
 6a7d6b032e2df47ec227da78a04116524c6127698f069be9788628bb99f12c5b  13-consumer-registry/REGISTRY.tsv  (328b)
 8389763de2e3e7c76ba78697239a8c3f28288594c54741ba938efe8bc2a1f1ac  13-consumer-registry/TEMPLATE_consumer_registration_v1_0_0.ttl  (2456b)
 806d2996e1c1b7515a89594512a518f222f649e0f89e1fe692de09c141904371  13-consumer-registry/pending/README.md  (96b)
+1ba21552fdedf8b14a7906131f919f850940f5e9a598c97b3270e89370639a2d  13-consumer-registry/profiles/pending/README.md  (67b)
 ae81ade3e0aa1d908d066b93cb854a13eb93605dcd88294147441fad5f6a35d2  13-consumer-registry/registered/README.md  (44b)
 f3bd26df955c52ae760c7ef37dac4342635df60985e0ebd56f673aa2550c6f29  GOVERNANCE.md  (8549b)
 3d834db15fd6499713ce94d35f4f4a4f8e2548287c1e526c0b46cb7f71e68dac  LICENSE  (19202b)
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 1fd3c009f09c5a48488352720b963321ea9b359b91175676e31c59d927b938b9  README.md  (8055b)
-c94b6101b82efbf24da807958404613ad9bd7ecfd875f596f8286fa9638e4aa5  VERSION.txt  (6b)
+8113ce620372292c25fda221ad5e8adf77dbe71c92c2042f8ca1ec3dfe9c50a1  VERSION.txt  (6b)

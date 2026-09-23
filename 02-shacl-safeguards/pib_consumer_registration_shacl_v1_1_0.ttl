@@ -21,8 +21,9 @@
 # ============================================================================
 
 <http://purl.org/pib/consumer-registry>
-    a owl:Ontology ; owl:versionInfo "1.0.0" ;
-    owl:versionIRI <http://purl.org/pib/consumer-registry/1.0.0> ;
+    a owl:Ontology ; owl:versionInfo "1.1.0" ;
+    owl:versionIRI <http://purl.org/pib/consumer-registry/1.1.0> ;
+    owl:priorVersion <http://purl.org/pib/consumer-registry/1.0.0> ;
     rdfs:label "PIB consumer registration — vocabulary and shapes"@en ;
     dcterms:description "Lets a consumer ontology register itself with PIB by pointer and hash rather than by copy, so every claim PIB makes about it can be re-derived from the consumer's own repository."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
@@ -78,3 +79,50 @@ pibcr:RegisteredInterfaceShape a sh:NodeShape ;
         sh:message "An interface must produce at least one capability; a consumer that produces nothing cannot be wired to." ] ;
     sh:property [ sh:path iif:hasSelfCoverage ; sh:minCount 1 ;
         sh:message "An interface must carry a self-coverage attestation: PIB's own invariants refuse to publish a wiring without one." ] .
+
+# ============================================================================
+# PROFILE PROPOSALS (added v1.1.0, owner's rulings 2026-09-23)
+#
+# A consumer proposes a profile; approval is AUTONOMOUS — the gates decide, with no human sign-off —
+# and a consumer MAY introduce a new artifact category. Both rulings raise the cost of a weak shape:
+# nothing downstream will catch what this misses, so each requirement below exists because its absence
+# would let an autonomous approval publish something the standard forbids.
+# ============================================================================
+
+pibcr:ProfileProposal a owl:Class ; rdfs:label "Profile proposal"@en ;
+    skos:definition "A consumer's proposal for a shared profile: the artifact category it governs, the criteria it claims are shared across systems, and its variation space expressed in the variant algebra's notation."@en .
+pibcr:proposedBy a owl:DatatypeProperty ; rdfs:label "proposed by"@en .
+pibcr:proposesCategory a owl:ObjectProperty ; rdfs:label "proposes category"@en .
+pibcr:categoryLabel a owl:DatatypeProperty ; rdfs:label "category label — the human name the category is claimed under"@en .
+pibcr:isNewCategory a owl:DatatypeProperty ; rdfs:label "is a new category rather than one already published"@en .
+pibcr:proposesSharedCriterion a owl:ObjectProperty ; rdfs:label "proposes shared criterion"@en .
+pibcr:criterionUsedBySystem a owl:DatatypeProperty ; rdfs:label "system that uses this criterion"@en .
+pibcr:wiringInDSL a owl:DatatypeProperty ; rdfs:label "variation space, in the variant algebra's DSL"@en .
+
+pibcr:ProfileProposalShape a sh:NodeShape ;
+    rdfs:label "A profile proposal must name its proposer, its category, and its variation space"@en ;
+    sh:targetClass pibcr:ProfileProposal ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ;
+        sh:message "A proposal must carry a human-readable label naming the profile." ] ;
+    sh:property [ sh:path pibcr:proposedBy ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A proposal must name the consumer proposing it — approval is autonomous, so the record must say on whose behalf it was granted." ] ;
+    sh:property [ sh:path pibcr:proposesCategory ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A proposal must bind exactly one artifact category; a profile governs one kind of artifact." ] ;
+    sh:property [ sh:path pibcr:wiringInDSL ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 10 ;
+        sh:message "A proposal must express its variation space in the algebra's DSL, so admissibility can be computed rather than asserted." ] .
+
+pibcr:ProposedCategoryShape a sh:NodeShape ;
+    rdfs:label "A proposed category must state its name and whether it is new"@en ;
+    sh:targetObjectsOf pibcr:proposesCategory ;
+    sh:property [ sh:path pibcr:categoryLabel ; sh:minCount 1 ;
+        sh:message "A category must carry the name it is claimed under — that name is what a collision is detected against." ] ;
+    sh:property [ sh:path pibcr:isNewCategory ; sh:minCount 1 ; sh:datatype xsd:boolean ;
+        sh:message "State whether this category is new or already published. A consumer may introduce one, but not silently." ] .
+
+pibcr:ProposedSharedCriterionShape a sh:NodeShape ;
+    rdfs:label "A shared criterion must be used by more than one system"@en ;
+    sh:targetObjectsOf pibcr:proposesSharedCriterion ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ;
+        sh:message "A shared criterion must carry a label." ] ;
+    sh:property [ sh:path pibcr:criterionUsedBySystem ; sh:minCount 2 ;
+        sh:message "A shared criterion must name at least TWO systems that use it. The profile vocabulary defines a shared criterion as one meaningful to more than one system; a criterion only its proposer uses is system-specific behaviour and belongs in that system, not in the shared profile." ] .

@@ -38,7 +38,7 @@ is yours; what it exchanges is the contract.
 ## What PIB does with it
 
 1. `03-tooling/consumer_registration_check_v1_0_0.py` validates your record against
-   `02-shacl-safeguards/pib_consumer_registration_shacl_v1_0_0.ttl` — a malformed record is rejected with a
+   `02-shacl-safeguards/pib_consumer_registration_shacl_v1_1_0.ttl` — a malformed record is rejected with a
    reason, never half-adapted.
 2. Where your repository is reachable, the same tool **fetches your files and compares hashes**. A mismatch
    is reported, never silently accepted: it means your registration and your repository disagree.
@@ -46,6 +46,29 @@ is yours; what it exchanges is the contract.
    actually verified, and your interface becomes eligible for wiring composition.
 4. If your repository is not reachable, the record is still recorded — marked unreachable, with its hashes
    kept — and PIB will say so plainly rather than pretending to have checked.
+
+## Proposing a profile
+
+A registered consumer may also propose a **profile**, in `profiles/pending/`. Approval is **autonomous**
+(owner's ruling, 2026-09-23): the gates decide, nothing waits for a signature, and the decision plus what
+was verified is appended to `PROFILE_REGISTRY.tsv`.
+
+A proposal declares its proposer, one artifact category, any criteria it claims are **shared**, and its
+variation space in the algebra's DSL. `03-tooling/profile_approval_v1_0_0.py` then decides:
+
+| Gate | Rejects |
+|---|---|
+| shape | a record missing proposer, category, or variation space |
+| identity | a "new" category whose name collides with one already in `CATEGORIES.tsv` — bind to that identity instead of minting a second for the same thing |
+| shared criteria | a criterion naming fewer than two systems: the vocabulary defines shared as meaningful to more than one system, so a criterion only its proposer uses is system-specific behaviour |
+| variation | a space with no admissible wiring — a profile must pin exactly one |
+| parallel profile | a consumer declaring its own `Profile` class, fetched and parsed from its registered files |
+
+**A consumer may introduce a new category** (owner's ruling). The identity gate therefore looks for a
+*collision*, not for novelty. Names collide on meaning, not punctuation: `capstone_report` collides with
+`Capstone report`.
+
+Where a consumer's files cannot be read, the parallel-profile result is **UNCHECKED**, never "clean".
 
 ## What PIB will never do
 

@@ -1,0 +1,9 @@
+# Artifact categories published by PIB. A consumer MAY introduce a new one (owner's ruling 2026-09-23);
+# a new category whose name collides with a line here is rejected — bind to the existing identity instead.
+# category	introduced by
+Capstone report	pib (worked example)
+IEEE conference paper	pib (worked example)
+Core software development	pib (assessment profiles)
+Ontology-based system	pib (assessment profiles)
+Ontology deliverable	pib (assessment profiles)
+Educational gamification project	pib (assessment profiles)
