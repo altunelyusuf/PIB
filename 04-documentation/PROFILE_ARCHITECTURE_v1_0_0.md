@@ -65,3 +65,58 @@ python3 03-tooling/profile_scoped_validate_v1_0_0.py <data> <shapes>   # E0, E3,
 
 Both are proven discriminating: each passes a correct fixture and fails a fixture broken in exactly one
 way — a mandatory rule misplaced at meta, and a requirement restated by every variant.
+
+---
+
+## The taxonomy — how taxonomic entries arise from the relationships (added v2.14.0)
+
+The profile taxonomy is **not authored and not generated a second time**. The enumeration already builds
+the branch tree: every candidate records the parent it came from and the feature it decided. The taxonomy
+phase reads that structure and expresses it taxonomically — interior nodes are partial commitments (a
+genus), leaves are complete variants (a species).
+
+### What each relationship contributes
+
+| Relationship | Taxonomic effect | Why |
+|---|---|---|
+| **Mandatory, at meta** | **no entry** | the feature is in every variant, so it characterises the *root* and distinguishes nothing below it — the structural reason mandatory belongs at the meta layer |
+| **Mandatory, inside a profile** | **no branch; a forced decision** | the "leaves it" side is pruned, leaving one child taxonomically identical to its parent |
+| **Optional** | **two entries** — takes / leaves | disjoint and jointly covering the parent |
+| **Exclusive {a, b}** | **three entries** — a, b, neither | at most one may be taken, so two members yield three mutually disjoint leaves |
+| **Or {a, b}** | **three entries** — a, b, both | at least one must be taken, so the "neither" branch is pruned |
+| **Dependency a → b** | **no entry of its own** | it *prunes* branches that take a without b |
+| **Repetition (k-of-n)** | **no entry of its own** | it prunes branches exceeding the budget |
+| **Independent groups** | **separate dimensions**, not one tree | groups combine by product; presenting them as a single tree would misstate the space |
+
+Two structural facts follow, and both are materialised:
+
+- **Siblings are disjoint by construction** — one takes the feature the other leaves. Nothing needs to
+  assert it; it is what branching *is*.
+- **A single surviving child is recorded as a forced decision, not drawn as a fork.** A taxonomy that
+  shows a choice where none exists misleads a reader about the space, which is the whole point of having
+  one.
+
+### Worked: the capstone
+
+Three independent dimensions, whose product is the capacity:
+
+```
+dimension 1 (two mandatory edges)   takes f1 [forced] → takes f2 [forced]              → 1 variant
+dimension 2 (exclusive measurer)    takes f3 → leaves f4 [forced]                      → 3 variants
+                                    leaves f3 → takes f4 | leaves f4
+dimension 3 (or: analysis/design)   takes f5 → takes f6 | leaves f6                    → 3 variants
+                                    leaves f5 → takes f6 [forced]
+```
+
+1 × 3 × 3 = **9**, the capstone's published capacity, reached independently of the counting path. The
+mandatory pair contributes **no branches at all** — it is domain structure, not variation, which is
+exactly what the architecture predicts.
+
+### Running it
+
+```bash
+python3 03-tooling/profile_taxonomy_v1_0_0.py <spaces.ttl> [space-name]
+```
+
+Proven per operator: optional yields 2 leaves, mandatory 1 with a forced decision, exclusive 3, or 3, and
+dependency adds no branch while pruning to 3.

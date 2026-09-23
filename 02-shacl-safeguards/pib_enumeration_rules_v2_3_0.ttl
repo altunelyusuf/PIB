@@ -8,7 +8,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 # ============================================================================
-# PIB Enumeration Rules v2.2.0 — variant enumeration and admissibility, computed in the ontology.
+# PIB Enumeration Rules v2.3.0 — variant enumeration and admissibility, computed in the ontology.
 #
 # MINOR from v2.0.0: PARTITIONING. A space is split into independent groups — features coupled by a
 # shared constraint — each group is enumerated on its own, and the group capacities are multiplied.
@@ -45,9 +45,9 @@
 
 <http://purl.org/pib/enumeration/rules>
     a owl:Ontology ;
-    owl:versionInfo "2.2.0" ;
-    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.2.0> ;
-    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.1.0> ;
+    owl:versionInfo "2.3.0" ;
+    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.3.0> ;
+    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.2.0> ;
     rdfs:label "PIB enumeration rules — variant generation and admissibility in the ontology"@en ;
     dcterms:description "Generates every admissible candidate selection over a declared variation space, pruning as it goes, then checks admissibility as a safety net and leaves the admissible set standing to be counted."@en .
 
@@ -450,3 +450,97 @@ pibe:EmptySpaceDriftShape a sh:NodeShape ;
             FILTER NOT EXISTS { $this pibe:driftSuspected true }
         }
     """ ] .
+
+# ---------------------------------------------------------------------------
+# TAXONOMY (added v2.3.0)
+#
+# The taxonomy is not generated a second time: the generation phase already builds the tree. Every
+# candidate records the parent it came from and the feature it decided, so the branch structure exists
+# before this phase runs. These rules only READ that structure and express it taxonomically.
+#
+# How each operator shapes the taxonomy, which follows from what each operator does to branching:
+#
+#   Mandatory (meta)      NO branch. The feature is in every variant, so it characterises the ROOT and
+#                         distinguishes nothing below it. This is why mandatory belongs at the meta layer.
+#   Mandatory (in-profile) NO branch. Pruning removes the exclude side, so the decision is forced: one
+#                         surviving child, taxonomically identical to its parent.
+#   Optional              TWO branches — with and without — disjoint and jointly covering the parent.
+#   Exclusive {a,b}       Branches for a, for b, and for neither: at most one may be taken, so three
+#                         mutually disjoint leaves in that subtree.
+#   Or {a,b}              Branches for a, for b, and for both: at least one must be taken, so the
+#                         'neither' branch is pruned.
+#   Dependency a→b        NO branch of its own. It PRUNES branches that would take a without b.
+#   Repetition (k-of-n)   NO branch of its own. It prunes branches that exceed the budget.
+#
+# Sibling nodes are disjoint by construction: one includes the feature its sibling excludes. Where pruning
+# left a single child, that is recorded as a forced decision rather than a branch, because a taxonomy that
+# shows a fork where no choice exists misleads a reader about the space.
+# ---------------------------------------------------------------------------
+
+pibe:TaxonNode a owl:Class ; rdfs:label "Taxon node — a point in the profile taxonomy"@en ;
+    skos:definition "A node of the derived taxonomy. Interior nodes are partial commitments (a genus); leaves are complete variants (a species)."@en .
+pibe:ProfileVariant a owl:Class ; rdfs:subClassOf pibe:TaxonNode ;
+    rdfs:label "Profile variant — a leaf of the taxonomy, one admissible profile"@en .
+pibe:differsBy a owl:ObjectProperty ; rdfs:label "differs by — the feature whose decision distinguishes this node from its parent"@en .
+pibe:branchKind a owl:DatatypeProperty ; rdfs:label "branch kind — whether this node takes or leaves the feature"@en .
+pibe:forcedDecision a owl:DatatypeProperty ; rdfs:label "forced decision — the only surviving option, not a real branch"@en .
+
+pibe:TaxonNodeRuleShape a sh:NodeShape ;
+    pibe:phase "taxonomy" ;
+    rdfs:label "Every candidate is a taxon node, subordinate to the candidate it came from"@en ;
+    sh:targetClass pibe:Candidate ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        CONSTRUCT {
+            $this a pibe:TaxonNode ; rdfs:subClassOf ?parent .
+            $this pibe:differsBy ?feature ; pibe:branchKind ?kind .
+        }
+        WHERE {
+            $this pibe:derivedFrom ?parent .
+            $this pibe:decidedUpTo ?k .
+            ?space pibe:hasFeature ?feature . $this pibe:inSpace ?space .
+            ?feature pibe:featureIndex ?k .
+            BIND(IF(EXISTS { $this pibe:includes ?feature }, "takes", "leaves") AS ?kind)
+        }
+    """ ] .
+
+pibe:TaxonLeafRuleShape a sh:NodeShape ;
+    pibe:phase "taxonomy" ;
+    rdfs:label "A complete, admissible candidate is a leaf: one profile variant"@en ;
+    sh:targetClass pibe:CompleteCandidate ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this a pibe:ProfileVariant }
+        WHERE { FILTER NOT EXISTS { $this pibe:isInadmissible true } }
+    """ ] .
+
+pibe:TaxonDisjointRuleShape a sh:NodeShape ;
+    pibe:phase "taxonomy" ;
+    rdfs:label "Siblings are disjoint: one takes the feature the other leaves"@en ;
+    sh:targetClass pibe:Candidate ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        CONSTRUCT { $this owl:disjointWith ?sibling }
+        WHERE {
+            $this pibe:derivedFrom ?parent . ?sibling pibe:derivedFrom ?parent .
+            FILTER(STR($this) < STR(?sibling))
+        }
+    """ ] .
+
+pibe:TaxonForcedRuleShape a sh:NodeShape ;
+    pibe:phase "taxonomy" ;
+    rdfs:label "A single surviving child is a forced decision, not a branch"@en ;
+    sh:targetClass pibe:Candidate ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this pibe:forcedDecision true }
+        WHERE {
+            $this pibe:derivedFrom ?parent .
+            FILTER NOT EXISTS { ?other pibe:derivedFrom ?parent . FILTER(?other != $this) }
+        }
+    """ ] .
+
+pibe:TaxonomyPhase a pibe:Phase ; pibe:phaseName "taxonomy" ; pibe:phaseOrder 5 ;
+    rdfs:label "Taxonomy: express the branch structure the generation phase already built"@en .

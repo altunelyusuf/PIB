@@ -23,7 +23,7 @@ What is NOT here, deliberately: no enumeration, no constraint evaluation, no adm
 logic, no counting logic. Every one of those lives in SHACL rules and SPARQL. This file is a
 harness in the ordinary programming sense — it loads graphs, re-invokes the rule engine until
 the graph stops growing, runs one counting query, and prints. If a constraint's meaning ever
-needs changing, it is changed in `02-shacl-safeguards/pib_enumeration_rules_v2_2_0.ttl`, not
+needs changing, it is changed in `02-shacl-safeguards/pib_enumeration_rules_v2_3_0.ttl`, not
 here.
 
 Why the loop: generation branches one feature at a time, so a space of n features needs n
@@ -38,7 +38,7 @@ Usage:
 import sys, os
 
 RULES = os.path.join(os.path.dirname(__file__), "..", "02-shacl-safeguards",
-                     "pib_enumeration_rules_v2_2_0.ttl")
+                     "pib_enumeration_rules_v2_3_0.ttl")
 FIXTURES = os.path.join(os.path.dirname(__file__), "..", "12-operator-fixtures")
 
 CAPACITY_QUERY = """

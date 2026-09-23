@@ -1,16 +1,15 @@
-# PIB v2.13.0 — SHA-256 Manifest
-# MINOR from v2.12.0 (2026-09-23): the safe profile architecture, with computable enforcement.
-#   Derived from the algebra's OWN definition of mandatory -- 'the feature must appear in every variant' --
-#   which decides placement: a requirement true of every variant is a domain claim and belongs at meta;
-#   the choice operators (optional, exclusive, or, dependency, repetition) describe one variant and stay.
-#   - ADD 04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md: two layers, rules E0-E4, each with its enforcer.
-#   - ADD 03-tooling/profile_architecture_check_v1_0_0.py: E1 a meta rule must not reject a legal variant
-#     (enumerate each profile with and without the meta layer; a capacity drop is a failure), E2 a
-#     requirement every variant mandates belongs at meta (reported as a lift, since restatements drift).
-#   - ADD 12-operator-fixtures/profile_architecture_spaces_v1_0_0.ttl: a worked two-layer architecture.
-#   Proven: a one-variant rule misplaced at meta rejects 3 of 6 legal variants; a requirement restated by
-#   every variant is reported as a lift. Both rules exercised, neither decorative.
-#   Gates: reference, inbox, rule scope, scoped validation, architecture, capacity, operator, invariants.
+# PIB v2.14.0 — SHA-256 Manifest
+# MINOR from v2.13.0 (2026-09-23): the profile taxonomy, derived from the relationships themselves.
+#   Not authored and not generated twice: enumeration already builds the branch tree, so a taxonomy phase
+#   reads it. Interior nodes are partial commitments, leaves are variants.
+#   - Enumeration rules 2.2.0 -> 2.3.0: taxonomy phase (nodes and subordination, leaves, sibling
+#     disjointness by construction, forced decisions where pruning left one child).
+#   - ADD 03-tooling/profile_taxonomy_v1_0_0.py: renders the taxonomy and checks each operator's shape.
+#   - PROFILE_ARCHITECTURE: the derivation table — mandatory at meta contributes NO entry; in-profile
+#     mandatory a forced decision; optional 2; exclusive 3 (a, b, neither); or 3 (a, b, both); dependency
+#     and repetition prune without adding entries; independent groups are separate dimensions, not one tree.
+#   Worked capstone: 1 x 3 x 3 = 9, its published capacity reached independently of the counting path.
+#   Proven per operator: 2, 1, 3, 3, 3 leaves as each definition requires.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -18,7 +17,7 @@ b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/
 a60c5caaae626a26ee83181f4d953e6b5fe8ab4776789c86dc2953a7a1aecc3b  01-ontologies/pib_wiring_expressions_v1_0_0_2.ttl  (9478b)
 c7c77940f2e6ff3fcc0ee815995c6193081573508d898257edc3d6473b80858d  01-ontologies/profile_tbox_v1_2_0.ttl  (11683b)
 04465f049be2be7f1d0a1b3c5302e44ffc7def72a88faa4d347924aac6e9110d  02-shacl-safeguards/pib_consumer_registration_shacl_v1_1_0.ttl  (9746b)
-c3bda2c1e1e4b524ba2187c174a06b6a0abff0f85678c8ded9690eb9b3f2cce6  02-shacl-safeguards/pib_enumeration_rules_v2_2_0.ttl  (25192b)
+b19f053a4a3887691bdc566b5a14688220b7af40628215c39c24c0c4e864199a  02-shacl-safeguards/pib_enumeration_rules_v2_3_0.ttl  (30436b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
 266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
 4b8bd16bdbc183c1fa2fb750f0aa788de36b6d3b0c3e8a1244033816e800d471  03-tooling/consumer_registration_check_v1_0_0.py  (8876b)
@@ -27,16 +26,17 @@ c3bda2c1e1e4b524ba2187c174a06b6a0abff0f85678c8ded9690eb9b3f2cce6  02-shacl-safeg
 6de5a17005ffd79e031635152f6a667cbe48b85153c6afcbef122653f6de8fd6  03-tooling/profile_approval_v1_0_0.py  (12974b)
 231837999d87a43a353595e9817699e21a030a80dca7d0282e5e3a11ef206e58  03-tooling/profile_architecture_check_v1_0_0.py  (8134b)
 6f1a4960851eda325459781ac854f2528be3029477ea7bd133e575b5e00f2bed  03-tooling/profile_scoped_validate_v1_0_0.py  (7989b)
+64ee96b67e7ba04820deef2ddbe85081e9465891898c0296f325439d665d16df  03-tooling/profile_taxonomy_v1_0_0.py  (7695b)
 78257e8956e2c08be67bc386e31d07d9233ce60e20d7dbeba068d400f49d417e  03-tooling/reference_check_v1_0_0.py  (4581b)
 b03bf8fdcd66409eb1ffd9d49a2c878d714ad8f4948dab71596d6a2415bfcade  03-tooling/rule_scope_check_v1_0_0.py  (5652b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
 d9e6ab0e4c4cd61b3b0f3aaa07c2675d03c26a82ce7dc3b51b57d966e44c5024  03-tooling/taxonomy_vaf_converter_v1_0_0.py  (9813b)
-328f9e6635e2188456f91c88d973f5decce20573f93346406cf30e818d86b284  03-tooling/variation_capacity_v1_2_0.py  (10732b)
+d87d099b7941f5f922db93d48dbeb86f8d08c79490a978f762c924a564ee234e  03-tooling/variation_capacity_v1_2_0.py  (10732b)
 bd7e876397715a904936f01a27289d3ed15c16871db40ffd471caa9471ddae73  04-documentation/ADAPTATION_PLAN_VAF_v1_0_0.md  (10662b)
 399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
 9732a43c78c305f1d98d9af3fc26dfcfe0f1a630e03b49b091c317b644612d1c  04-documentation/BLUEPRINT_v1_0_0.md  (8101b)
 46fa7f5262078bed29d9268a721403d3ac8dc2dd21f67079acbb9346382ccebc  04-documentation/PHASE3_COMPOSITION_RECORD_v1_0_0.md  (4984b)
-f1c1452a03bfcd23cb35199ff351f9616816c208831c67f89020321498dfc01a  04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md  (4196b)
+83180ecbcc3f17174b0825653916b2111e5699b1dcee5e3b61cc048422adbef5  04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md  (7288b)
 10b39ee97f897b5f46116bbc86e3fdd743429409069189ff493476d6741d4614  04-documentation/PROPOSAL_DISPOSITION_v1_0_0.md  (1814b)
 35b5daf6d14059a3d9fd0ea68644f49c81836ec73ef55af381c9aa1e40c6a132  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (3351b)
 0c157d6565f7247a9297671c1c383787749acdd7504ecbc62a55b166de30248b  04-documentation/README.md  (4333b)
@@ -109,4 +109,4 @@ b367b06fcb5085eeacf84ef84c7bd3f6552290619dab80d0e316c0b09bf6fcdb  GOVERNANCE.md 
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 1fd3c009f09c5a48488352720b963321ea9b359b91175676e31c59d927b938b9  README.md  (8055b)
-127662056a25294fe93b2d6c4c05c9f6e1556c55a1cfcd02fef79f33b08be2d6  VERSION.txt  (7b)
+36f3b0aa0b0b23b4fd1023df32f7f243ad1e83d1970b435b5bb3a431379ecbd6  VERSION.txt  (7b)
