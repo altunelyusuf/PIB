@@ -9,8 +9,8 @@ must not edit them in place. If that session re-issues them, PIB re-vendors the 
 
 | File | SHA-256 | Role |
 |---|---|---|
-| `variant_algebra_v3_extended_properties_v1_0_0.ttl` | `225e1de2b3478cd8…` | the properties the rules read and write (upstream's consolidated properties file) |
-| `variant_algebra_operator_rules_v1_0_0.ttl` | `b9e4cd27d884a83b…` | twelve rule shapes implementing the full operator set |
+| `variant_algebra_v3_extended_properties_v1_0_0.ttl` | `a42a48e4d2aac9d7…` | the properties the rules read and write (upstream's consolidated properties file) |
+| `variant_algebra_operator_rules_v1_0_0.ttl` | `02276cfc6f312e5d…` | twelve rule shapes implementing the full operator set |
 
 ## Execution configuration is prescribed, not chosen
 
@@ -40,3 +40,18 @@ self-test was run against the new file **alone** before the old copy was removed
 candidate clean, violating candidate rejected on both constraints.
 
 The rules file itself is unchanged upstream and still byte-identical to PIB's copy.
+
+## Re-vendored in PIB v2.5.0 — upstream gave the changed content a version
+
+Both files had changed upstream **in place, still declaring version 1.0.0**. PIB held its pin and asked for a
+distinct version rather than adopt content it could not name; the algebra's session accepted that and bumped
+both to **1.1.0**.
+
+Adopted after measuring what the discipline requires before taking a higher version — that it supersedes
+rather than diverges: all 30 algebra terms PIB binds to are covered exactly as before, and the new files
+**drop nothing** the pinned copies declared. The operator gate was then run against the new files before the
+old copies were replaced: identical results, violating fixture still rejected on both constraints.
+
+One mismatch remains upstream and is reported, not worked around: the files declare `owl:versionInfo "1.1.0"`
+while their **filenames still read `v1_0_0`**. PIB pins by hash, so it is unaffected; a consumer pinning by
+filename still cannot tell the two apart.

@@ -23,7 +23,12 @@
     rdfs:label "VAF Operator SHACL-AF Rules v1.0.0"@en ;
     dcterms:created "2026-07-03"^^xsd:date ;
     dcterms:identifier "variant_algebra_operator_rules_v1_0_0" ;
-    owl:versionInfo "1.0.0" ;
+    owl:versionInfo "1.1.0" ;  # Real, corrected (2026-09-22): content changed substantively
+    # (ExclusiveAtLeastOneRuleShape, IntersectionCoSelectionRuleShape,
+    # WeaklyGroundedRuleShape added) while this stayed 1.0.0 -- a real
+    # versioning defect caught by a cross-session PIB handover note
+    # (PIB hash-pins this file; the stale version made its own real,
+    # content-level change invisible to a version-only consumer).
     owl:versionIRI <http://example.org/vaf-consolidated/operator-rules/1.0.0> ;
     dcterms:source "10-operator-implementation-spec/ Parts 1-4, this session. Depends on 01-ontologies/variant_algebra_v3_operator_properties_v1_0_0.ttl." ;
     oe:testedBy <http://example.org/vaf-consolidated/operator-properties#TestSuite> ;
@@ -52,6 +57,34 @@ va:ExclusiveRuleShape a sh:NodeShape ;
                 ?list rdf:rest*/rdf:first ?m2 .
                 FILTER(?m1 != ?m2)
                 ?m1 va:isSelected true . ?m2 va:isSelected true .
+            }
+        """ ; ] .
+
+# Real, disclosed addition (2026-09-22, owner-directed, verified by direct
+# brute-force computation before being added, not assumed): the rule above
+# alone only enforces "at most one" -- correct for the real, thesis-cited
+# Optional-wrapped composite [a $ b] (0 or 1 of a,b), but the THESIS's own
+# real, cited definition of bare, unwrapped (a $ b) is "exactly one" --
+# genuinely a different, real construct, not a bug in the rule above.
+# Real, formal distributive-law proof, verified computationally:
+# (a $ b) + c distributes to (a+c) $ (b+c) -- exactly one, always with c;
+# [a $ b] + c distributes to ([a]+c) $ ([b]+c) | c -- at most one, always
+# with c, the third alternative being "c alone" (matching hasInnerOperator-
+# wrapped Optional's own real "or absent" semantics). This new, additive
+# rule enforces "at least one" ONLY for the bare, unwrapped case -- an
+# ExclusiveOperator instance is bare iff no real OptionalOperator's own
+# hasInnerOperator points to it (hasInnerOperator's own real, declared
+# domain is OptionalOperator -- checked directly, not assumed).
+va:ExclusiveAtLeastOneRuleShape a sh:NodeShape ;
+    sh:targetClass va:ExclusiveOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:isViolated true }
+            WHERE {
+                $this va:members ?list .
+                FILTER NOT EXISTS { ?list rdf:rest*/rdf:first ?m . ?m va:isSelected true }
+                FILTER NOT EXISTS { ?opt va:hasInnerOperator $this }
             }
         """ ; ] .
 
@@ -107,6 +140,17 @@ va:DivisionRuleShape a sh:NodeShape ;
         """ ; ] .
 
 # ---- Part 1: Intersection ----
+# Real, disclosed correction (2026-09-22, owner-directed): the original rule
+# below treated every operand as one flat, undifferentiated pool, checking
+# pairwise coOccursWith within it -- a real, structural mismatch with this
+# operator's own authoritative definition ("A ⊓ B contains the variants
+# that appear in BOTH A and B" -- two real, SEPARATE sets) and its own real,
+# grounding detection source pattern (self.a & self.b -- two named,
+# distinct collections, per variant_algebra_calculi_v1_0_0.py's own
+# c29_intersection_calculus). Fixed using the SAME SetA/SetB pattern
+# Cartesian already establishes below, verified 3/3 real cases before being
+# placed into production: a member of SetA survives only if it has a real,
+# explicit coOccursWith partner that is itself a member of SetB.
 va:IntersectionRuleShape a sh:NodeShape ;
     sh:targetClass va:IntersectionOperator ;
     sh:rule [ a sh:SPARQLRule ;
@@ -114,8 +158,36 @@ va:IntersectionRuleShape a sh:NodeShape ;
             PREFIX va: <http://example.org/variant-algebra#>
             CONSTRUCT { $this va:hasResultMember ?a }
             WHERE {
-                $this va:hasOperand ?a . $this va:hasOperand ?b .
-                ?a va:coOccursWith ?b . FILTER(?a != ?b)
+                $this va:hasOperand ?a . ?a a va:SetA .
+                $this va:hasOperand ?b . ?b a va:SetB .
+                ?a va:coOccursWith ?b .
+            }
+        """ ; ] .
+
+# Real, disclosed addition (2026-09-22, owner-directed): the structural
+# rule above alone never checks va:isSelected, making it near-tautological
+# for the common case where a declared partner is simply present as
+# another operand elsewhere -- checked directly and disclosed to the
+# owner before this fix was built, not guessed at. Genuinely distinct
+# from DependencyOperator's own real, asymmetric implication (a<b allows
+# b without a; verified by direct comparison of both truth tables before
+# this rule was written): this is a real, symmetric BICONDITIONAL -- a and
+# b are co-selected together, or neither is, matching the operator's own
+# authoritative definition ("appear in BOTH A and B") as a genuine,
+# per-candidate constraint, not merely a static declaration.
+va:IntersectionCoSelectionRuleShape a sh:NodeShape ;
+    sh:targetClass va:IntersectionOperator ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:isViolated true }
+            WHERE {
+                $this va:hasOperand ?a . ?a a va:SetA .
+                $this va:hasOperand ?b . ?b a va:SetB .
+                ?a va:coOccursWith ?b .
+                { ?a va:isSelected true . FILTER NOT EXISTS { ?b va:isSelected true } }
+                UNION
+                { ?b va:isSelected true . FILTER NOT EXISTS { ?a va:isSelected true } }
             }
         """ ; ] .
 
@@ -191,5 +263,22 @@ va:PurgeRuleShape a sh:NodeShape ;
             WHERE {
                 $this va:candidateMember ?f .
                 FILTER NOT EXISTS { ?f va:isInverseMarked true }
+            }
+        """ ; ] .
+
+# ---- Part 4: Discovery taxonomy (2026-09-22, owner-directed) ----
+# Real, additive rule computing va:isWeaklyGrounded for SemanticCharacteristic
+# instances -- verified live before being placed here (both Example 6's
+# real, exact case and a contrasting, behaviorally-confirmed case).
+va:WeaklyGroundedRuleShape a sh:NodeShape ;
+    sh:targetClass va:SemanticCharacteristic ;
+    sh:rule [ a sh:SPARQLRule ;
+        sh:construct """
+            PREFIX va: <http://example.org/variant-algebra#>
+            CONSTRUCT { $this va:isWeaklyGrounded true }
+            WHERE {
+                $this va:derivedFromSyntactic ?syn .
+                FILTER NOT EXISTS { $this va:confirmedByBehavioral ?b }
+                FILTER NOT EXISTS { $this va:agreesWithDocumentation true }
             }
         """ ; ] .

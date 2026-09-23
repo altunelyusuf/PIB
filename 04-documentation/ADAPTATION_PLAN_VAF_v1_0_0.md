@@ -87,3 +87,36 @@ text; nothing today needs it.
   are candidate-scoped so a whole space can be evaluated at once. That distinction is the reason PIB's rules
   exist and is unaffected by any of the above.
 - **Published capacities stay.** 9 and 1 are unchanged by every item here.
+
+---
+
+## Execution record (appended 2026-09-22, PIB v2.5.0) — do not rewrite the plan above
+
+**Item 1 — exclusive semantics: DONE** in v2.4.0. The mapping is recorded in the wiring-expression
+vocabulary; published capacities unchanged.
+
+**Item 2 — vendored drift: DONE.** The algebra's session accepted PIB's finding and gave both files a
+distinct version (`1.1.0`). PIB adopted them after measuring what the discipline requires before taking a
+higher version: all 30 algebra terms PIB binds to are covered, and the new files drop nothing. The operator
+gate was run against them before replacing the old copies — identical results.
+
+*Reported back, not worked around:* the files declare version 1.1.0 while their **filenames still read
+`v1_0_0`**, so a consumer pinning by filename still cannot distinguish them.
+
+**Item 3 — delegate the set-level operators: RESOLVED, no build needed.** Measured rather than assumed. The
+algebra's operators — including the newly ontology-native ones — work at **element level**: the intersection
+rule intersects operands that co-occur. PIB's question is **set-level**: which whole wirings are admissible
+under two profiles at once. On the same subject matter the algebra's rule returns one element while PIB's
+enumeration returns a capacity of 2. Different arities; delegating the first does not answer the second.
+
+**Decision:** keep PIB's six declared-but-unused operators as what they are — expression constructors at
+element level — with the arity now stated in the vocabulary, and keep PIB's enumeration for set-level
+questions. Nothing is duplicated: PIB does not implement the element-level operators, it uses the algebra's.
+
+*Found while testing, reported to the algebra:* v1.1.0's intersection rule now requires each operand to be
+typed as one side of the intersection (`SetA`/`SetB`); the version PIB previously vendored matched any
+operands. A prior consumer's data silently returns nothing under the new rule. PIB's own gate did not catch
+it because the gate exercises repetition and exclusion, not intersection.
+
+**Items 4, 5 — awaiting the owner's decision**, as agreed: whether a featureless space is invalid or has
+capacity 1, and whether PIB needs a written concrete syntax for its expressions.

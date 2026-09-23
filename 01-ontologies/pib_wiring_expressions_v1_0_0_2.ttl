@@ -12,9 +12,9 @@
 
 <http://purl.org/pib/wiring-expression>
     a owl:Ontology ;
-    owl:versionInfo "1.0.0.1" ;
-    owl:versionIRI <http://purl.org/pib/wiring-expression/1.0.0.1> ;
-    owl:priorVersion <http://purl.org/pib/wiring-expression/1.0.0> ;
+    owl:versionInfo "1.0.0.2" ;
+    owl:versionIRI <http://purl.org/pib/wiring-expression/1.0.0.2> ;
+    owl:priorVersion <http://purl.org/pib/wiring-expression/1.0.0.1> ;
     rdfs:label "PIB wiring expressions — nested operator expressions over integration wirings"@en ;
     dcterms:description "Lets a PIB wiring constraint be written as a NESTED EXPRESSION built from the variant algebra's operators, rather than as a flat list of operator applications. The algebra's operators are constructors in an expression language, not a fixed menu of features: composing them expresses constraints none of them expresses alone (a k-of-n bound, for example, is not expressible with mandatory, optional, exclusive, or, or dependency, but is expressible by composing repetition with a contributes-to grouping). This vocabulary therefore REFERENCES the algebra's own operator classes and operand/nesting predicates rather than redeclaring them — the algebra stays with its owner — and adds only what is genuinely PIB's: the binding from an expression to the wiring it governs, and the named operator individuals PIB applies. Complete adoption: all twelve concrete operators are available, not the six the previously pinned engine generation carried."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
@@ -81,7 +81,8 @@ pibx:Inverse a va:InverseOperator, owl:NamedIndividual ;
 pibx:Division a va:DivisionOperator, owl:NamedIndividual ;
     rdfs:label "Division — removes elements cancelled by another operand"@en .
 pibx:Intersection a va:IntersectionOperator, owl:NamedIndividual ;
-    rdfs:label "Intersection — retains only operands jointly present"@en .
+    rdfs:label "Intersection — retains only operands jointly present"@en ;
+    skos:scopeNote "ELEMENT-level, like the algebra's rule that implements it: it intersects operands that co-occur, not sets of whole wirings. The question 'which wirings are admissible under two profiles at once' is set-level and is answered by enumerating both profiles' constraints in one space, not by this operator. Measured 2026-09-22: on the same subject matter the algebra's rule returns one element while the enumeration returns a capacity of 2. The same distinction applies to addition, subtraction, division, inverse and cartesian here."@en .
 pibx:Cartesian a va:CartesianOperator, owl:NamedIndividual ;
     rdfs:label "Cartesian — pairs every member of one operand set with every member of the other"@en .
 

@@ -120,7 +120,10 @@
     rdfs:comment "Real merger of 8 formerly-separate v3 properties files (code-analysis, deployment-calculus, general-bridge, operator, purpose-attribution, purpose-target-selection, rdodi-domain-translation, semantic-marker) -- 432 real content triples, verified equal to the sum of the 8 originals' real content."@en,
         "Real, 3-round merger of 21 formerly-separate small TBox files. See this file's own header comment for full, real provenance of every original."@en,
         "Round 4 (2026-09-21): variant_algebra_assembly_model_v1_0_0 (\"Variant Algebra Assembly Model v1.0.0\") added -- 257 real content triples, zero coupling, zero collision, zero real active consumers found."@en ;
-    owl:versionInfo "1.0.0" .
+    owl:versionInfo "1.1.0" .
+    # Real, corrected (2026-09-22): calculus implementation hashes
+    # updated while this stayed 1.0.0 -- same real versioning defect,
+    # same cross-session PIB handover note (PIB hash-pins this file too).
 
 <http://example.org/vaf-consolidated/general-bridge-properties#TestSuite> a oe:TestSuite ;
     rdfs:label "testdrive_general_bridge_v1_0_0.py"@en ;
@@ -152,7 +155,7 @@ va:AnthropicProvider a owl:Class ;
     rdfs:subClassOf va:LLMProvider ;
     skos:definition "Concrete LLMProvider binding to the Anthropic v1 messages endpoint. Uses stdlib urllib.request. API key resolved from constructor argument or ANTHROPIC_API_KEY environment variable. Raises LLMProviderError on any non-2xx response. Retries 5xx up to three attempts with exponential backoff." .
 
-va:AttributeUsageCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+va:AttributeUsageCalculus va:calculusImplementationSHA256 "efcdf7e767e16aee82984fa0d2fb7da6ff8899dd5b1eae936cc4f29de13f0fda"^^xsd:string ;
     va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesAttributeDependency ?a } WHERE { $this va:readsAttribute ?a . FILTER NOT EXISTS { $this va:writesAttribute ?a } }"^^xsd:string ;
     dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c1_attribute_usage_calculus(). Tested (test file above): detects self.X reads outside assignment LHS; verified negative case (does not flag an attribute that's never read). ALSO now backed by va:hasConstructQuery -- the shape's own PREFERRED form (vaf_invariants_v1_1_0.ttl Shape_CalculusContent) -- real SHACL-AF rule at 02-shacl-safeguards/variant_algebra_code_analysis_rules_v1_0_0.ttl (va:C1RuleShape), verified identical to this Python function's output on the same fixture (10-operator-implementation-spec/testdrive_calculus_rules.py)."@en .
 
@@ -180,7 +183,7 @@ va:CheckOutcome a owl:Class ;
     rdfs:subClassOf oe:EngineeringArtefact ;
     skos:definition "Result of evaluating one ContractCheck during sandbox execution. Carries the check kind and target, a boolean passed flag, and a detail string describing the observed outcome (e.g. attribute value type, exception class and message)." .
 
-va:CollectionInitCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+va:CollectionInitCalculus va:calculusImplementationSHA256 "efcdf7e767e16aee82984fa0d2fb7da6ff8899dd5b1eae936cc4f29de13f0fda"^^xsd:string ;
     va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesOperatorRefinement 'RepetitionOperator' } WHERE { $this va:isCollectionTyped true }"^^xsd:string ;
     dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c6_collection_init_calculus(). Tested: detects list/dict/set literals and list()/dict()/set()/deque()/OrderedDict() constructor calls in __init__; verified a non-collection attribute is correctly excluded. ALSO now backed by va:hasConstructQuery (va:C6RuleShape), verified identical to Python's output."@en .
 
@@ -196,7 +199,7 @@ va:ContractCheck a owl:Class ;
     rdfs:subClassOf oe:EngineeringArtefact ;
     skos:definition "One runtime assertion derived mechanically from a Variant. Kinds: instantiate (the component class must instantiate without raising), attribute (each selected singleton feature must be a non-None attribute on the instance), repetition (each feature with count greater than one must produce count-many non-None suffixed attributes)." .
 
-va:CrossFileCallCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+va:CrossFileCallCalculus va:calculusImplementationSHA256 "efcdf7e767e16aee82984fa0d2fb7da6ff8899dd5b1eae936cc4f29de13f0fda"^^xsd:string ;
     va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesExternalDependency ?resolved } WHERE { $this va:callsResolvedCrossFile ?resolved }"^^xsd:string ;
     dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c8_cross_file_call_calculus(). Tested against BOTH real Python import forms (`from module import name; name()` and `import module; module.name()`) -- the second form was a real bug found and fixed during this session's testing, not present in the first draft. ALSO now backed by va:hasConstructQuery (va:C8RuleShape). NOTE (disclosed, not silently assumed): va:proposesExternalDependency is shared with C4/C9 based on their source AST facts being disjoint, but this sharing was NOT independently joint-tested the way C1/C2/C3/C7's commingling was found and fixed -- flagged as follow-up work."@en .
 
@@ -206,7 +209,7 @@ va:DecompositionBackend a owl:Class ;
     rdfs:subClassOf va:EnumerationBackend ;
     skos:definition "Thesis-native backend. Partitions features into constraint-connected groups via Tarjan SCC analysis over the operator hypergraph, enumerates each group locally with unit propagation and backtracking, and combines per-group variant sets via Cartesian product. Asymptotically superior to BruteForceBackend on specs with disconnected constraint clusters. Correctness empirically gated against BruteForceBackend via differential testing." .
 
-va:DecoratorRoleCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+va:DecoratorRoleCalculus va:calculusImplementationSHA256 "efcdf7e767e16aee82984fa0d2fb7da6ff8899dd5b1eae936cc4f29de13f0fda"^^xsd:string ;
     va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesOperatorRefinement ?op } WHERE { { $this va:hasDecorator 'property' . BIND('MandatoryOperator' AS ?op) } UNION { $this va:hasDecorator ?d . FILTER(?d = 'classmethod' || ?d = 'staticmethod') . BIND('OptionalOperator' AS ?op) } }"^^xsd:string ;
     dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c5_decorator_role_calculus(). Tested: @property -> MandatoryOperator, @classmethod/@staticmethod -> OptionalOperator, undecorated -> None (all three cases verified). ALSO now backed by va:hasConstructQuery (va:C5RuleShape), verified identical to Python's output."@en .
 
@@ -247,11 +250,11 @@ va:ExecutionReport a owl:Class ;
     rdfs:subClassOf oe:EngineeringArtefact ;
     skos:definition "Structured outcome of one sandbox execution. Carries an outcome (PASS, FAIL, EXCEPTION, TIMEOUT, OOM, CPU, INTERNAL), wall-clock elapsed milliseconds, exit code, one CheckOutcome per contract check, truncated stdout and stderr, and exception class plus message when applicable." .
 
-va:ExternalCallCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+va:ExternalCallCalculus va:calculusImplementationSHA256 "efcdf7e767e16aee82984fa0d2fb7da6ff8899dd5b1eae936cc4f29de13f0fda"^^xsd:string ;
     va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesExternalDependency ?f } WHERE { $this va:callsExternalFunction ?f }"^^xsd:string ;
     dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c4_external_call_calculus(). Tested against the fixture and self-referentially against real shipped runtime code (variant_dsl_parser_v1_0_0.py), producing plausible, non-crashing output. ALSO now backed by va:hasConstructQuery (va:C4RuleShape), verified identical to Python's output."@en .
 
-va:ExternalSymbolCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+va:ExternalSymbolCalculus va:calculusImplementationSHA256 "efcdf7e767e16aee82984fa0d2fb7da6ff8899dd5b1eae936cc4f29de13f0fda"^^xsd:string ;
     va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesExternalDependency ?sym } WHERE { $this va:callsUnresolvedExternal ?sym }"^^xsd:string ;
     dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c9_external_symbol_calculus(). Tested: flags a genuinely-unresolvable external import, module-qualified in its symbol name (a second real bug -- the first version discarded the module identity for attribute-style calls -- found and fixed during this session's testing), and verified it stays silent when C8 already resolved the call. ALSO now backed by va:hasConstructQuery (va:C9RuleShape). Same disclosed sharing note as C8 above."@en .
 
@@ -297,7 +300,7 @@ va:FeedbackSession a owl:Class ;
     rdfs:subClassOf oe:EngineeringArtefact ;
     skos:definition "Record of one FeedbackLoop run on a single SynthesisRequest. Carries the request, an ordered list of FeedbackAttempt individuals, the termination reason string, and the final SynthesisVerdict. Complete history of a loop run, PROV-O-serialisable." .
 
-va:InitDependencyCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+va:InitDependencyCalculus va:calculusImplementationSHA256 "efcdf7e767e16aee82984fa0d2fb7da6ff8899dd5b1eae936cc4f29de13f0fda"^^xsd:string ;
     va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesInitDependency true } WHERE { $this va:readsAttribute ?a . ?a va:isInitDeclared true . }"^^xsd:string ;
     dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c3_init_dependency_calculus(). Tested: detects methods reading __init__-declared attributes; verified negative case (a method with no such read is correctly omitted). ALSO now backed by va:hasConstructQuery (va:C3RuleShape), verified identical to Python's output."@en .
 
@@ -322,7 +325,7 @@ va:LazyEnumeration a owl:Class ;
     rdfs:subClassOf va:EnumerationStrategy ;
     skos:definition "On-demand iteration without full materialisation." .
 
-va:MethodCallCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+va:MethodCallCalculus va:calculusImplementationSHA256 "efcdf7e767e16aee82984fa0d2fb7da6ff8899dd5b1eae936cc4f29de13f0fda"^^xsd:string ;
     va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesCallDependency ?called } WHERE { $this va:callsSelfMethod ?called }"^^xsd:string ;
     dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c2_method_call_calculus(). Tested: detects self.B() calls within a method body. ALSO now backed by va:hasConstructQuery (va:C2RuleShape), verified identical to Python's output."@en .
 
@@ -480,7 +483,7 @@ va:SynthesisVerdict a owl:Class ;
     dcterms:source "variant_algebra_v2_10_0.ttl, carried forward verbatim." ;
     skos:definition "The verifier's judgement on a SynthesisResult. Carries an outcome (PASS, FAIL, or WARN), a structured reason, and optionally a list of violated contract elements. Authored by the verifier pipeline independently of the synthesis backend; the two are deliberately decoupled so the verifier cannot be gamed by the backend." .
 
-va:TransitiveClosureCalculus va:calculusImplementationSHA256 "a7e23e9dd2871fbfbaa4251ee742542fe906776292846284471dcd6bf0551379"^^xsd:string ;
+va:TransitiveClosureCalculus va:calculusImplementationSHA256 "efcdf7e767e16aee82984fa0d2fb7da6ff8899dd5b1eae936cc4f29de13f0fda"^^xsd:string ;
     va:hasConstructQuery "PREFIX va: <http://example.org/variant-algebra#> CONSTRUCT { $this va:proposesTransitiveDependency ?c } WHERE { $this va:callsSelfMethod ?b . ?b va:callsSelfMethod ?c . FILTER NOT EXISTS { $this va:callsSelfMethod ?c } }"^^xsd:string ;
     dcterms:source "06-runtime/src/variant_detection_calculi_v1_0_0.py, function c7_transitive_closure_calculus(). Tested: computes a genuinely-implied 2-hop edge from direct C2 edges, and verifies the implied edge is not already present as a direct edge (avoids double-reporting). ALSO now backed by va:hasConstructQuery (va:C7RuleShape), verified identical to Python's output."@en .
 
@@ -1398,3 +1401,93 @@ va:Implementation a owl:Class ;
     rdfs:isDefinedBy <http://example.org/variant-algebra/assembly-model> ;
     skos:definition "A concrete realisation of a variant, carrying its Python source. Every Implementation implements at least one Interface; each operation declared in that interface must correspond to a method in the implementation's source. Implementations are what the assembler actually composes into applications."@en .
 
+
+#################################################################
+# Round 5 (2026-09-21): 7 real DetectionCalculus individuals (C22-C28)
+# added, closing a real, disclosed coverage gap -- checked directly, the
+# prior C1-C9 (+ C10-C13 semantic markers) covered only 4 of 11 real,
+# non-deprecated operators (Mandatory, Optional, Repetition, Dependency).
+# ExclusiveOperator, OrOperator, and the 5 AlgebraicOperator members had
+# zero prior detection coverage. Executable backing:
+# 06-runtime/src/variant_algebra_calculi_v1_0_0.py, real SHA-256 below,
+# same pattern as C1-C9 (the whole file's own hash, not per-function).
+#
+# Also fixed in this round: C1-C9's own calculusImplementationSHA256 was
+# real, pre-existing, stale (from an earlier session's v1.63.0 edit that
+# never updated the recorded hash) -- corrected to the file's real,
+# current hash, found and disclosed while adding these 7.
+#################################################################
+
+va:ExclusiveOperatorCalculus a va:DetectionCalculus, owl:NamedIndividual ;
+    rdfs:label "Exclusive-Branch Calculus (C22)"@en ;
+    dcterms:source "This session, 2026-09-21. Closes a real, disclosed gap: ExclusiveOperator had zero prior detection coverage." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Calculus C22: inside __init__, an if/elif chain where each branch assigns exactly one, distinct self.-attribute (no attribute repeated across branches, no branch assigning more than one) proposes an ExclusiveOperator pairing between every pair of those attributes. Grounded in thesis eq. 2.35, (a $ b) -- exactly one of the operands appears in a variant." ;
+    skos:example "class Payment: if kind=='card': self.card_token=x elif kind=='bank': self.bank_iban=y -> C22 proposes card_token $ bank_iban." ;
+    va:calculusImplementationSHA256 "c4a91cd548462f271f657d2842478d9cd073fc3c9c60d801384ac497ef78877d"^^xsd:string .
+
+va:OrOperatorCalculus a va:DetectionCalculus, owl:NamedIndividual ;
+    rdfs:label "Or-Condition Calculus (C23)"@en ;
+    dcterms:source "This session, 2026-09-21. Closes a real, disclosed gap: OrOperator had zero prior detection coverage." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Calculus C23: a real Python boolean 'or' expression directly combining two self.-attribute reads proposes an OrOperator pairing between them -- Python's own 'or' semantics (true if either or both) match thesis eq. 2.34 exactly, not by analogy." ;
+    skos:example "return self.a or self.b -> C23 proposes a | b." ;
+    va:calculusImplementationSHA256 "c4a91cd548462f271f657d2842478d9cd073fc3c9c60d801384ac497ef78877d"^^xsd:string .
+
+va:AdditionOperatorCalculus a va:DetectionCalculus, owl:NamedIndividual ;
+    rdfs:label "Addition (Co-Inclusion) Calculus (C24)"@en ;
+    dcterms:source "This session, 2026-09-21. Closes a real, disclosed gap: AdditionOperator had zero prior detection coverage." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Calculus C24: a real, single Python tuple-unpacking assignment in __init__ ('self.a, self.b = x, y') proposes an AdditionOperator pairing -- both attributes introduced together as one real, atomic co-inclusion, matching thesis eq. 2.28's 'introduces both operands into the same entity set' precisely." ;
+    skos:example "self.lat, self.lon = 0.0, 0.0 -> C24 proposes lat + lon." ;
+    va:calculusImplementationSHA256 "c4a91cd548462f271f657d2842478d9cd073fc3c9c60d801384ac497ef78877d"^^xsd:string .
+
+va:SubtractionOperatorCalculus a va:DetectionCalculus, owl:NamedIndividual ;
+    rdfs:label "Guarded-Removal (Subtraction) Calculus (C25)"@en ;
+    dcterms:source "This session, 2026-09-21. Closes a real, disclosed gap: SubtractionOperator had zero prior detection coverage." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Calculus C25: a real method that removes an element from one self-collection (.remove/.discard/.pop, or 'del'), conditionally guarded by an 'if' reading a DIFFERENT self-attribute, proposes a SubtractionOperator pairing -- the guard's presence causes the target's exclusion, matching thesis eq. 2.29's 'introduces the inverse of the second operand' (non-commutative)." ;
+    skos:example "if self.expired: self.entries.remove(self.victim) -> C25 proposes entries - expired." ;
+    va:calculusImplementationSHA256 "c4a91cd548462f271f657d2842478d9cd073fc3c9c60d801384ac497ef78877d"^^xsd:string .
+
+va:CartesianOperatorCalculus a va:DetectionCalculus, owl:NamedIndividual ;
+    rdfs:label "Nested-Loop (Cartesian) Calculus (C26)"@en ;
+    dcterms:source "This session, 2026-09-21. Closes a real, disclosed gap: CartesianOperator had zero prior detection coverage." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Calculus C26: a real 'for' loop over self.X whose body contains a nested 'for' loop over a DIFFERENT self.Y proposes a CartesianOperator pairing -- Python's own literal nested-loop, all-pairings structure matches thesis eq. 2.30-2.31 (A x B = all pairings) directly." ;
+    skos:example "for w in self.warehouses: for c in self.carriers: yield (w,c) -> C26 proposes warehouses * carriers." ;
+    va:calculusImplementationSHA256 "c4a91cd548462f271f657d2842478d9cd073fc3c9c60d801384ac497ef78877d"^^xsd:string .
+
+va:DivisionOperatorCalculus a va:DetectionCalculus, owl:NamedIndividual ;
+    rdfs:label "Set-Difference (Division) Calculus (C27)"@en ;
+    dcterms:source "This session, 2026-09-21. Closes a real, disclosed gap: DivisionOperator had zero prior detection coverage." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Calculus C27: Python's own real set-difference operator or method between two self-attributes ('self.a - self.b', or '.difference()') proposes a DivisionOperator pairing -- Python's own set semantics (remove common elements, non-commutative) match thesis eq. 2.32-2.33 exactly, not by analogy." ;
+    skos:example "return self.all_users - self.banned_users -> C27 proposes all_users / banned_users." ;
+    va:calculusImplementationSHA256 "c4a91cd548462f271f657d2842478d9cd073fc3c9c60d801384ac497ef78877d"^^xsd:string .
+
+va:InverseOperatorCalculus a va:DetectionCalculus, owl:NamedIndividual ;
+    rdfs:label "Unary-Inverse Calculus (C28)"@en ;
+    dcterms:source "This session, 2026-09-21. Closes a real, disclosed gap: InverseOperator had zero prior detection coverage." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Calculus C28: a real, unary 'not self.X' expression, or a real 'del self.X' statement, proposes an InverseOperator refinement for X -- Python's own literal unary/removal forms match thesis section 2.2.3's 'unary inverse... removed from the feature set' directly." ;
+    skos:example "return not self.visible -> C28 proposes !visible." ;
+    va:calculusImplementationSHA256 "c4a91cd548462f271f657d2842478d9cd073fc3c9c60d801384ac497ef78877d"^^xsd:string .
+
+#################################################################
+# Round 6 (2026-09-21): 1 more real DetectionCalculus (C29) -- found
+# while directly re-checking coverage at the owner's own request. A real,
+# 13th concrete operator, IntersectionOperator (a direct leaf of
+# va:Operator, added v3.2.0 per blueprint v3.0.4 lock #5b, distinct from
+# DivisionOperator's complementary "removes common elements"), had zero
+# prior detection coverage -- missed in rounds 1-5 because it wasn't
+# grouped under any of the operator names this session had already swept.
+#################################################################
+
+va:IntersectionOperatorCalculus a va:DetectionCalculus, owl:NamedIndividual ;
+    rdfs:label "Set-Intersection Calculus (C29)"@en ;
+    dcterms:source "This session, 2026-09-21. Closes a real, disclosed gap found by re-checking coverage directly: IntersectionOperator, a real 13th concrete operator, had zero prior detection coverage." ;
+    rdfs:isDefinedBy <http://example.org/variant-algebra> ;
+    skos:definition "Calculus C29: Python's own real set-intersection operator or method between two self-attributes ('self.a & self.b', or '.intersection()') proposes an IntersectionOperator pairing -- Python's own set semantics (elements in both) match the real ontology definition exactly, not by analogy. Directly analogous to C27's mapping for the complementary DivisionOperator." ;
+    skos:example "return self.admins & self.editors -> C29 proposes admins ⊓ editors." ;
+    va:calculusImplementationSHA256 "c4a91cd548462f271f657d2842478d9cd073fc3c9c60d801384ac497ef78877d"^^xsd:string .

@@ -1,24 +1,25 @@
-# PIB v2.4.1 — SHA-256 Manifest
-# PATCH from v2.4.0 (2026-09-22): fixes a gate that v2.4.0 shipped broken.
-#   v2.4.0 renamed the wiring-expressions ontology to 1.0.0.1 but left the operator rule runner pointing at
-#   the old filename, so the operator gate raised FileNotFoundError instead of running. The release output
-#   printed 'stale refs: 1' on the line above and the release was pushed anyway.
-#   - operator_rule_runner repointed to pib_wiring_expressions_v1_0_0_1.ttl.
-#   Gates re-run, all three green: 8 capacity spaces match; operator gate rejects its violating fixture;
-#   invariants 0 violations.
+# PIB v2.5.0 — SHA-256 Manifest
+# MINOR from v2.4.1 (2026-09-22): adaptation plan items 2 and 3 executed.
+#   - 11-vendored-operator-rules: re-vendored at upstream's new version 1.1.0, after measuring coverage
+#     (all 30 algebra terms PIB binds to still covered, nothing dropped) and re-running the gate first.
+#   - Item 3 resolved WITHOUT a build: upstream's operators are element-level, PIB's question is set-level.
+#     Measured: their intersection returns 1 element where PIB's enumeration returns a capacity of 2.
+#   - Wiring expressions 1.0.0.1 -> 1.0.0.2: the arity distinction now stated in the vocabulary.
+#   - ADD 10-experiments/probe_delegate_set_level_operators; plan updated with an execution record.
+#   Gates: 8 capacity spaces match; operator gate rejects its violating fixture; invariants 0 violations.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
 7dbc559e2f70b04d285048c99b8bbe0e03c7e4edb8220fda17b9518a499e257c  01-ontologies/pib_wiring_composition_v1_0_0.ttl  (3804b)
-daafdf2c387dc47d36c6ddd8fbefd359c9dfc8f69b0e10d48245a626da62d93d  01-ontologies/pib_wiring_expressions_v1_0_0_1.ttl  (8921b)
+a60c5caaae626a26ee83181f4d953e6b5fe8ab4776789c86dc2953a7a1aecc3b  01-ontologies/pib_wiring_expressions_v1_0_0_2.ttl  (9478b)
 0a578caf116cea7ab61e7ab324daba16ad43a6602de6103f7c24f2a71908a6a1  01-ontologies/profile_tbox_v1_0_0_1.ttl  (5745b)
 5623a6483d8593512d1592ab2690f41e1053915b1ce08b7c3f48ce8ab74b2017  02-shacl-safeguards/pib_enumeration_rules_v2_1_0.ttl  (23548b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
 266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
-6e6617b87dfd30d1cac79978f50d64a7a5fcc3e94ae416d65d5da81002dde6b9  03-tooling/operator_rule_runner_v1_0_0.py  (5112b)
+6cf48a418df1c11066a4493290506876f09d93166ab82fac60ef5a577519446b  03-tooling/operator_rule_runner_v1_0_0.py  (5112b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
 18e8acdd6bf30f9d7ac9840b5477aab2848c5857b6503236dbfaa1dc7e233507  03-tooling/variation_capacity_v1_2_0.py  (9957b)
-d7f895d5ec494076c963e889c8d38b75a9e4783c627bc1888803df6691ef4d9d  04-documentation/ADAPTATION_PLAN_VAF_v1_0_0.md  (6138b)
+5216e83d5156d764a6732950b40e4df29fbbd1f6bf533584e9f6d46557ad5a32  04-documentation/ADAPTATION_PLAN_VAF_v1_0_0.md  (8405b)
 399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
 b95a2ee40d7ae56665f5ea5f8e6353f478e762e1a64f3adba7b915f249f90766  04-documentation/BLUEPRINT_v1_0_0.md  (8099b)
 46fa7f5262078bed29d9268a721403d3ac8dc2dd21f67079acbb9346382ccebc  04-documentation/PHASE3_COMPOSITION_RECORD_v1_0_0.md  (4984b)
@@ -60,13 +61,14 @@ f35b182160ee29174d69fb57ab724e8a36ecc581276bd0d94972de9c05d4c114  10-experiments
 2afd5fa05e0fd959a6d3d39d64d4ea0b746c13d77576ff81bc3443fc2d26ca9d  10-experiments/pib_enumeration_generation_optimized_v1_0_0.ttl  (8008b)
 9eca447c37270a856e4beda2d13b643a8be7a8e082c3101744827c03f7cebf5f  10-experiments/probe_capacity_cost_reduction_v1_0_0.py  (6963b)
 ef292cae280f5fbd37f0937161db16ecda7c9d6eac9769764e57e92c11dd4960  10-experiments/probe_criticality_ab_test_drive_v1_0_0.py  (9474b)
+d93794591671a15371be51aede69101b2b0fbf5f957eeb852853ed1913ed336c  10-experiments/probe_delegate_set_level_operators_v1_0_0.py  (4097b)
 40c53ddd7238b435f570296f280e4ba3cfde2fcc2baf8d0f091e1b49ea9f510f  10-experiments/probe_round1_operator_use_cases_v1_0_0.py  (5784b)
 16abe080bc782712f542b6bc046632e018444b9ff6f54044e201c73134e5e3d9  10-experiments/probe_round2_intersection_and_necessity_v1_0_0.py  (4003b)
 741222119fba9999cc1a483b2499c4e5e6408903a4c0b6b1ce155534779d366d  10-experiments/probe_round3_shipped_operator_rules_v1_0_0.py  (5863b)
 558d63a0a7098acaf7189671e690628afb2fc0a40c57948e8483148e996cb757  10-experiments/probe_vaf_profile_families_differential_v1_0_0.py  (4647b)
-396b4d0a5b834b931df6af2b9c645b89df33a20d0e9436bb2a702f8777e5414c  11-vendored-operator-rules/VENDORED_PINS_v1_0_0.md  (2643b)
-b9e4cd27d884a83bfd52a1d84d256630cdce345c8ac3ae789f16bde25deccef0  11-vendored-operator-rules/variant_algebra_operator_rules_v1_0_0.ttl  (7907b)
-225e1de2b3478cd8caf9060b784259d8822271ee39485b108f53e1067f01a1f0  11-vendored-operator-rules/variant_algebra_v3_extended_properties_v1_0_0.ttl  (113858b)
+c200541b843a902b58cfa2de78accf8604e1eae061f93cca78720cc03a258b21  11-vendored-operator-rules/VENDORED_PINS_v1_0_0.md  (3642b)
+02276cfc6f312e5d7ce7aa6c26f68b0329bd2cfba9ed5a410d721daf2f3b69af  11-vendored-operator-rules/variant_algebra_operator_rules_v1_0_0.ttl  (12992b)
+a42a48e4d2aac9d710af2acdcebb5865fc83ee9e780844870b01b9d58324d34f  11-vendored-operator-rules/variant_algebra_v3_extended_properties_v1_0_0.ttl  (122698b)
 f886d2d09f9fd7a6b52a5098eefb2a5e3a76526b4e5b9e6433071ad48c6f3cc0  12-operator-fixtures/candidate_negative_v1_0_0.ttl  (993b)
 826e572d07ce16ba6ae2924e67c4adbd7300e61fc3c764c9945358f44924d898  12-operator-fixtures/candidate_positive_v1_0_0.ttl  (854b)
 2ce7087d65eb600fba5b3fb309386e8d583c82875b42c5dbb52fbbf94fcb7e6f  12-operator-fixtures/enumeration_conformance_spaces_v1_0_0.ttl  (6188b)
@@ -76,4 +78,4 @@ db418f59cef4d16b42737b81c48c7497312810d4a276a4fd9a623387f000091b  GOVERNANCE.md 
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 a5169a899326ca7c1762b56787ce588a692ab51e47424c2042a23593c52c96d9  README.md  (7929b)
-6d850e3ac42d0dd06bfdcce9151c1e6b40f4cf5272778f63eececea27c78f0b6  VERSION.txt  (6b)
+732f64d874f90788c0199b0c19bfd9b3b6436e140114e53e462832532d74c61c  VERSION.txt  (6b)
