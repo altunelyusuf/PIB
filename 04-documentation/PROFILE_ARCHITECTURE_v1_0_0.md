@@ -136,4 +136,32 @@ forms are `atmost 1 of { … }` outward, and at-most-one plus at-least-one inwar
 operator cases agree as sets, and every shipped space agrees on capacity with the algebra — capstone 9,
 budget 11, five independent groups 243, unsatisfiable 0.
 
-Run it with `python3 03-tooling/algebra_conformance_check_v1_0_0.py` (needs `VAF_SRC`).
+Run it with `python3 03-tooling/algebra_conformance_check_v2_0_0.py` (needs `VAF_SRC`).
+
+### Conformance is checked against the algebra's ONTOLOGY rules (v2.16.0)
+
+The first conformance check used the algebra's **Python enumerator** as its oracle. That was the wrong
+source of truth and has been withdrawn. The calculus is implemented as ontology rules; a second
+implementation — even the algebra's own Python one — is a second source of truth, and agreeing with it
+proves agreement with a program rather than with the calculus other domains will consume.
+
+`03-tooling/algebra_conformance_check_v2_0_0.py` now takes every verdict PIB reaches and re-decides it with
+the algebra's **own shipped rules**, which PIB already vendors, run by a SHACL engine. Per candidate, not
+in aggregate: a capacity that matched while admitting different candidates would be a false pass. Result
+across the shipped spaces: **51 candidates, 51 agreements, 0 disagreements**, covering exclusive, or,
+dependency and repetition.
+
+Two things this makes visible that the Python oracle hid:
+
+- **The algebra ships no rule for `mandatory`.** There, mandatory is a notation convention — a bare,
+  undecorated name — not a rule. So mandatory verdicts cannot be cross-checked against the algebra, and the
+  tool reports it as not cross-checked rather than counting it as agreement. This is also why mandatory sits
+  at the meta layer in this architecture: it is a statement about every variant, not a choice within one.
+- **At-most-one is expressed by wrapping an exclusive in an optional**, which the algebra's own
+  at-least-one rule tests for. PIB's at-most-one is now expressed that way when handed to the algebra,
+  rather than by a mapping PIB invented.
+
+The check is proven to discriminate in both directions on real data: an admitted candidate made to violate
+its constraint is caught, and an invented rejection is caught. Exact pruning means no complete candidate is
+ever *marked* inadmissible — they are removed before completion — so the first direction is created by
+corrupting an admitted candidate, which the tool states rather than quietly skipping.

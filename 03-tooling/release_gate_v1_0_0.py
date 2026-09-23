@@ -27,10 +27,10 @@ GATES = [
     ("profile taxonomy", ["profile_taxonomy_v1_0_0.py", "--self-test"]),
     ("variation capacity", ["variation_capacity_v1_2_0.py", "--self-test"]),
     ("operator expression gate", ["operator_rule_runner_v1_0_0.py"]),
+    ("algebra conformance (ontology rules)", ["algebra_conformance_check_v2_0_0.py", "--self-test"]),
 ]
 NEEDS_EXTERNAL = ["consumer registration check (needs a token)",
-                  "profile approval (needs a token and the algebra's parser)",
-                  "algebra conformance check (needs the algebra's runtime: VAF_SRC)"]
+                  "profile approval (needs a token and the algebra's parser)"]
 
 
 def main():
