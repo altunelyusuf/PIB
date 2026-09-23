@@ -1,13 +1,17 @@
-# PIB v2.3.1 — SHA-256 Manifest
-# PATCH from v2.3.0 (2026-09-22): ORCP round two RATIFIED at high criticality (OE Pack v20.78.0).
-#   - 09-handover-inbox: OE's round-two contract accepted, each claimed record verified in OE's repository.
-#   - REGISTRATION_STATUS, GOVERNANCE, documentation README: current state updated to 'ratified'.
-#   No governed content changed. Gates: all 8 capacity spaces match; operator gate rejects its violating fixture.
+# PIB v2.4.0 — SHA-256 Manifest
+# MINOR from v2.3.1 (2026-09-22): adaptation plan for the variant algebra v2.26.0 -> v2.50.0.
+#   - ADD 04-documentation/ADAPTATION_PLAN_VAF_v1_0_0.md: six items, each checked against the algebra's bytes.
+#   - Wiring expressions 1.0.0 -> 1.0.0.1: records that PIB's exclusive means the OPTIONAL-WRAPPED form (at
+#     most one) while the algebra's class now reads 'exactly one'. Material: capstone is 9 under at-most-one,
+#     6 under exactly-one. PIB's intent and published capacities are unchanged; the claim was.
+#   - Vendored pins HELD, not re-vendored: both upstream files changed in place under an unchanged version.
+#     PIB's operator gate gives identical results under both file sets, verified.
+#   Gates: all 8 capacity spaces match; operator gate rejects its violating fixture; invariants 0 violations.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
 7dbc559e2f70b04d285048c99b8bbe0e03c7e4edb8220fda17b9518a499e257c  01-ontologies/pib_wiring_composition_v1_0_0.ttl  (3804b)
-de713f19fb2dc40c486a12f30f707819b1e8bae0dc60d223c61b4ee09bb86ecd  01-ontologies/pib_wiring_expressions_v1_0_0.ttl  (8407b)
+daafdf2c387dc47d36c6ddd8fbefd359c9dfc8f69b0e10d48245a626da62d93d  01-ontologies/pib_wiring_expressions_v1_0_0_1.ttl  (8921b)
 0a578caf116cea7ab61e7ab324daba16ad43a6602de6103f7c24f2a71908a6a1  01-ontologies/profile_tbox_v1_0_0_1.ttl  (5745b)
 5623a6483d8593512d1592ab2690f41e1053915b1ce08b7c3f48ce8ab74b2017  02-shacl-safeguards/pib_enumeration_rules_v2_1_0.ttl  (23548b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
@@ -15,6 +19,7 @@ de713f19fb2dc40c486a12f30f707819b1e8bae0dc60d223c61b4ee09bb86ecd  01-ontologies/
 cbcea025772db27f207d6a5dec494b362a8cb0bb392a9ff5e584f52c8a52a741  03-tooling/operator_rule_runner_v1_0_0.py  (5110b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
 18e8acdd6bf30f9d7ac9840b5477aab2848c5857b6503236dbfaa1dc7e233507  03-tooling/variation_capacity_v1_2_0.py  (9957b)
+d7f895d5ec494076c963e889c8d38b75a9e4783c627bc1888803df6691ef4d9d  04-documentation/ADAPTATION_PLAN_VAF_v1_0_0.md  (6138b)
 399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
 b95a2ee40d7ae56665f5ea5f8e6353f478e762e1a64f3adba7b915f249f90766  04-documentation/BLUEPRINT_v1_0_0.md  (8099b)
 46fa7f5262078bed29d9268a721403d3ac8dc2dd21f67079acbb9346382ccebc  04-documentation/PHASE3_COMPOSITION_RECORD_v1_0_0.md  (4984b)
@@ -72,4 +77,4 @@ db418f59cef4d16b42737b81c48c7497312810d4a276a4fd9a623387f000091b  GOVERNANCE.md 
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 a5169a899326ca7c1762b56787ce588a692ab51e47424c2042a23593c52c96d9  README.md  (7929b)
-ad8650bc9057d9dfd809961b69dbad640c288d809fa44437d44d83d3b118c821  VERSION.txt  (6b)
+2ad7b0c3f0ede58c3165b7a8a5479e890a758d39bfe8683eaef50ce6afad7232  VERSION.txt  (6b)

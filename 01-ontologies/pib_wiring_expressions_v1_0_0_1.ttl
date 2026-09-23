@@ -12,8 +12,9 @@
 
 <http://purl.org/pib/wiring-expression>
     a owl:Ontology ;
-    owl:versionInfo "1.0.0" ;
-    owl:versionIRI <http://purl.org/pib/wiring-expression/1.0.0> ;
+    owl:versionInfo "1.0.0.1" ;
+    owl:versionIRI <http://purl.org/pib/wiring-expression/1.0.0.1> ;
+    owl:priorVersion <http://purl.org/pib/wiring-expression/1.0.0> ;
     rdfs:label "PIB wiring expressions — nested operator expressions over integration wirings"@en ;
     dcterms:description "Lets a PIB wiring constraint be written as a NESTED EXPRESSION built from the variant algebra's operators, rather than as a flat list of operator applications. The algebra's operators are constructors in an expression language, not a fixed menu of features: composing them expresses constraints none of them expresses alone (a k-of-n bound, for example, is not expressible with mandatory, optional, exclusive, or, or dependency, but is expressible by composing repetition with a contributes-to grouping). This vocabulary therefore REFERENCES the algebra's own operator classes and operand/nesting predicates rather than redeclaring them — the algebra stays with its owner — and adds only what is genuinely PIB's: the binding from an expression to the wiring it governs, and the named operator individuals PIB applies. Complete adoption: all twelve concrete operators are available, not the six the previously pinned engine generation carried."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
@@ -63,7 +64,8 @@ pibx:Mandatory a va:MandatoryOperator, owl:NamedIndividual ;
 pibx:Optional a va:OptionalOperator, owl:NamedIndividual ;
     rdfs:label "Optional — the operand may be present or absent"@en .
 pibx:Exclusive a va:ExclusiveOperator, owl:NamedIndividual ;
-    rdfs:label "Exclusive — at most one of the operands may be selected"@en .
+    rdfs:label "Exclusive (optional-wrapped) — at most one of the operands may be selected"@en ;
+    skos:scopeNote "PIB means the OPTIONAL-WRAPPED exclusive: at most one, zero allowed. The variant algebra defines the bare exclusive operator as EXACTLY one (thesis eq. 2.35), which is a different constraint: PIB's worked capstone has capacity 9 under at-most-one and 6 under exactly-one. Recorded here because this individual is typed by the algebra's class, whose own definition states the exactly-one reading."@en .
 pibx:Or a va:OrOperator, owl:NamedIndividual ;
     rdfs:label "Or — at least one of the operands must be selected"@en .
 pibx:Dependency a va:DependencyOperator, owl:NamedIndividual ;
