@@ -1,0 +1,80 @@
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix pibcr: <http://purl.org/pib/consumer-registry#> .
+@prefix iif:   <http://purl.org/pib/integration-interface#> .
+@prefix orh:   <http://example.org/oepack-release-history#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================================
+# PIB consumer registration shapes v1.0.0
+#
+# What a consumer must state before PIB adapts to it. Every requirement exists because its absence would
+# make a later PIB claim unverifiable: without a commit the reading moves, without a hash the bytes cannot
+# be proven, without an interface there is no contract to compose, without a self-coverage attestation the
+# wiring invariants cannot pass.
+#
+# The file and interface vocabulary is the ecosystem's own (orh:, iif:). Only the registration wrapper is
+# PIB's, because nothing existing carried "who registered, pointing where, reachable or not".
+# ============================================================================
+
+<http://purl.org/pib/consumer-registry>
+    a owl:Ontology ; owl:versionInfo "1.0.0" ;
+    owl:versionIRI <http://purl.org/pib/consumer-registry/1.0.0> ;
+    rdfs:label "PIB consumer registration — vocabulary and shapes"@en ;
+    dcterms:description "Lets a consumer ontology register itself with PIB by pointer and hash rather than by copy, so every claim PIB makes about it can be re-derived from the consumer's own repository."@en ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:creator "Yusuf Altunel" ;
+    dcterms:created "2026-09-23"^^xsd:date ; dcterms:modified "2026-09-23"^^xsd:date ;
+    dcterms:identifier "consumer-registry" .
+
+pibcr:ConsumerRegistration a owl:Class ; rdfs:label "Consumer registration"@en ;
+    skos:definition "A consumer ontology's own statement of where its bytes are, what it exchanges, and how to verify both."@en .
+pibcr:atRepository a owl:DatatypeProperty ; rdfs:label "at repository"@en .
+pibcr:atCommit a owl:DatatypeProperty ; rdfs:label "at commit or tag"@en .
+pibcr:atPath a owl:DatatypeProperty ; rdfs:label "path within the repository"@en .
+pibcr:repositoryReachable a owl:DatatypeProperty ; rdfs:label "repository reachable with PIB's credentials"@en .
+pibcr:registersFile a owl:ObjectProperty ; rdfs:label "registers file"@en .
+pibcr:declaresInterface a owl:ObjectProperty ; rdfs:label "declares interface"@en .
+pibcr:contactSession a owl:DatatypeProperty ; rdfs:label "contact session"@en .
+
+pibcr:RegistrationShape a sh:NodeShape ;
+    rdfs:label "A registration must say where its bytes are, what it exchanges, and who maintains it"@en ;
+    sh:targetClass pibcr:ConsumerRegistration ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ;
+        sh:message "A registration must carry a human-readable label naming the package." ] ;
+    sh:property [ sh:path pibcr:atRepository ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A registration must give exactly one repository URL — PIB reads your bytes, never a pasted snapshot." ] ;
+    sh:property [ sh:path pibcr:atCommit ; sh:minCount 1 ; sh:maxCount 1 ; sh:minLength 5 ;
+        sh:message "A registration must pin a commit SHA or tag, so the reading is reproducible and cannot move." ] ;
+    sh:property [ sh:path pibcr:repositoryReachable ; sh:minCount 1 ; sh:datatype xsd:boolean ;
+        sh:message "State whether PIB's credentials can reach the repository. An unreachable pointer is recorded as unreachable, never as verified." ] ;
+    sh:property [ sh:path pibcr:registersFile ; sh:minCount 1 ;
+        sh:message "A registration must list at least one ontology file to adapt." ] ;
+    sh:property [ sh:path pibcr:declaresInterface ; sh:minCount 1 ;
+        sh:message "A registration must declare an interface: without produces/consumes there is no contract to compose a wiring from." ] ;
+    sh:property [ sh:path pibcr:contactSession ; sh:minCount 1 ;
+        sh:message "Name the session or person maintaining the package, so findings can be sent to its owner rather than acted on unilaterally." ] .
+
+pibcr:RegisteredFileShape a sh:NodeShape ;
+    rdfs:label "Every registered file must carry a hash, a version and a path"@en ;
+    sh:targetObjectsOf pibcr:registersFile ;
+    sh:property [ sh:path orh:hasFileSHA256 ; sh:minCount 1 ; sh:maxCount 1 ; sh:pattern "^[0-9a-f]{64}$" ;
+        sh:message "Every registered file needs its SHA-256 — that is what lets PIB prove it read exactly what you published." ] ;
+    sh:property [ sh:path orh:hasVersionInfo ; sh:minCount 1 ;
+        sh:message "Every registered file needs its version." ] ;
+    sh:property [ sh:path pibcr:atPath ; sh:minCount 1 ;
+        sh:message "Every registered file needs its path within the repository, or PIB cannot fetch it." ] .
+
+pibcr:RegisteredInterfaceShape a sh:NodeShape ;
+    rdfs:label "A declared interface must produce something and attest its own self-coverage"@en ;
+    sh:targetObjectsOf pibcr:declaresInterface ;
+    sh:property [ sh:path iif:produces ; sh:minCount 1 ;
+        sh:message "An interface must produce at least one capability; a consumer that produces nothing cannot be wired to." ] ;
+    sh:property [ sh:path iif:hasSelfCoverage ; sh:minCount 1 ;
+        sh:message "An interface must carry a self-coverage attestation: PIB's own invariants refuse to publish a wiring without one." ] .

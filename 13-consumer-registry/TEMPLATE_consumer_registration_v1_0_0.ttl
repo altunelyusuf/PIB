@@ -1,0 +1,52 @@
+@prefix pibcr: <http://purl.org/pib/consumer-registry#> .
+@prefix iif:   <http://purl.org/pib/integration-interface#> .
+@prefix orh:   <http://example.org/oepack-release-history#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix ex:    <http://example.org/your-package#> .
+
+# PIB consumer registration — TEMPLATE. Copy, fill in, and file in pending/.
+# Replace every ex: IRI with your own namespace. Delete the guidance comments.
+#
+# File and interface terms are the ecosystem's existing ones (orh:, iif:) rather than new PIB inventions,
+# so what you declare here means the same thing it means everywhere else.
+
+ex:MyPackageRegistration a pibcr:ConsumerRegistration ;
+    rdfs:label "Registration: <your package name>"@en ;
+
+    # Where your bytes live. The commit or tag pins the reading so it cannot move under either of us.
+    pibcr:atRepository "https://github.com/<owner>/<repo>"^^xsd:anyURI ;
+    pibcr:atCommit "<full 40-character commit SHA, or a tag name>" ;
+
+    # State this honestly: if PIB's credentials cannot reach your repository, say so and PIB will record
+    # "unreachable" rather than claim a verification it never ran.
+    pibcr:repositoryReachable true ;
+
+    # Every ontology file you want adapted.
+    pibcr:registersFile ex:File_my_tbox ;
+
+    # Your interface: the contract PIB composes wirings from.
+    pibcr:declaresInterface ex:MyPackage_if ;
+
+    pibcr:contactSession "<the session or person who maintains this package>" .
+
+ex:File_my_tbox a orh:OntologyFile ;
+    rdfs:label "my_tbox_v1_0_0.ttl"@en ;
+    orh:hasVersionInfo "1.0.0" ;
+    orh:hasFileSHA256 "<sha256 of the file at that commit>" ;
+    pibcr:atPath "01-ontologies/my_tbox_v1_0_0.ttl" .
+
+ex:MyPackage_if a iif:OntologyInterface ;
+    rdfs:label "What my package exchanges"@en ;
+    # What you publish for others to consume:
+    iif:produces ex:SomeCapability ;
+    # What you require from others (omit if nothing):
+    iif:consumes ex:SomeOtherCapability ;
+    # Required before any wiring using this interface can be published:
+    iif:hasSelfCoverage ex:MySelfCoverage .
+
+ex:SomeCapability a iif:Capability ; rdfs:label "A capability you produce"@en .
+ex:SomeOtherCapability a iif:Capability ; rdfs:label "A capability you consume"@en .
+
+ex:MySelfCoverage a iif:SelfCoverageAttestation ;
+    rdfs:label "Self-coverage: my package parses and is internally consistent standalone"@en .

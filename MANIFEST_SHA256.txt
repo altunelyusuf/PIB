@@ -1,22 +1,25 @@
-# PIB v2.6.1 — SHA-256 Manifest
-# PATCH from v2.6.0 (2026-09-22): repoints three stale references v2.6.0 shipped; makes the check a gate.
-#   v2.6.0's release output printed 'stale refs: 3' and the release was pushed anyway -- the second time in
-#   one day a printed warning was stepped over (v2.4.0 shipped a dead gate the same way).
-#   - ADD 03-tooling/reference_check_v1_0_0.py: fails when a CURRENT document cites a file the package no
-#     longer ships. Narrow by design: only a file this package still ships under another version counts.
-#     Dated records, retirement notes, the inbox, registration and experiment folders are exempt.
-#   - README, GOVERNANCE, BLUEPRINT repointed; GOVERNANCE's release procedure now names the gate.
-#   Gates: reference check passes, proven to fail on a planted citation; 8 capacity spaces match; operator
-#   gate rejects its violating fixture; invariants 0 violations.
+# PIB v2.7.0 — SHA-256 Manifest
+# MINOR from v2.6.1 (2026-09-23): consumers can now register themselves for adaptation.
+#   - ADD 13-consumer-registry/: README, registration template, pending/ and registered/, plain-text
+#     REGISTRY.tsv. Pointers and hashes, never copies — the convention OE itself settled for registrants.
+#   - ADD 02-shacl-safeguards/pib_consumer_registration_shacl_v1_0_0.ttl: what a registration must state,
+#     each requirement tied to a claim PIB could not otherwise verify.
+#   - ADD 03-tooling/consumer_registration_check_v1_0_0.py: validates the record AND fetches the declared
+#     files to compare hashes. UNREACHABLE is reported as unreachable, never as verified. Proven against
+#     the real public repository: correct hash VERIFIED, wrong hash MISMATCH, malformed record rejected.
+#   No consumer is pre-registered: registering on another package's behalf would assert what it never said.
+#   Gates: reference check, capacity self-test, operator gate, invariants 0 violations.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
 7dbc559e2f70b04d285048c99b8bbe0e03c7e4edb8220fda17b9518a499e257c  01-ontologies/pib_wiring_composition_v1_0_0.ttl  (3804b)
 a60c5caaae626a26ee83181f4d953e6b5fe8ab4776789c86dc2953a7a1aecc3b  01-ontologies/pib_wiring_expressions_v1_0_0_2.ttl  (9478b)
 0a578caf116cea7ab61e7ab324daba16ad43a6602de6103f7c24f2a71908a6a1  01-ontologies/profile_tbox_v1_0_0_1.ttl  (5745b)
+af515ce10baa8d46f36dbee56f634fe14d198aa294accda955caa1f9705999df  02-shacl-safeguards/pib_consumer_registration_shacl_v1_0_0.ttl  (5790b)
 c3bda2c1e1e4b524ba2187c174a06b6a0abff0f85678c8ded9690eb9b3f2cce6  02-shacl-safeguards/pib_enumeration_rules_v2_2_0.ttl  (25192b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
 266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
+8fb088ced1999ca44762716bb3847f3f120333120dd865761f84b6be42588627  03-tooling/consumer_registration_check_v1_0_0.py  (8876b)
 6cf48a418df1c11066a4493290506876f09d93166ab82fac60ef5a577519446b  03-tooling/operator_rule_runner_v1_0_0.py  (5112b)
 78257e8956e2c08be67bc386e31d07d9233ce60e20d7dbeba068d400f49d417e  03-tooling/reference_check_v1_0_0.py  (4581b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
@@ -76,9 +79,14 @@ f886d2d09f9fd7a6b52a5098eefb2a5e3a76526b4e5b9e6433071ad48c6f3cc0  12-operator-fi
 826e572d07ce16ba6ae2924e67c4adbd7300e61fc3c764c9945358f44924d898  12-operator-fixtures/candidate_positive_v1_0_0.ttl  (854b)
 2902c0dc2dd22c6cc197cfd30bcf660f84e923ef2e3061e39608298aec68b1fb  12-operator-fixtures/enumeration_conformance_spaces_v1_0_0.ttl  (6900b)
 7966a3da38d8a74a05ad008b750faf3aa290b6f66e179db1233eefec9a1dfcf4  12-operator-fixtures/profile_variation_spaces_v1_0_0.ttl  (4486b)
+e01761046586ace446fd81b0ee8771b17b3ae8fb53c2276a36d2f349ea1e30de  13-consumer-registry/README.md  (4357b)
+6a7d6b032e2df47ec227da78a04116524c6127698f069be9788628bb99f12c5b  13-consumer-registry/REGISTRY.tsv  (328b)
+8389763de2e3e7c76ba78697239a8c3f28288594c54741ba938efe8bc2a1f1ac  13-consumer-registry/TEMPLATE_consumer_registration_v1_0_0.ttl  (2456b)
+806d2996e1c1b7515a89594512a518f222f649e0f89e1fe692de09c141904371  13-consumer-registry/pending/README.md  (96b)
+ae81ade3e0aa1d908d066b93cb854a13eb93605dcd88294147441fad5f6a35d2  13-consumer-registry/registered/README.md  (44b)
 25d344b24e43eca75e5432f2b40e6e106d27cf0a00866f05f588b06924b625d7  GOVERNANCE.md  (4945b)
 3d834db15fd6499713ce94d35f4f4a4f8e2548287c1e526c0b46cb7f71e68dac  LICENSE  (19202b)
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
-c19f24d0eb5a7acf85a9d18993bf7cd8158b6c088951a1285e4d94ff73eb2280  README.md  (7929b)
-a3fbebb0fe4c012038eceff3148b1602c7da8942fcfe1d563c1de6d377558ae5  VERSION.txt  (6b)
+1fd3c009f09c5a48488352720b963321ea9b359b91175676e31c59d927b938b9  README.md  (8055b)
+362148d7721ad4a1bb64981ff8d604ef7f4d22267ea8845042f54f90940f24fd  VERSION.txt  (6b)

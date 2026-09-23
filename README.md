@@ -31,6 +31,7 @@ PIB's answer has three parts:
 | `06-vaf-engine-pin/` | SHA-256 pin of the external Variant Algebra Framework engine |
 | `07-spoke-contributions/` | Vendored, SHA-pinned, **read-only** interface declarations owned by other systems |
 | `08-registration/` | OE ecosystem registration round (submission, contract, closure) |
+| `13-consumer-registry/` | Where a consumer ontology registers itself for adaptation — pointers and hashes, never copies |
 | `09-handover-inbox/` | Cross-session proposals received by PIB, with dispositions |
 | `10-experiments/` | Reference probes and findings (explicitly not releases) |
 | `11-vendored-operator-rules/` | Vendored, SHA-pinned, read-only operator rules from the variant algebra |

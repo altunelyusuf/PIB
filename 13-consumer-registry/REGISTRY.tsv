@@ -1,0 +1,5 @@
+# PIB consumer registry — plain text, because this is bookkeeping (has it been checked, with what result),
+# not domain knowledge. One line per registration, appended when it is dispositioned.
+# Every line states the verification ACTUALLY performed, not that a record was received.
+#
+package	repository	commit	status	verified
