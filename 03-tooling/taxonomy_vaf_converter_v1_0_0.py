@@ -20,14 +20,16 @@ Mapping, exact in both directions:
 |----------------------------------------|------------------------------|
 | `MandatoryConstraint requires f`       | `mandatory f`                |
 | feature with no constraint             | `optional f`                 |
-| `ExclusiveConstraint groupMember …`    | `exclusive { a \| b }`        |
+| `ExclusiveConstraint groupMember …`    | `atmost 1 of { a, b }`       |
 | `OrConstraint groupMember …`           | `or { a, b }`                |
 | `DependencyConstraint dependent/prereq`| `a requires b`               |
 | `RepetitionConstraint budgetGroup/max` | `atmost N of { a, b, … }`    |
 
-PIB's exclusive means AT MOST ONE (the optional-wrapped form); the algebra's bare `$` operator means
-exactly one. The DSL's `exclusive { … }` statement is the at-most-one form, which is why the mapping uses
-the statement rather than the infix operator. See the scope note in PIB's wiring-expression vocabulary.
+PIB's exclusive means AT MOST ONE; the algebra's `exclusive { … }` means EXACTLY one. That was checked
+against the algebra's own enumerator rather than assumed, and the first mapping here was wrong because of
+it: writing PIB's at-most-one as the algebra's `exclusive` dropped the "neither" variant, and reading the
+algebra's `exclusive` as PIB's at-most-one added one. The faithful forms are `atmost 1 of { … }` outward,
+and at-most-one plus at-least-one inward.
 
 Not mapped, and reported rather than guessed: multiplicity repetition (`f[1..3]`), `unite`, `removes`,
 `excludes`, and infix expression statements — PIB has no equivalent for these, and a silent approximation
@@ -72,8 +74,13 @@ def to_dsl(graph, space):
         elif PIBE.ExclusiveConstraint in kinds or PIBE.OrConstraint in kinds:
             ms = sorted(graph.objects(c, PIBE.groupMember), key=lambda f: int(graph.value(f, PIBE.featureIndex)))
             constrained.update(ms)
-            sep, kw = (" | ", "exclusive") if PIBE.ExclusiveConstraint in kinds else (", ", "or")
-            lines.append(f"  {kw} {{ {sep.join(name(m) for m in ms)} }}")
+            if PIBE.ExclusiveConstraint in kinds:
+                # PIB's exclusive means AT MOST ONE. The algebra's `exclusive { a | b }` means EXACTLY
+                # one, so writing it that way would silently drop the "neither" variant. Its `atmost 1 of`
+                # statement is the faithful form — checked against the algebra's own enumerator.
+                lines.append(f"  atmost 1 of {{ {', '.join(name(m) for m in ms)} }}")
+            else:
+                lines.append(f"  or {{ {', '.join(name(m) for m in ms)} }}")
         elif PIBE.DependencyConstraint in kinds:
             a, b = graph.value(c, PIBE.dependent), graph.value(c, PIBE.prerequisite)
             constrained.update((a, b))
@@ -117,9 +124,14 @@ def from_dsl(text):
                 idx(st.feature)
             elif t in ("ExclusiveStmt", "OrStmt"):
                 for m in st.members: idx(m)
-                kind = "ExclusiveConstraint" if t == "ExclusiveStmt" else "OrConstraint"
-                body.append(f"ex:{n}_c{i} a pibe:{kind} ; pibe:inSpace ex:{n} ; pibe:groupMember " +
-                            " , ".join(f"ex:{m}" for m in st.members) + " .")
+                members = " , ".join(f"ex:{m}" for m in st.members)
+                if t == "OrStmt":
+                    body.append(f"ex:{n}_c{i} a pibe:OrConstraint ; pibe:inSpace ex:{n} ; pibe:groupMember {members} .")
+                else:
+                    # The algebra's exclusive is EXACTLY one: at most one AND at least one. Mapping it to
+                    # PIB's at-most-one alone would silently ADD the "neither" variant.
+                    body.append(f"ex:{n}_c{i} a pibe:ExclusiveConstraint ; pibe:inSpace ex:{n} ; pibe:groupMember {members} .")
+                    body.append(f"ex:{n}_c{i}b a pibe:OrConstraint ; pibe:inSpace ex:{n} ; pibe:groupMember {members} .")
             elif t == "DependencyStmt":
                 idx(st.antecedent); idx(st.consequent)
                 body.append(f"ex:{n}_d{i} a pibe:DependencyConstraint ; pibe:inSpace ex:{n} ; "

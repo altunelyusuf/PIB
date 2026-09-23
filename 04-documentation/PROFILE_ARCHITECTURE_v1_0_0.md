@@ -82,7 +82,8 @@ genus), leaves are complete variants (a species).
 | **Mandatory, at meta** | **no entry** | the feature is in every variant, so it characterises the *root* and distinguishes nothing below it — the structural reason mandatory belongs at the meta layer |
 | **Mandatory, inside a profile** | **no branch; a forced decision** | the "leaves it" side is pruned, leaving one child taxonomically identical to its parent |
 | **Optional** | **two entries** — takes / leaves | disjoint and jointly covering the parent |
-| **Exclusive {a, b}** | **three entries** — a, b, neither | at most one may be taken, so two members yield three mutually disjoint leaves |
+| **Exclusive {a, b}** (PIB: *at most one*) | **three entries** — a, b, neither | at most one may be taken, so two members yield three mutually disjoint leaves |
+| **Exclusive, the algebra's own** (*exactly one*) | **two entries** — a, b | the algebra's `exclusive { a \| b }` requires one member, so the "neither" branch does not exist |
 | **Or {a, b}** | **three entries** — a, b, both | at least one must be taken, so the "neither" branch is pruned |
 | **Dependency a → b** | **no entry of its own** | it *prunes* branches that take a without b |
 | **Repetition (k-of-n)** | **no entry of its own** | it prunes branches exceeding the budget |
@@ -120,3 +121,19 @@ python3 03-tooling/profile_taxonomy_v1_0_0.py <spaces.ttl> [space-name]
 
 Proven per operator: optional yields 2 leaves, mandatory 1 with a forced decision, exclusive 3, or 3, and
 dependency adds no branch while pruning to 3.
+
+### Checked against the algebra, not against PIB's own expectations (v2.15.0)
+
+The branch shapes above were first verified against expectations PIB wrote for itself, which proves
+self-consistency and nothing about meaning. They are now checked against the **algebra's own enumerator**:
+the same expression is enumerated by the algebra and by PIB, and the two sets of selections — not their
+counts — must be equal. A count match with different members would otherwise pass falsely.
+
+That check found a real defect the self-consistent tests could not. PIB's converter wrote PIB's
+*at-most-one* exclusive as the algebra's `exclusive { a | b }`, which means *exactly one*: the outward
+direction silently dropped the "neither" variant, and the inward direction silently added it. The faithful
+forms are `atmost 1 of { … }` outward, and at-most-one plus at-least-one inward. Corrected, all seven
+operator cases agree as sets, and every shipped space agrees on capacity with the algebra — capstone 9,
+budget 11, five independent groups 243, unsatisfiable 0.
+
+Run it with `python3 03-tooling/algebra_conformance_check_v1_0_0.py` (needs `VAF_SRC`).

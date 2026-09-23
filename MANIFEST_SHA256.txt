@@ -1,14 +1,16 @@
-# PIB v2.14.1 — SHA-256 Manifest
-# PATCH from v2.14.0 (2026-09-23): repoints two stale references v2.14.0 shipped, and makes the release
-# procedure itself blocking rather than advisory.
-#   v2.14.0 renamed the enumeration rules and left README and GOVERNANCE citing the old name. The reference
-#   check printed FAIL directly above the push and the release went out anyway — the THIRD time in one
-#   session (v2.4.0 shipped a dead gate, v2.6.0 three stale refs, v2.14.0 two).
-#   - ADD 03-tooling/release_gate_v1_0_0.py: runs every self-contained gate and exits non-zero, so the
-#     release step obeys an exit code instead of a human reading output. External-credential gates are
-#     named as skipped, never silently omitted.
-#   - GOVERNANCE's release procedure now requires it and says not to tag or push when it fails.
-#   Release gate: 8/8 self-contained gates pass, 2 named as skipped.
+# PIB v2.15.0 — SHA-256 Manifest
+# MINOR from v2.14.1 (2026-09-23): correctness checked against the ALGEBRA'S OWN enumerator, not PIB's
+# own expectations — which found a real defect the self-consistent tests could not.
+#   - The converter wrote PIB's AT-MOST-ONE exclusive as the algebra's `exclusive { a | b }`, which means
+#     EXACTLY one: outward it silently dropped the 'neither' variant, inward it silently added one.
+#     Corrected: `atmost 1 of { … }` outward, at-most-one plus at-least-one inward.
+#   - ADD 03-tooling/algebra_conformance_check_v1_0_0.py: enumerates the same expression with both and
+#     compares SETS of selections, since equal counts with different members would pass falsely. Also
+#     writes PIB's real spaces as DSL and has the algebra count them.
+#   - Result: 7/7 operator cases agree as sets; 8/8 shipped spaces agree on capacity (capstone 9, budget
+#     11, five independent groups 243, unsatisfiable 0). 15 agreements, 0 disagreements.
+#   - Release gate names it among the externally-dependent gates; architecture doc records the correction.
+#   Release gate: 8/8 self-contained gates pass.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -19,6 +21,7 @@ c7c77940f2e6ff3fcc0ee815995c6193081573508d898257edc3d6473b80858d  01-ontologies/
 b19f053a4a3887691bdc566b5a14688220b7af40628215c39c24c0c4e864199a  02-shacl-safeguards/pib_enumeration_rules_v2_3_0.ttl  (30436b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
 266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
+44544bdf4766d8dd3cce6cf680faf938d8c111bc5f4ab66bde3efa99f6b0a3e8  03-tooling/algebra_conformance_check_v1_0_0.py  (6384b)
 4b8bd16bdbc183c1fa2fb750f0aa788de36b6d3b0c3e8a1244033816e800d471  03-tooling/consumer_registration_check_v1_0_0.py  (8876b)
 9134c817c4a04d0f0015601fd9a5e22d02700d8bc88c920e5f32c992ee9ecbb9  03-tooling/handover_inbox_check_v1_0_0.py  (6411b)
 6cf48a418df1c11066a4493290506876f09d93166ab82fac60ef5a577519446b  03-tooling/operator_rule_runner_v1_0_0.py  (5112b)
@@ -27,16 +30,16 @@ b19f053a4a3887691bdc566b5a14688220b7af40628215c39c24c0c4e864199a  02-shacl-safeg
 6f1a4960851eda325459781ac854f2528be3029477ea7bd133e575b5e00f2bed  03-tooling/profile_scoped_validate_v1_0_0.py  (7989b)
 64ee96b67e7ba04820deef2ddbe85081e9465891898c0296f325439d665d16df  03-tooling/profile_taxonomy_v1_0_0.py  (7695b)
 78257e8956e2c08be67bc386e31d07d9233ce60e20d7dbeba068d400f49d417e  03-tooling/reference_check_v1_0_0.py  (4581b)
-04ad9b70896afd9e97d53e361754618d72a10c2294743cb6a826948a2e74b9be  03-tooling/release_gate_v1_0_0.py  (2477b)
+a8e1f4e07b513c95f65192e68457625abcefb4c0f4e4cc839bdd9e4d8bbfbbcb  03-tooling/release_gate_v1_0_0.py  (2563b)
 b03bf8fdcd66409eb1ffd9d49a2c878d714ad8f4948dab71596d6a2415bfcade  03-tooling/rule_scope_check_v1_0_0.py  (5652b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
-d9e6ab0e4c4cd61b3b0f3aaa07c2675d03c26a82ce7dc3b51b57d966e44c5024  03-tooling/taxonomy_vaf_converter_v1_0_0.py  (9813b)
+12b2432d4bef55280b14e3a3f367ddf1f49c8880f3c13b1a0681487feaf402a1  03-tooling/taxonomy_vaf_converter_v1_0_0.py  (10755b)
 d87d099b7941f5f922db93d48dbeb86f8d08c79490a978f762c924a564ee234e  03-tooling/variation_capacity_v1_2_0.py  (10732b)
 bd7e876397715a904936f01a27289d3ed15c16871db40ffd471caa9471ddae73  04-documentation/ADAPTATION_PLAN_VAF_v1_0_0.md  (10662b)
 399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
 9732a43c78c305f1d98d9af3fc26dfcfe0f1a630e03b49b091c317b644612d1c  04-documentation/BLUEPRINT_v1_0_0.md  (8101b)
 46fa7f5262078bed29d9268a721403d3ac8dc2dd21f67079acbb9346382ccebc  04-documentation/PHASE3_COMPOSITION_RECORD_v1_0_0.md  (4984b)
-83180ecbcc3f17174b0825653916b2111e5699b1dcee5e3b61cc048422adbef5  04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md  (7288b)
+2deaea335f06f8297dd8491683ff2d896d135b3fb056fda1ed9f242cffc18dab  04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md  (8637b)
 10b39ee97f897b5f46116bbc86e3fdd743429409069189ff493476d6741d4614  04-documentation/PROPOSAL_DISPOSITION_v1_0_0.md  (1814b)
 35b5daf6d14059a3d9fd0ea68644f49c81836ec73ef55af381c9aa1e40c6a132  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (3351b)
 0c157d6565f7247a9297671c1c383787749acdd7504ecbc62a55b166de30248b  04-documentation/README.md  (4333b)
@@ -87,6 +90,7 @@ a4db3905385b5bcd9f13ad056c1b99aa58a5eac483e335505b1d19d0856f17cb  10-experiments
 40c53ddd7238b435f570296f280e4ba3cfde2fcc2baf8d0f091e1b49ea9f510f  10-experiments/probe_round1_operator_use_cases_v1_0_0.py  (5784b)
 16abe080bc782712f542b6bc046632e018444b9ff6f54044e201c73134e5e3d9  10-experiments/probe_round2_intersection_and_necessity_v1_0_0.py  (4003b)
 741222119fba9999cc1a483b2499c4e5e6408903a4c0b6b1ce155534779d366d  10-experiments/probe_round3_shipped_operator_rules_v1_0_0.py  (5863b)
+7a12178a5910491f3db8c8200b00785b600c9f1a665e4aa56dc9b279b82530ac  10-experiments/probe_taxonomy_vs_vaf_oracle_v1_0_0.py  (4711b)
 558d63a0a7098acaf7189671e690628afb2fc0a40c57948e8483148e996cb757  10-experiments/probe_vaf_profile_families_differential_v1_0_0.py  (4647b)
 c200541b843a902b58cfa2de78accf8604e1eae061f93cca78720cc03a258b21  11-vendored-operator-rules/VENDORED_PINS_v1_0_0.md  (3642b)
 02276cfc6f312e5d7ce7aa6c26f68b0329bd2cfba9ed5a410d721daf2f3b69af  11-vendored-operator-rules/variant_algebra_operator_rules_v1_0_0.ttl  (12992b)
@@ -109,4 +113,4 @@ ae81ade3e0aa1d908d066b93cb854a13eb93605dcd88294147441fad5f6a35d2  13-consumer-re
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 7f3f2e824c4155be38c32fd8f974ee9821ba409321b19fe20bf50118a16802b9  README.md  (8055b)
-164f496efb6f1299fd8994090d7d721f082cb24f5800d3bc6f9480be4333c779  VERSION.txt  (7b)
+c90c3058290761eb1f40ef36a2febaa5a8933a3f473d817f6803f6069def3050  VERSION.txt  (7b)
