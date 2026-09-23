@@ -15,6 +15,12 @@
 #   Combined           3   every constraint kind interacting at once (agrees with the unpruned rules)
 #   Independent5     243   five independent exclusive pairs: 3^5, from five groups
 #   Unsatisfiable      0   one group admits nothing, so the whole product is zero, not skipped
+#   EmptySpace         —   a space declaring NO features. Measured, not assumed: it yields NO capacity at
+#                          all (partitioning finds no groups to multiply, so nothing is reported), and it is
+#                          MARKED drift-suspected rather than rejected — owner's ruling, since an empty
+#                          component can occur legitimately between processing steps but never in a
+#                          published profile. The mark exists because an absent capacity is otherwise
+#                          indistinguishable from a space nobody asked about.
 
 ex:Budget2of4 a pibe:VariationSpace ; rdfs:label "At most two of four budget contributors"@en ; pibe:featureCount 4 ;
     pibe:hasFeature ex:Budget2of4_f1, ex:Budget2of4_f2, ex:Budget2of4_f3, ex:Budget2of4_f4 .
@@ -85,3 +91,5 @@ ex:Unsatisfiable_f3 pibe:featureIndex 3 .
 ex:Unsatisfiable_m1 a pibe:MandatoryConstraint ; pibe:inSpace ex:Unsatisfiable ; pibe:requires ex:Unsatisfiable_f1 .
 ex:Unsatisfiable_m2 a pibe:MandatoryConstraint ; pibe:inSpace ex:Unsatisfiable ; pibe:requires ex:Unsatisfiable_f2 .
 ex:Unsatisfiable_x a pibe:ExclusiveConstraint ; pibe:inSpace ex:Unsatisfiable ; pibe:groupMember ex:Unsatisfiable_f1 , ex:Unsatisfiable_f2 .
+
+ex:EmptySpace a pibe:VariationSpace ; rdfs:label "A space declaring no features"@en ; pibe:featureCount 0 .

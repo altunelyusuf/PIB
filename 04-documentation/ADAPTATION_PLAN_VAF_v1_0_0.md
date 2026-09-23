@@ -120,3 +120,36 @@ it because the gate exercises repetition and exclusion, not intersection.
 
 **Items 4, 5 — awaiting the owner's decision**, as agreed: whether a featureless space is invalid or has
 capacity 1, and whether PIB needs a written concrete syntax for its expressions.
+
+**Item 4 — empty spaces: DONE, per the owner's ruling (2026-09-22).** An empty component is not meaningful
+overall, but can occur legitimately and temporarily between processing steps; for PIB an empty profile
+indicates possible drift and must be validated. So an empty space is **marked, not rejected**: a check-phase
+rule sets `pibe:driftSuspected`, the harness reports it by name, and the self-test requires that none of
+PIB's **published** profile spaces is ever marked — proven to fail when one is. Measured and corrected while
+building: an empty space yields **no capacity at all** (partitioning finds no groups to multiply), not a
+capacity of 1 as first assumed — which is precisely why the mark is needed, since an absent capacity is
+otherwise indistinguishable from a space nobody asked about.
+
+**Item 5 — expression interchange: DONE, per the owner's ruling.** A two-way converter between PIB's
+taxonomy and the algebra's DSL, `03-tooling/taxonomy_vaf_converter_v1_0_0.py`.
+
+The algebra's parser is reused, never re-implemented: reading the algebra's notation is the algebra's own
+capability. That makes the converter an **interop tool with an optional dependency** (`VAF_SRC`), and it is
+deliberately **not** part of any gate — PIB's calculation path stays in the ontology and still needs nothing
+outside the package.
+
+The algebra's recent DSL additions make the mapping exact where it previously could not be: `atmost N of {…}`
+carries PIB's k-of-n budget, which had no DSL form before. Verified by round-trip — every space converted to
+DSL, parsed back by the algebra's parser, and re-counted:
+
+| Space | capacity → DSL → back |
+|---|---|
+| Capstone / Ontology development | 9 → 9, 1 → 1 |
+| Budget (at most 2 of 4) | 11 → 11 |
+| Later prerequisite / spread or-group / all combined | 6 → 6, 12 → 12, 3 → 3 |
+| Five independent groups / unsatisfiable | 243 → 243, 0 → 0 |
+
+A hand-written algebra component also converts into a PIB space that computes correctly. Constructs PIB
+cannot express — multiplicity repetition, `unite`, `removes`, `excludes`, infix expression statements — are
+**refused with a reason**, never approximated: a silent approximation would count something other than what
+was written.

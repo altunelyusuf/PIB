@@ -23,7 +23,7 @@ What is NOT here, deliberately: no enumeration, no constraint evaluation, no adm
 logic, no counting logic. Every one of those lives in SHACL rules and SPARQL. This file is a
 harness in the ordinary programming sense — it loads graphs, re-invokes the rule engine until
 the graph stops growing, runs one counting query, and prints. If a constraint's meaning ever
-needs changing, it is changed in `02-shacl-safeguards/pib_enumeration_rules_v2_1_0.ttl`, not
+needs changing, it is changed in `02-shacl-safeguards/pib_enumeration_rules_v2_2_0.ttl`, not
 here.
 
 Why the loop: generation branches one feature at a time, so a space of n features needs n
@@ -38,7 +38,7 @@ Usage:
 import sys, os
 
 RULES = os.path.join(os.path.dirname(__file__), "..", "02-shacl-safeguards",
-                     "pib_enumeration_rules_v2_1_0.ttl")
+                     "pib_enumeration_rules_v2_2_0.ttl")
 FIXTURES = os.path.join(os.path.dirname(__file__), "..", "12-operator-fixtures")
 
 CAPACITY_QUERY = """
@@ -99,6 +99,8 @@ def compute(space_paths, max_passes=64, verbose=True):
             passes += 1
 
     results = {str(r[0]): int(r[1]) for r in data.query(CAPACITY_QUERY)}
+    drift = sorted(str(s) for s in data.subjects(
+        rdflib.URIRef("http://purl.org/pib/enumeration#driftSuspected"), rdflib.Literal(True)))
     totals = {str(r[0]): int(r[1]) for r in data.query(COMPLETE_QUERY)}
     rejected = {str(r[0]): int(r[1]) for r in data.query(REJECTED_QUERY)}
 
@@ -108,6 +110,10 @@ def compute(space_paths, max_passes=64, verbose=True):
             name = space.split("#")[-1]
             print(f"  {name}: complete candidates across its groups {totals.get(space, 0)}, "
                   f"rejected {rejected.get(space, 0)}, Variation Capacity {cap}")
+    if verbose and drift:
+        for d in drift:
+            print(f"  DRIFT SUSPECTED: {d.split('#')[-1]} declares no features — no capacity is reported for it")
+    compute.last_drift = drift
     return results, totals, rejected
 
 
@@ -176,8 +182,16 @@ def _check(label, path, expected):
 
 
 def self_test():
-    """Every declared space must reproduce its known capacity, looked up by name."""
+    """Every declared space must reproduce its known capacity, looked up by name.
+
+    A published profile space must never be drift-suspected: an empty space is tolerated transiently
+    between processing steps, never in what PIB publishes (owner's ruling, 2026-09-22).
+    """
     ok = _check("profile spaces", SPACES, EXPECTED)
+    compute([SPACES], verbose=False)
+    drifting = [d.split("#")[-1] for d in getattr(compute, "last_drift", [])]
+    print(f"  profile spaces marked drift-suspected: {drifting or 'none'}   (must be none)")
+    ok = ok and not drifting
     ok = _check("conformance spaces", CONFORMANCE, CONFORMANCE_EXPECTED) and ok
     net = check_net_has_teeth()
     print(f"  safety-net checks reject a planted inadmissible candidate: {net}")

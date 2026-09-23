@@ -8,7 +8,7 @@
 @prefix dcterms: <http://purl.org/dc/terms/> .
 
 # ============================================================================
-# PIB Enumeration Rules v2.1.0 — variant enumeration and admissibility, computed in the ontology.
+# PIB Enumeration Rules v2.2.0 — variant enumeration and admissibility, computed in the ontology.
 #
 # MINOR from v2.0.0: PARTITIONING. A space is split into independent groups — features coupled by a
 # shared constraint — each group is enumerated on its own, and the group capacities are multiplied.
@@ -45,9 +45,9 @@
 
 <http://purl.org/pib/enumeration/rules>
     a owl:Ontology ;
-    owl:versionInfo "2.1.0" ;
-    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.1.0> ;
-    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.0.0> ;
+    owl:versionInfo "2.2.0" ;
+    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.2.0> ;
+    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.1.0> ;
     rdfs:label "PIB enumeration rules — variant generation and admissibility in the ontology"@en ;
     dcterms:description "Generates every admissible candidate selection over a declared variation space, pruning as it goes, then checks admissibility as a safety net and leaves the admissible set standing to be counted."@en .
 
@@ -420,5 +420,33 @@ pibe:SpaceCapacityRuleShape a sh:NodeShape ;
             $this pibe:groupOf ?parent ; pibe:groupOrder ?o ; pibe:runningProduct ?p .
             FILTER NOT EXISTS { ?later pibe:groupOf ?parent ; pibe:groupOrder ?lo . FILTER(?lo > ?o) }
             FILTER NOT EXISTS { ?parent pibe:variationCapacity ?already }
+        }
+    """ ] .
+
+# ---------------------------------------------------------------------------
+# EMPTY-SPACE DRIFT (owner's ruling, 2026-09-22)
+#
+# An empty component is not meaningful overall, but it CAN occur legitimately and temporarily between
+# processing steps — so an empty space is NOT rejected outright. For PIB a published profile whose space
+# has no features indicates possible DRIFT and must be validated. The rule therefore MARKS it, leaving the
+# verdict to whoever holds the space: a transient intermediate may carry the mark, a published profile may
+# not. Its capacity stays 1 — the empty selection is admissible — so silence would be indistinguishable
+# from a real answer, which is exactly why the mark exists.
+# ---------------------------------------------------------------------------
+
+pibe:driftSuspected a owl:DatatypeProperty ;
+    rdfs:label "drift suspected"@en ;
+    skos:definition "Marks a variation space that is structurally admissible but suspicious: it declares no features, so its capacity of 1 reports the empty selection rather than anything the space was meant to describe."@en .
+
+pibe:EmptySpaceDriftShape a sh:NodeShape ;
+    pibe:phase "check" ;
+    rdfs:label "Empty-space drift: a space declaring no features is marked, not rejected"@en ;
+    sh:targetClass pibe:VariationSpace ;
+    sh:rule [ a sh:SPARQLRule ; sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this pibe:driftSuspected true }
+        WHERE {
+            FILTER NOT EXISTS { $this pibe:hasFeature ?anyFeature }
+            FILTER NOT EXISTS { $this pibe:driftSuspected true }
         }
     """ ] .
