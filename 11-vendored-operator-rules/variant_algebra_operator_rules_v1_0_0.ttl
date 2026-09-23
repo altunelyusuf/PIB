@@ -23,7 +23,14 @@
     rdfs:label "VAF Operator SHACL-AF Rules v1.0.0"@en ;
     dcterms:created "2026-07-03"^^xsd:date ;
     dcterms:identifier "variant_algebra_operator_rules_v1_0_0" ;
-    owl:versionInfo "1.1.0" ;  # Real, corrected (2026-09-22): content changed substantively
+    owl:versionInfo "1.2.0" ;  # Real, corrected (2026-09-23): PIB's second, independent
+    # content-hash catch of this exact recurring miss -- content changed
+    # (the IntersectionRuleShape disclosure comment, v2.52.0) without a
+    # matching versionInfo bump. STANDING REMINDER: any edit to THIS
+    # file's rule bodies or their disclosure comments, however small,
+    # needs a real versionInfo bump in the SAME commit -- a repo-level
+    # VERSION.txt bump alone does not cover a content-hash-pinning
+    # consumer.
     # (ExclusiveAtLeastOneRuleShape, IntersectionCoSelectionRuleShape,
     # WeaklyGroundedRuleShape added) while this stayed 1.0.0 -- a real
     # versioning defect caught by a cross-session PIB handover note
@@ -153,6 +160,21 @@ va:DivisionRuleShape a sh:NodeShape ;
 # explicit coOccursWith partner that is itself a member of SetB.
 va:IntersectionRuleShape a sh:NodeShape ;
     sh:targetClass va:IntersectionOperator ;
+    # Real, disclosed note (2026-09-22, added following a real, cross-
+    # session PIB handover observation): both operands MUST be typed as
+    # va:SetA / va:SetB respectively -- an earlier version of this rule
+    # matched any operands via va:coOccursWith alone, without this
+    # typing requirement. Data that satisfied the earlier, untyped rule
+    # can produce NO result member under this one, with no error and no
+    # warning -- an empty result is NOT distinguishable from "nothing
+    # intersects" by inspecting this rule's own output alone. This is a
+    # real, deliberate tightening (see WI-036's own real rationale
+    # below: Intersection is a genuine symmetric biconditional, not
+    # DependencyOperator's asymmetric implication, and correct typing is
+    # what makes that distinction enforceable) -- disclosed here
+    # explicitly so a consumer relying on this rule's shape can verify
+    # its own data carries the required typing before trusting a
+    # zero-member result.
     sh:rule [ a sh:SPARQLRule ;
         sh:construct """
             PREFIX va: <http://example.org/variant-algebra#>

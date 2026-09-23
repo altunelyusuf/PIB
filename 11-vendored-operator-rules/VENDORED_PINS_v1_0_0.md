@@ -10,7 +10,7 @@ must not edit them in place. If that session re-issues them, PIB re-vendors the 
 | File | SHA-256 | Role |
 |---|---|---|
 | `variant_algebra_v3_extended_properties_v1_0_0.ttl` | `a42a48e4d2aac9d7…` | the properties the rules read and write (upstream's consolidated properties file) |
-| `variant_algebra_operator_rules_v1_0_0.ttl` | `02276cfc6f312e5d…` | twelve rule shapes implementing the full operator set |
+| `variant_algebra_operator_rules_v1_0_0.ttl` | `e85358c3644c7013…` | twelve rule shapes implementing the full operator set |
 
 ## Execution configuration is prescribed, not chosen
 
@@ -55,3 +55,14 @@ old copies were replaced: identical results, violating fixture still rejected on
 One mismatch remains upstream and is reported, not worked around: the files declare `owl:versionInfo "1.1.0"`
 while their **filenames still read `v1_0_0`**. PIB pins by hash, so it is unaffected; a consumer pinning by
 filename still cannot tell the two apart.
+
+## Re-vendored in PIB v2.17.0 — the operator rules reached version 1.2.0
+
+The content had changed twice more while still declaring 1.1.0. PIB held its pin both times and reported
+it; the algebra's session confirmed the cause (a disclosure comment added without a version bump), bumped
+the file to **1.2.0**, and added a standing reminder beside `owl:versionInfo` — noting that if the miss
+recurs a third time the reminder is not working and a structural check is needed instead.
+
+Adopted after the same measurement the discipline requires before taking a higher version: every algebra
+term PIB binds to is still covered and nothing the pinned copies declared was dropped. The operator gate
+was run against 1.2.0 before the old copy was replaced, with identical results.
