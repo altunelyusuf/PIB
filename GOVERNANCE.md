@@ -43,7 +43,7 @@ invariants, the wiring enumeration, and the profile set are all re-runnable from
 ## External dependency
 
 PIB's calculation runs **in the ontology**: candidate generation, admissibility and counting are SHACL
-rules and SPARQL (`02-shacl-safeguards/pib_enumeration_rules_v2_1_0.ttl`). The Python files are
+rules and SPARQL (`02-shacl-safeguards/pib_enumeration_rules_v2_2_0.ttl`). The Python files are
 harnesses — they drive the rule engine and report; no constraint's meaning lives in code.
 
 The variant-algebra **engine is no longer a runtime dependency**: as of v2.0.0 nothing in this package
@@ -65,6 +65,9 @@ returned contract are in `08-registration/`.
 ## Release procedure
 
 1. Re-run the gates: `03-tooling/wiring_validator` against the pinned VAF, `self_coverage_checker`,
+   Run `03-tooling/reference_check_v1_0_0.py` first: it fails the release if a current document cites a
+   file the package no longer ships. It exists because two releases in one day went out citing renamed
+   files after that warning was printed and stepped over — a warning nobody stops for is not a safeguard.
    and `pib_invariants` over `01-ontologies/` **plus** `07-spoke-contributions/` (validating
    `01-ontologies/` alone produces the known G3 standalone-vs-merged artifact, not a real failure).
 2. Bump `VERSION.txt` per BP-D7 and regenerate `MANIFEST_SHA256.txt`; confirm it self-verifies.
