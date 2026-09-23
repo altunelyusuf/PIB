@@ -97,7 +97,7 @@ PY
 
 **The calculation runs in the ontology.** Candidate generation, admissibility against the algebra's
 operators, and counting are SHACL rules and SPARQL — see
-`02-shacl-safeguards/pib_enumeration_rules_v2_2_0.ttl`. The Python files are harnesses: they load
+`02-shacl-safeguards/pib_enumeration_rules_v2_3_0.ttl`. The Python files are harnesses: they load
 graphs, drive the rule engine to a fixpoint, run a query and print. No constraint's meaning lives in
 code. Spaces are split into independent groups of coupled features, each enumerated on its own, and
 the group capacities are multiplied in the ontology — so cost grows with the number of groups, not

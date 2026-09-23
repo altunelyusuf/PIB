@@ -92,7 +92,7 @@ Two consequences that decide real cases:
 ## External dependency
 
 PIB's calculation runs **in the ontology**: candidate generation, admissibility and counting are SHACL
-rules and SPARQL (`02-shacl-safeguards/pib_enumeration_rules_v2_2_0.ttl`). The Python files are
+rules and SPARQL (`02-shacl-safeguards/pib_enumeration_rules_v2_3_0.ttl`). The Python files are
 harnesses — they drive the rule engine and report; no constraint's meaning lives in code.
 
 The variant-algebra **engine is no longer a runtime dependency**: as of v2.0.0 nothing in this package
@@ -114,7 +114,10 @@ returned contract are in `08-registration/`.
 ## Release procedure
 
 1. Re-run the gates: `03-tooling/wiring_validator` against the pinned VAF, `self_coverage_checker`,
-   Also run `03-tooling/handover_inbox_check_v1_0_0.py`: it fails when a dispositioned handover has no
+   **Run `03-tooling/release_gate_v1_0_0.py` and do not tag or push if it exits non-zero.** It runs every
+   self-contained gate and blocks the release itself, because three releases in one session went out after
+   a gate printed FAIL directly above the push. Reading output is not a control. It also runs
+   `03-tooling/handover_inbox_check_v1_0_0.py`: it fails when a dispositioned handover has no
    log line, when a state directory is missing, or when an item held in `outgoing/` does not say why it
    was not filed in its target's inbox. It found an unlogged item on its first run.
    Run `03-tooling/reference_check_v1_0_0.py` first: it fails the release if a current document cites a
