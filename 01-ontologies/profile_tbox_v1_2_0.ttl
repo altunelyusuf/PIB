@@ -11,9 +11,9 @@
 
 <http://purl.org/pib/profile>
     a owl:Ontology ;
-    owl:versionInfo "1.1.0" ;
-    owl:versionIRI <http://purl.org/pib/profile/1.1.0> ;
-    owl:priorVersion <http://purl.org/pib/profile/1.0.0.1> ;
+    owl:versionInfo "1.2.0" ;
+    owl:versionIRI <http://purl.org/pib/profile/1.2.0> ;
+    owl:priorVersion <http://purl.org/pib/profile/1.1.0> ;
     rdfs:label "Profile Ontology — shared artifact-category & variant-configuration vocabulary"@en ;
     dcterms:description "Single source of truth for artifact CATEGORY across the generic ontology ecosystem (RDODI generates, RADAR measures, PAMG grades). A Profile binds a category identity, the criteria SHARED across systems, and a selection of one validated integration wiring variant. System-specific behaviour (RDODI generation templates, RADAR measurement dimensions, PAMG grading weights) is NOT modelled here — it is attached by each system to the shared Profile IRI, keeping this vocabulary free of scope-foreign content (OE L-64). PATCH v1.0.0.1: BP-D24 metadata completed (added dcterms:modified, dcterms:identifier, prov:wasAttributedTo, machine-linkable dcterms:creator IRI, and Activity-IRI prov:wasGeneratedBy); no vocabulary change."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
@@ -93,7 +93,7 @@ pib:RuleScope a owl:Class ;
 
 pib:General a pib:RuleScope , owl:NamedIndividual ;
     rdfs:label "General — binds every profile, unconditionally"@en ;
-    skos:definition "The default for any rule that declares no scope. A rule is general unless it says otherwise, so that a requirement cannot become optional through silence."@en .
+    skos:definition "A rule of the domain itself — declared at the meta level, owned by no profile, and binding every profile. Generality is a consequence of having no profile home, not of an annotation: see the correction recorded in v1.2.0."@en .
 
 pib:hasRuleScope a owl:ObjectProperty ;
     rdfs:label "has rule scope"@en ;
@@ -112,3 +112,35 @@ pib:conditionValue a owl:DatatypeProperty ;
 pib:ProfileSpecific a owl:Class ; rdfs:subClassOf pib:RuleScope ;
     rdfs:label "Profile-specific — binds only where a stated profile condition holds"@en ;
     skos:definition "A scope that names the profile property and value under which its rule applies. Declaring it does not weaken the rule; it makes an existing dependency visible to a reader and checkable by a tool."@en .
+
+# ---------------------------------------------------------------------------
+# CORRECTION (v1.2.0) — scope follows the rule's HOME, not an annotation
+#
+# v1.1.0 made scope an optional declaration and said absence means general. That is unsafe in exactly the
+# direction this vocabulary exists to protect. Profiles are VARIANTS: each is legal under its own rules,
+# and a rule authored inside one profile describes that variant, not the domain. Under the v1.1.0 default,
+# such a rule that simply omitted its annotation became general and was applied to every profile.
+#
+# Demonstrated, not argued (2026-09-23): a rule requiring an ontology-quality measurement, authored for the
+# ontology-deliverable profile and carrying no annotation, INVALIDATED a gamification artifact that was
+# entirely legal under its own profile. A legal variant was rejected by a foreign profile's rule.
+#
+# The correction: a rule's scope is determined by WHO DECLARES IT, which cannot be forgotten.
+#   - a rule declared by a profile is LOCAL to that profile, always, whatever it does or does not annotate;
+#   - a rule declared at the meta level, owned by no profile, is GENERAL and binds every variant.
+# Generality is therefore not a default that silence selects; it is a property of where the rule lives.
+# A validator applies to an artifact exactly: the general rules, plus the rules of the profile it declares.
+# ---------------------------------------------------------------------------
+
+pib:declaredByProfile a owl:ObjectProperty ;
+    rdfs:label "declared by profile — the profile that owns this rule"@en ;
+    rdfs:range pib:Profile ;
+    skos:definition "Binds a rule to the profile that declares it. A rule with this property is local to that profile and must never be evaluated against an artifact of another profile; a rule without it belongs to the domain and binds every profile. This is the structural fact that determines scope, replacing v1.1.0's optional annotation."@en .
+
+pib:ProfileLocalRule a owl:Class ; rdfs:subClassOf pib:RuleScope ;
+    rdfs:label "Profile-local rule — describes one variant, binds only it"@en ;
+    skos:definition "A rule owned by a profile. Applying it to another profile does not enforce a standard; it rejects a legal variant for failing to be a different variant."@en .
+
+pib:DomainGeneralRule a owl:Class ; rdfs:subClassOf pib:RuleScope ;
+    rdfs:label "Domain-general rule — a meta-level rule binding every variant"@en ;
+    skos:definition "A rule of the domain ontology itself, owned by no profile. These are the invariants every variant must satisfy to be an artifact of this domain at all, as distinct from what makes it one particular variant."@en .

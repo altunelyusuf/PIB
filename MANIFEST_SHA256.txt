@@ -1,22 +1,22 @@
-# PIB v2.11.0 — SHA-256 Manifest
-# MINOR from v2.10.0 (2026-09-23): a handover received, verified and adjudicated centrally.
-#   The backlog & roadmap framework session reported that a profile mechanism exists in its package while
-#   no shape reads it, and asked PIB to settle general vs profile-specific rules for the profile pattern.
-#   Re-derived: 321 of its shapes, zero profile references; its class, properties, two profiles and the
-#   cited live lineage all real. Its third question changed the ruling — measuring 1,330 ecosystem shapes
-#   found four already profile-conditioned and NONE declaring it. The gap is undeclared scope, everywhere.
-#   - Profile ontology 1.0.0.1 -> 1.1.0: rule scope, GENERAL as the safe default (a rule binds everyone
-#     unless it says otherwise), and a profile-condition form making the dependency metadata not buried logic.
-#   - ADD 03-tooling/rule_scope_check_v1_0_0.py: flags only rules that BEHAVE profile-specific while
-#     DECLARING nothing. Proven: flags the hidden case, flags neither a general nor a declared one.
-#   - Reply delivered to the sender's inbox; the four undeclared OE gates filed to OE, not patched.
-#   Gates: reference, inbox, rule scope, capacity, operator, invariants.
+# PIB v2.12.0 — SHA-256 Manifest
+# MINOR from v2.11.0 (2026-09-23): corrects v2.11.0's own rule-scope default, on the owner's challenge.
+#   Profiles are VARIANTS: their rules are local, general rules live at the meta level. v2.11.0 made scope
+#   an optional annotation defaulting to general, so a profile-authored rule that omitted it became a
+#   domain rule and was applied to every variant.
+#   - Demonstrated, not argued: an ontology-quality rule authored for one profile INVALIDATED a
+#     gamification artifact legal under its own profile.
+#   - Profile ontology 1.1.0 -> 1.2.0: scope follows the rule's HOME, which cannot be omitted. A rule
+#     declared by a profile is local to it; a rule owned by no profile is domain-general.
+#   - ADD 03-tooling/profile_scoped_validate_v1_0_0.py: applies general rules plus the artifact's OWN
+#     profile's rules. Unscoped: 4 artifacts fail, 2 of them legal. Scoped: exactly 2, the genuinely faulty.
+#   - Correction delivered to the reporting session; the mis-framed OE finding withdrawn.
+#   Gates: reference, inbox, rule scope, profile-scoped validation, capacity, operator, invariants.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
 7dbc559e2f70b04d285048c99b8bbe0e03c7e4edb8220fda17b9518a499e257c  01-ontologies/pib_wiring_composition_v1_0_0.ttl  (3804b)
 a60c5caaae626a26ee83181f4d953e6b5fe8ab4776789c86dc2953a7a1aecc3b  01-ontologies/pib_wiring_expressions_v1_0_0_2.ttl  (9478b)
-97183fa921dedd83b6969373305925e50397c9021b6b55ddae4dc3ea614e7908  01-ontologies/profile_tbox_v1_1_0.ttl  (8920b)
+c7c77940f2e6ff3fcc0ee815995c6193081573508d898257edc3d6473b80858d  01-ontologies/profile_tbox_v1_2_0.ttl  (11683b)
 04465f049be2be7f1d0a1b3c5302e44ffc7def72a88faa4d347924aac6e9110d  02-shacl-safeguards/pib_consumer_registration_shacl_v1_1_0.ttl  (9746b)
 c3bda2c1e1e4b524ba2187c174a06b6a0abff0f85678c8ded9690eb9b3f2cce6  02-shacl-safeguards/pib_enumeration_rules_v2_2_0.ttl  (25192b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
@@ -25,6 +25,7 @@ c3bda2c1e1e4b524ba2187c174a06b6a0abff0f85678c8ded9690eb9b3f2cce6  02-shacl-safeg
 9134c817c4a04d0f0015601fd9a5e22d02700d8bc88c920e5f32c992ee9ecbb9  03-tooling/handover_inbox_check_v1_0_0.py  (6411b)
 6cf48a418df1c11066a4493290506876f09d93166ab82fac60ef5a577519446b  03-tooling/operator_rule_runner_v1_0_0.py  (5112b)
 6de5a17005ffd79e031635152f6a667cbe48b85153c6afcbef122653f6de8fd6  03-tooling/profile_approval_v1_0_0.py  (12974b)
+6f1a4960851eda325459781ac854f2528be3029477ea7bd133e575b5e00f2bed  03-tooling/profile_scoped_validate_v1_0_0.py  (7989b)
 78257e8956e2c08be67bc386e31d07d9233ce60e20d7dbeba068d400f49d417e  03-tooling/reference_check_v1_0_0.py  (4581b)
 b03bf8fdcd66409eb1ffd9d49a2c878d714ad8f4948dab71596d6a2415bfcade  03-tooling/rule_scope_check_v1_0_0.py  (5652b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
@@ -39,7 +40,7 @@ bd7e876397715a904936f01a27289d3ed15c16871db40ffd471caa9471ddae73  04-documentati
 0c157d6565f7247a9297671c1c383787749acdd7504ecbc62a55b166de30248b  04-documentation/README.md  (4333b)
 22d05f6eafddf17af66ab275b8fe46a56d142ee29fc669fe222701203935ee2e  05-prov-records/prov_v1_1_0.ttl  (1507b)
 27f1bcd775925b746bdb96c3b8fad136a8132171f95e481be3f398e1d409dbf3  06-vaf-engine-pin/VAF_DEPENDENCY_PIN_v1_0_0.md  (3566b)
-e65f0aa3dbff4825b496fec1daffe6d8099c3d84dd7b93ae245b3b6825ba60d5  07-spoke-contributions/VENDORED_PINS_v1_0_0.md  (2037b)
+cdbab8fd29308321fee3064b13516407a1840c08885fcbf9b002ca111f6f3871  07-spoke-contributions/VENDORED_PINS_v1_0_0.md  (2037b)
 c2d4ce934d8691fa017002d278c647c3f0e143bc259ea916273d37e12e2f84d1  07-spoke-contributions/o4sdlc_interface_contribution_v1_0_0.ttl  (4873b)
 8f1e2bc1302c8b4115218cac017d2dcb742d47af6f757178e235ea8a812cfeba  07-spoke-contributions/pamg_interface_contribution_v1_0_0.ttl  (5539b)
 c226b671eb8570dbe6c45f00e4d763f9efa01c04befd94cd60689fb25ce8d950  07-spoke-contributions/radar_interface_contribution_v1_0_0.ttl  (7403b)
@@ -57,8 +58,9 @@ f970dc114d77fcb914029965d015e31c18c347c841193d8a7e11720432897dd2  08-registratio
 429cb8533e02c7e7a65f27f3e9bf35c98cc924b83f177330ee8f0c421317e9ca  09-academic-paper/PROPOSAL_pib-vaf-paper_to_VAF_taxonomy-based-configuration.md  (5375b)
 0c78895d129c0b27fc9af0e67d8c02c5e7abf74b55108c567d777b2e602c1a27  09-academic-paper/README.md  (3363b)
 2daed89db27fb8b0b1a6eb17434d8f87f93d6bcded98800765b35d93c58c5d60  09-academic-paper/pib_vaf_document_v21_0_0.docx  (470379b)
-732f9fe2949c99b5ee3fb685d6811d950eec11effb8079ca172df894ebd2a658  09-handover-inbox/HANDOVER_LOG.md  (9111b)
+759f7424f4ef97d5d6e7c085eef408dd797d6bee54f9fa901318488af9316a2e  09-handover-inbox/HANDOVER_LOG.md  (9993b)
 17904dad10dc2f7d840e88a9034043e62a57144f21327b8accd0ebe44a01db98  09-handover-inbox/README.md  (2804b)
+bbe249b026283115105b919bf7c4ca4a85e95b6609f678129b985156c7bfd839  09-handover-inbox/accepted/CORRECTION_PIB_to_backlog-roadmap-framework_scope-follows-home-not-annotation_v1_0_0.md  (3531b)
 a2925c44a8e430bc754e88e387aeac45eecc53206526fb956e9d2015b8f20978  09-handover-inbox/accepted/HANDOVER_OE_to_PIB_dependency-shape-changed-since-registration_v1_0_0.md  (2934b)
 38fa53cc135085e002f4bd54d229b807d7117341f9ca1bd582dd9347ec9f56b0  09-handover-inbox/accepted/HANDOVER_backlog-roadmap-framework_to_PIB_general-vs-profile-specific-rules_v1_0_0.md  (6517b)
 bc92c551f4a04e56e8b7da7b48ed8680716c1cb5b430096e45f93228e961f203  09-handover-inbox/accepted/OEE_to_PIB_round2_contract_v1_0_0.md  (3905b)
@@ -104,4 +106,4 @@ b367b06fcb5085eeacf84ef84c7bd3f6552290619dab80d0e316c0b09bf6fcdb  GOVERNANCE.md 
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 1fd3c009f09c5a48488352720b963321ea9b359b91175676e31c59d927b938b9  README.md  (8055b)
-f526f5e7f214e4916c51e16a61fb1be5d530d67e44c65d86db25b8416463b10c  VERSION.txt  (7b)
+140288f526a0978bcba7f2f8d2c2585faf05ce088087b54c161050d6366eab4b  VERSION.txt  (7b)
