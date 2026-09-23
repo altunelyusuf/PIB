@@ -1,12 +1,11 @@
-# PIB v2.4.0 — SHA-256 Manifest
-# MINOR from v2.3.1 (2026-09-22): adaptation plan for the variant algebra v2.26.0 -> v2.50.0.
-#   - ADD 04-documentation/ADAPTATION_PLAN_VAF_v1_0_0.md: six items, each checked against the algebra's bytes.
-#   - Wiring expressions 1.0.0 -> 1.0.0.1: records that PIB's exclusive means the OPTIONAL-WRAPPED form (at
-#     most one) while the algebra's class now reads 'exactly one'. Material: capstone is 9 under at-most-one,
-#     6 under exactly-one. PIB's intent and published capacities are unchanged; the claim was.
-#   - Vendored pins HELD, not re-vendored: both upstream files changed in place under an unchanged version.
-#     PIB's operator gate gives identical results under both file sets, verified.
-#   Gates: all 8 capacity spaces match; operator gate rejects its violating fixture; invariants 0 violations.
+# PIB v2.4.1 — SHA-256 Manifest
+# PATCH from v2.4.0 (2026-09-22): fixes a gate that v2.4.0 shipped broken.
+#   v2.4.0 renamed the wiring-expressions ontology to 1.0.0.1 but left the operator rule runner pointing at
+#   the old filename, so the operator gate raised FileNotFoundError instead of running. The release output
+#   printed 'stale refs: 1' on the line above and the release was pushed anyway.
+#   - operator_rule_runner repointed to pib_wiring_expressions_v1_0_0_1.ttl.
+#   Gates re-run, all three green: 8 capacity spaces match; operator gate rejects its violating fixture;
+#   invariants 0 violations.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -16,7 +15,7 @@ daafdf2c387dc47d36c6ddd8fbefd359c9dfc8f69b0e10d48245a626da62d93d  01-ontologies/
 5623a6483d8593512d1592ab2690f41e1053915b1ce08b7c3f48ce8ab74b2017  02-shacl-safeguards/pib_enumeration_rules_v2_1_0.ttl  (23548b)
 4a9c09ab51f89457b8ed529d64dbf7634a27fe2b68f94bfd2ae24a5b2891b9ba  02-shacl-safeguards/pib_invariants_v1_0_0.ttl  (2819b)
 266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
-cbcea025772db27f207d6a5dec494b362a8cb0bb392a9ff5e584f52c8a52a741  03-tooling/operator_rule_runner_v1_0_0.py  (5110b)
+6e6617b87dfd30d1cac79978f50d64a7a5fcc3e94ae416d65d5da81002dde6b9  03-tooling/operator_rule_runner_v1_0_0.py  (5112b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
 18e8acdd6bf30f9d7ac9840b5477aab2848c5857b6503236dbfaa1dc7e233507  03-tooling/variation_capacity_v1_2_0.py  (9957b)
 d7f895d5ec494076c963e889c8d38b75a9e4783c627bc1888803df6691ef4d9d  04-documentation/ADAPTATION_PLAN_VAF_v1_0_0.md  (6138b)
@@ -77,4 +76,4 @@ db418f59cef4d16b42737b81c48c7497312810d4a276a4fd9a623387f000091b  GOVERNANCE.md 
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 a5169a899326ca7c1762b56787ce588a692ab51e47424c2042a23593c52c96d9  README.md  (7929b)
-2ad7b0c3f0ede58c3165b7a8a5479e890a758d39bfe8683eaef50ce6afad7232  VERSION.txt  (6b)
+6d850e3ac42d0dd06bfdcce9151c1e6b40f4cf5272778f63eececea27c78f0b6  VERSION.txt  (6b)

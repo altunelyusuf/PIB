@@ -24,7 +24,7 @@ import sys, os, glob
 
 RULES_DIR = os.path.join(os.path.dirname(__file__), "..", "11-vendored-operator-rules")
 DEFAULT_DATA = [os.path.join(os.path.dirname(__file__), "..", "01-ontologies",
-                             "pib_wiring_expressions_v1_0_0.ttl")]
+                             "pib_wiring_expressions_v1_0_0_1.ttl")]
 
 VA = "http://example.org/variant-algebra#"
 
