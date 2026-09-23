@@ -1,16 +1,16 @@
-# PIB v2.12.0 — SHA-256 Manifest
-# MINOR from v2.11.0 (2026-09-23): corrects v2.11.0's own rule-scope default, on the owner's challenge.
-#   Profiles are VARIANTS: their rules are local, general rules live at the meta level. v2.11.0 made scope
-#   an optional annotation defaulting to general, so a profile-authored rule that omitted it became a
-#   domain rule and was applied to every variant.
-#   - Demonstrated, not argued: an ontology-quality rule authored for one profile INVALIDATED a
-#     gamification artifact legal under its own profile.
-#   - Profile ontology 1.1.0 -> 1.2.0: scope follows the rule's HOME, which cannot be omitted. A rule
-#     declared by a profile is local to it; a rule owned by no profile is domain-general.
-#   - ADD 03-tooling/profile_scoped_validate_v1_0_0.py: applies general rules plus the artifact's OWN
-#     profile's rules. Unscoped: 4 artifacts fail, 2 of them legal. Scoped: exactly 2, the genuinely faulty.
-#   - Correction delivered to the reporting session; the mis-framed OE finding withdrawn.
-#   Gates: reference, inbox, rule scope, profile-scoped validation, capacity, operator, invariants.
+# PIB v2.13.0 — SHA-256 Manifest
+# MINOR from v2.12.0 (2026-09-23): the safe profile architecture, with computable enforcement.
+#   Derived from the algebra's OWN definition of mandatory -- 'the feature must appear in every variant' --
+#   which decides placement: a requirement true of every variant is a domain claim and belongs at meta;
+#   the choice operators (optional, exclusive, or, dependency, repetition) describe one variant and stay.
+#   - ADD 04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md: two layers, rules E0-E4, each with its enforcer.
+#   - ADD 03-tooling/profile_architecture_check_v1_0_0.py: E1 a meta rule must not reject a legal variant
+#     (enumerate each profile with and without the meta layer; a capacity drop is a failure), E2 a
+#     requirement every variant mandates belongs at meta (reported as a lift, since restatements drift).
+#   - ADD 12-operator-fixtures/profile_architecture_spaces_v1_0_0.ttl: a worked two-layer architecture.
+#   Proven: a one-variant rule misplaced at meta rejects 3 of 6 legal variants; a requirement restated by
+#   every variant is reported as a lift. Both rules exercised, neither decorative.
+#   Gates: reference, inbox, rule scope, scoped validation, architecture, capacity, operator, invariants.
 8b972af2ffeecd0ed65956bfeebc84a0f59fb01b013ccdeebd7057c83fc49782  01-ontologies/example_capstone_profile_abox_v1_0_0.ttl  (2019b)
 aa66c4af4b72e867670f8069f3902df99e64bf9f893adc3d4a306ce75ed9a1be  01-ontologies/integration_interface_tbox_v1_0_0_2.ttl  (9211b)
 b76dd81459ae236654dad862b2bbc5f85f53ca3acf864b034fcda6cad362144a  01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl  (14165b)
@@ -25,6 +25,7 @@ c3bda2c1e1e4b524ba2187c174a06b6a0abff0f85678c8ded9690eb9b3f2cce6  02-shacl-safeg
 9134c817c4a04d0f0015601fd9a5e22d02700d8bc88c920e5f32c992ee9ecbb9  03-tooling/handover_inbox_check_v1_0_0.py  (6411b)
 6cf48a418df1c11066a4493290506876f09d93166ab82fac60ef5a577519446b  03-tooling/operator_rule_runner_v1_0_0.py  (5112b)
 6de5a17005ffd79e031635152f6a667cbe48b85153c6afcbef122653f6de8fd6  03-tooling/profile_approval_v1_0_0.py  (12974b)
+231837999d87a43a353595e9817699e21a030a80dca7d0282e5e3a11ef206e58  03-tooling/profile_architecture_check_v1_0_0.py  (8134b)
 6f1a4960851eda325459781ac854f2528be3029477ea7bd133e575b5e00f2bed  03-tooling/profile_scoped_validate_v1_0_0.py  (7989b)
 78257e8956e2c08be67bc386e31d07d9233ce60e20d7dbeba068d400f49d417e  03-tooling/reference_check_v1_0_0.py  (4581b)
 b03bf8fdcd66409eb1ffd9d49a2c878d714ad8f4948dab71596d6a2415bfcade  03-tooling/rule_scope_check_v1_0_0.py  (5652b)
@@ -35,6 +36,7 @@ bd7e876397715a904936f01a27289d3ed15c16871db40ffd471caa9471ddae73  04-documentati
 399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
 9732a43c78c305f1d98d9af3fc26dfcfe0f1a630e03b49b091c317b644612d1c  04-documentation/BLUEPRINT_v1_0_0.md  (8101b)
 46fa7f5262078bed29d9268a721403d3ac8dc2dd21f67079acbb9346382ccebc  04-documentation/PHASE3_COMPOSITION_RECORD_v1_0_0.md  (4984b)
+f1c1452a03bfcd23cb35199ff351f9616816c208831c67f89020321498dfc01a  04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md  (4196b)
 10b39ee97f897b5f46116bbc86e3fdd743429409069189ff493476d6741d4614  04-documentation/PROPOSAL_DISPOSITION_v1_0_0.md  (1814b)
 35b5daf6d14059a3d9fd0ea68644f49c81836ec73ef55af381c9aa1e40c6a132  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (3351b)
 0c157d6565f7247a9297671c1c383787749acdd7504ecbc62a55b166de30248b  04-documentation/README.md  (4333b)
@@ -92,6 +94,7 @@ a42a48e4d2aac9d710af2acdcebb5865fc83ee9e780844870b01b9d58324d34f  11-vendored-op
 f886d2d09f9fd7a6b52a5098eefb2a5e3a76526b4e5b9e6433071ad48c6f3cc0  12-operator-fixtures/candidate_negative_v1_0_0.ttl  (993b)
 826e572d07ce16ba6ae2924e67c4adbd7300e61fc3c764c9945358f44924d898  12-operator-fixtures/candidate_positive_v1_0_0.ttl  (854b)
 2902c0dc2dd22c6cc197cfd30bcf660f84e923ef2e3061e39608298aec68b1fb  12-operator-fixtures/enumeration_conformance_spaces_v1_0_0.ttl  (6900b)
+8dbb42931a9344f8e07adb937d24e2d958a2abf1ad2b2a536b712c9e44a31f78  12-operator-fixtures/profile_architecture_spaces_v1_0_0.ttl  (3293b)
 7966a3da38d8a74a05ad008b750faf3aa290b6f66e179db1233eefec9a1dfcf4  12-operator-fixtures/profile_variation_spaces_v1_0_0.ttl  (4486b)
 870f1267bfd1315ca19d1043e12d1f666c6a774ed86ae9d342ebb147a51897c5  13-consumer-registry/CATEGORIES.tsv  (524b)
 8c15f918c332d97f4870ca0bb1bacbdc99ced7698a7b10a93e3e73618390ae2c  13-consumer-registry/PROFILE_REGISTRY.tsv  (293b)
@@ -106,4 +109,4 @@ b367b06fcb5085eeacf84ef84c7bd3f6552290619dab80d0e316c0b09bf6fcdb  GOVERNANCE.md 
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 1fd3c009f09c5a48488352720b963321ea9b359b91175676e31c59d927b938b9  README.md  (8055b)
-140288f526a0978bcba7f2f8d2c2585faf05ce088087b54c161050d6366eab4b  VERSION.txt  (7b)
+127662056a25294fe93b2d6c4c05c9f6e1556c55a1cfcd02fef79f33b08be2d6  VERSION.txt  (7b)

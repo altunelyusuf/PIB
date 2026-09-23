@@ -1,0 +1,51 @@
+@prefix pibe: <http://purl.org/pib/enumeration#> .
+@prefix pib:  <http://purl.org/pib/profile#> .
+@prefix ex:   <http://purl.org/pib/example#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# A worked two-layer profile architecture, used by the architecture check's self-test.
+#
+#   META      the domain: what every variant must satisfy to be an artifact of this domain at all.
+#   PROFILES  the variants: what makes each one the particular thing it is.
+#
+# Features are shared vocabulary; each layer constrains them differently. The meta layer declares
+# 'identity' mandatory — every artifact carries one, whatever kind it is. Each profile then declares
+# only what is true of ITS variant.
+
+ex:MetaSpace a pibe:VariationSpace ; pibe:isMetaSpace true ;
+    rdfs:label "Domain meta-level: what binds every variant"@en ;
+    pibe:featureCount 5 ;
+    pibe:hasFeature ex:identity , ex:ontology_quality , ex:play_evidence , ex:peer_review , ex:rubric .
+ex:identity         pibe:featureIndex 1 ; rdfs:label "An identity record"@en .
+ex:ontology_quality pibe:featureIndex 2 ; rdfs:label "Ontology-quality measurement"@en .
+ex:play_evidence    pibe:featureIndex 3 ; rdfs:label "Play evidence"@en .
+ex:peer_review      pibe:featureIndex 4 ; rdfs:label "Peer review"@en .
+ex:rubric           pibe:featureIndex 5 ; rdfs:label "Rubric scoring"@en .
+
+ex:MetaIdentity a pibe:MandatoryConstraint ; pibe:inSpace ex:MetaSpace ;
+    pibe:requires ex:identity ;
+    rdfs:label "Every artifact of this domain carries an identity record"@en .
+
+# --- variant: ontology deliverable -------------------------------------------------------------
+ex:OntologyDeliverableSpace a pibe:VariationSpace ; pibe:refinesMetaSpace ex:MetaSpace ;
+    rdfs:label "Ontology-deliverable variant"@en ;
+    pibe:featureCount 5 ;
+    pibe:hasFeature ex:identity , ex:ontology_quality , ex:play_evidence , ex:peer_review , ex:rubric .
+ex:OD_quality a pibe:MandatoryConstraint ; pibe:inSpace ex:OntologyDeliverableSpace ;
+    pibe:requires ex:ontology_quality ; rdfs:label "This variant requires an ontology-quality measurement"@en .
+ex:OD_identity a pibe:MandatoryConstraint ; pibe:inSpace ex:OntologyDeliverableSpace ;
+    pibe:requires ex:identity ; rdfs:label "Identity, restated locally"@en .
+ex:OD_scoring a pibe:OrConstraint ; pibe:inSpace ex:OntologyDeliverableSpace ;
+    pibe:groupMember ex:peer_review , ex:rubric ; rdfs:label "At least one scoring route"@en .
+
+# --- variant: gamification ---------------------------------------------------------------------
+ex:GamificationSpace a pibe:VariationSpace ; pibe:refinesMetaSpace ex:MetaSpace ;
+    rdfs:label "Gamification variant"@en ;
+    pibe:featureCount 5 ;
+    pibe:hasFeature ex:identity , ex:ontology_quality , ex:play_evidence , ex:peer_review , ex:rubric .
+ex:GM_play a pibe:MandatoryConstraint ; pibe:inSpace ex:GamificationSpace ;
+    pibe:requires ex:play_evidence ; rdfs:label "This variant requires play evidence"@en .
+ex:GM_identity a pibe:MandatoryConstraint ; pibe:inSpace ex:GamificationSpace ;
+    pibe:requires ex:identity ; rdfs:label "Identity, restated locally"@en .
+ex:GM_scoring a pibe:ExclusiveConstraint ; pibe:inSpace ex:GamificationSpace ;
+    pibe:groupMember ex:peer_review , ex:rubric ; rdfs:label "At most one scoring route"@en .
