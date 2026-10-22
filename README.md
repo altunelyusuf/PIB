@@ -84,12 +84,12 @@ pip install rdflib pyshacl owlready2 --break-system-packages
 # 1. Variation Capacity, computed in the ontology (no engine, no external source needed)
 python3 03-tooling/variation_capacity_v1_2_0.py --self-test
 
-# 2. invariants over the FULL package — 01-ontologies/ plus 07-spoke-contributions/
+# 2. invariants over the FULL package — 01-ontologies/ plus the vendored spoke declarations
 python3 - <<'PY'
 import rdflib, glob
 from pyshacl import validate
 g = rdflib.Graph()
-for f in glob.glob('01-ontologies/*.ttl') + glob.glob('07-spoke-contributions/*.ttl'):
+for f in glob.glob('01-ontologies/*.ttl') + glob.glob('07-spoke-contributions/vendored/*.ttl'):
     g.parse(f, format='turtle')
 s = rdflib.Graph().parse('02-shacl-safeguards/pib_invariants_v1_0_0.ttl', format='turtle')
 print(validate(g, shacl_graph=s, advanced=True)[0])   # -> True, 0 violations

@@ -39,7 +39,7 @@ import sys, os
 
 RULES = os.path.join(os.path.dirname(__file__), "..", "02-shacl-safeguards",
                      "pib_enumeration_rules_v2_4_0.ttl")
-FIXTURES = os.path.join(os.path.dirname(__file__), "..", "12-operator-fixtures")
+FIXTURES = os.path.join(os.path.dirname(__file__), "..", "12-operator-fixtures", "fixtures")
 
 CAPACITY_QUERY = """
 PREFIX pibe: <http://purl.org/pib/enumeration#>

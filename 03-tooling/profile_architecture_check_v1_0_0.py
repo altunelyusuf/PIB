@@ -43,7 +43,7 @@ import rdflib
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 PIBE = rdflib.Namespace("http://purl.org/pib/enumeration#")
-DEFAULT = os.path.join(ROOT, "12-operator-fixtures", "profile_architecture_spaces_v1_0_0.ttl")
+DEFAULT = os.path.join(ROOT, "12-operator-fixtures", "fixtures", "profile_architecture_spaces_v1_0_0.ttl")
 
 _spec = importlib.util.spec_from_file_location("vc", os.path.join(HERE, "variation_capacity_v1_2_0.py"))
 vc = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(vc)

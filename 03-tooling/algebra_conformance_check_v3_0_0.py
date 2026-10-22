@@ -70,8 +70,8 @@ VENDORED = os.path.join(ROOT, "11-vendored-operator-rules")
 PIBE = rdflib.Namespace("http://purl.org/pib/enumeration#")
 VA = rdflib.Namespace("http://example.org/variant-algebra#")
 IN = rdflib.Namespace("http://purl.org/pib/algebra-input#")
-DEFAULT = [os.path.join(ROOT, "12-operator-fixtures", "profile_variation_spaces_v1_0_0.ttl"),
-           os.path.join(ROOT, "12-operator-fixtures", "enumeration_conformance_spaces_v1_0_0.ttl")]
+DEFAULT = [os.path.join(ROOT, "12-operator-fixtures", "fixtures", "profile_variation_spaces_v1_0_0.ttl"),
+           os.path.join(ROOT, "12-operator-fixtures", "fixtures", "enumeration_conformance_spaces_v1_0_0.ttl")]
 
 # The space the algebra refuses by design; see "Known divergence" above.
 SKIP_SPACES = {"EmptySpace"}
