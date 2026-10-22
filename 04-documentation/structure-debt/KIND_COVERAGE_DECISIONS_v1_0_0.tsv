@@ -1,0 +1,3 @@
+iri	reason
+http://example.org/radar/pib#MeasurementDimension	not PIB's term: a vendored, SHA-pinned declaration contributed by the RADAR session. Its own session records its kind; typing another package's term from here is the cross-package edit B1 forbids.
+http://example.org/radar/pib#measuredByDimension	not PIB's term: same vendored RADAR contribution. Reported to that session rather than typed here.

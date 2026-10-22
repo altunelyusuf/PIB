@@ -22,6 +22,7 @@ GATES = [
     ("reference check", ["reference_check_v1_0_0.py"]),
     ("handover inbox", ["handover_inbox_check_v1_0_0.py"]),
     ("rule scope", ["rule_scope_check_v1_0_0.py"]),
+    ("structure debt ratchet", ["structure_debt_check_v1_0_0.py", "--self-test"]),
     ("profile-scoped validation", ["profile_scoped_validate_v1_0_0.py", "--self-test"]),
     ("profile architecture", ["profile_architecture_check_v1_0_0.py", "--self-test"]),
     ("profile taxonomy", ["profile_taxonomy_v1_0_0.py", "--self-test"]),

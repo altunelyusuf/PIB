@@ -26,7 +26,7 @@ PIB's answer has three parts:
 | `01-ontologies/` | `profile` and `integration-interface` TBoxes, the four canonical **assessment profiles**, the wiring-composition record, and a worked capstone example |
 | `02-shacl-safeguards/` | `pib_invariants` — G1 one-wiring-per-profile, G2 profile scoping, G3 self-coverage required before wiring, G4 contract closure, G5 well-formed edges |
 | `03-tooling/` | `variation_capacity` and `algebra_conformance_check` (harnesses that drive the ontology's rules — PIB's own, and the algebra's vendored ones) and `self_coverage_checker` (parse + SHACL + HermiT) |
-| `04-documentation/` | Blueprint, published vocabulary, composition and materialization records |
+| `04-documentation/` | Blueprint, published vocabulary, composition and materialization records, the profile architecture, and `structure-debt/` — this package's own debt registers, which may only fall |
 | `05-prov-records/` | PROV-O provenance |
 | `06-vaf-engine-pin/` | SHA-256 pin of the external Variant Algebra Framework engine |
 | `07-spoke-contributions/` | Vendored, SHA-pinned, **read-only** interface declarations owned by other systems |
@@ -34,8 +34,9 @@ PIB's answer has three parts:
 | `13-consumer-registry/` | Where a consumer ontology registers itself for adaptation — pointers and hashes, never copies |
 | `09-handover-inbox/` | Cross-session proposals received by PIB, with dispositions |
 | `10-experiments/` | Reference probes and findings (explicitly not releases) |
-| `11-vendored-operator-rules/` | Vendored, SHA-pinned, read-only operator rules from the variant algebra |
-| `12-operator-fixtures/` | Satisfying and violating candidate selections, proving the operator gate has teeth |
+| `11-vendored-operator-rules/` | Vendored, SHA-pinned, read-only: the algebra's current operator rules, its one T-Box and its rule executor |
+| `12-operator-fixtures/` | Variation spaces with independently known capacities, and candidate selections proving the gates have teeth |
+| `14-vendored-oe-tooling/` | Vendored, SHA-pinned, read-only: the governance session's structure and kind-coverage checkers, so PIB's ratchet runs from this package alone |
 
 ## Wiring expressions
 

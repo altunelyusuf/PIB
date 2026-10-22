@@ -1,0 +1,77 @@
+name: OE tags
+# Release tag for a repository that holds ONE governed package at its root (OE_PACKAGE_AT_ROOT).
+# Copy of the monorepo workflow `.github/workflows/oe-tags.yml` in altunelyusuf/Ontologies, as given in
+# section 7 of HANDOVER_OE_to_all-governed-repositories_release-tags-by-workflow_v1_0_1.md, adapted to a
+# root VERSION.txt. Source of truth for the rules is that file; this copy is a deployment. Taken from the
+# Ontologies tree at commit 645c7906f8c7e949a6b4e6ac512c524ec57ba4a7.
+#
+# ONE DEVIATION FROM THE GIVEN FILE, reported to OEE rather than hidden:
+#   This repository's 37 existing tags carry NO package prefix -- they are `v1.4.0` ... `v2.17.0`. The given
+#   file composes `${TAG_PREFIX}-v${ver}` and refuses to run when TAG_PREFIX is empty, so it has no form for
+#   this repository: following it literally would need an invented prefix, which the handover itself forbids
+#   ("a different prefix would start a second series of tags"). The deviation is confined to how the tag
+#   STRING is composed, below, where an empty prefix yields `v<version>`; the placeholder still fails loudly
+#   and every rule of the given file is unchanged:
+#     - a missing tag is created at the first commit whose VERSION.txt held that version (annotated);
+#     - an existing tag at that commit is left alone;
+#     - an existing tag elsewhere is NEVER moved: error, and the run fails;
+#     - a version that never appeared in VERSION.txt history fails the run.
+# Manual run (Actions tab -> "OE tags" -> Run workflow): empty = the current version; or give an older
+# version to backfill its tag. v2.17.1 needs such a run: it was published before this workflow existed.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Tag this version instead of the current one (empty = current)'
+        required: false
+        default: ''
+concurrency:
+  group: oe-tags
+  cancel-in-progress: false
+permissions:
+  contents: write
+env:
+  TAG_PREFIX: ''          # this repository's tags carry no package prefix; see the note above
+jobs:
+  tags:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Create the missing release tag
+        env:
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          set -uo pipefail
+          DRY="${DRY_RUN:-0}"
+          if [ "${TAG_PREFIX}" = "CHANGE-ME-to-the-prefix-of-the-existing-tags" ]; then
+            echo "::error::TAG_PREFIX has not been set to this repository's tag prefix"; exit 1
+          fi
+          [ -f VERSION.txt ] || { echo "::error::no VERSION.txt at the repository root"; exit 1; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          ver="${INPUT_VERSION:-$(tr -d ' \n\r' < VERSION.txt)}"
+          [ -n "$ver" ] || { echo "::error::empty version"; exit 1; }
+          if [ -z "${TAG_PREFIX}" ]; then tag="v${ver}"; else tag="${TAG_PREFIX}-v${ver}"; fi
+          commit=""
+          for c in $(git log --reverse --format=%H -- VERSION.txt); do
+            v="$(git show "$c:VERSION.txt" 2>/dev/null | tr -d ' \n\r' || true)"
+            if [ "$v" = "$ver" ]; then commit="$c"; break; fi
+          done
+          if [ -z "$commit" ]; then
+            echo "::error::$tag: version $ver never appeared in VERSION.txt history"; exit 1
+          fi
+          if have="$(git rev-parse -q --verify "refs/tags/${tag}^{commit}")"; then
+            if [ "$have" = "$commit" ]; then
+              echo "ok       $tag already at ${commit:0:7}"; exit 0
+            fi
+            echo "::error::$tag exists at ${have:0:7} but version $ver first appeared at ${commit:0:7}; not moved"
+            exit 1
+          fi
+          if [ "$DRY" = "1" ]; then echo "would tag $tag at ${commit:0:7}"; exit 0; fi
+          git tag -a "$tag" "$commit" -m "v$ver"
+          git push origin "refs/tags/$tag"
+          echo "tagged   $tag at ${commit:0:7}"

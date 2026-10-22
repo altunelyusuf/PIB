@@ -1,0 +1,43 @@
+# STRUCTURE DEBT REGISTER (this package's own) v1.0.0 -- the lines of pib-hub, and of no other package.
+# The owner ruled on 2026-10-07 that a package carries its own register and clears its own lines in its own release, which is
+# what BP-D54 always said; the governance aggregate carries the ceilings and the ecosystem-wide view.
+# A line may be removed here, and a count lowered here, with nobody else involved: debt may always shrink. A count may NOT be
+# raised here, a line the aggregate does not carry may NOT be added, and a status may NOT be raised to `exception`: the checker
+# fails the run and the aggregate generator refuses it, keeping the previous ceiling. Those go through the owner's ruling,
+# recorded in the aggregate line as `ruling: ...`.
+#
+# FIRST VERSION, adopted in PIB v2.19.0 -- and NOT the nine lines the handover offered, for a stated reason.
+# The handover of 2026-10-07 offered nine lines, and the governance aggregate carries those same nine. Every one of them
+# names a file of `Ontologies/pib-hub/` -- the RETIRED, FROZEN monorepo directory, whose own RETIRED_v1_0_0.md records that
+# PIB moved to `altunelyusuf/PIB` on 2026-09-10 and that this repository is "the governed home and the only source of truth
+# for PIB from v1.4.1 onward". Those nine lines are measurements of a tree PIB may not edit, at file versions this repository
+# left behind (`profile_tbox_v1_0_0_1.ttl` against today's `profile_tbox_v1_2_0.ttl`, for instance).
+#
+# The eighteen lines below are the FIRST MEASUREMENT OF THE GOVERNED HOME, taken on 2026-10-22 with
+# `oe_structure_check_v1_7_1.py <this repo> --as-package pib-hub` -- the `--as-package` view the handover itself prescribes
+# for a package published from its own repository, without which every top-level folder resolves as a separate package and
+# the counts are wrong (9 "packages", 23 violations; as one package, 18).
+#
+# This is NOT a count raised against the aggregate: it is a different tree, which the aggregate has never measured. The
+# difference is reported to OE in `09-handover-inbox/accepted/RETURN_PIB_to_OE_structure-handovers-measured-on-the-frozen-copy_v1_0_0.md`,
+# together with the one question the rules do not settle: whether the retired directory should be treated as retired history,
+# which no session may clear while it is frozen.
+# rule	path	status	note
+N1	pib-hub/01-ontologies/integration_interface_tbox_v1_0_0_2.ttl	debt	name does not match <name>_v<MAJOR>_<MINOR>_<PATCH>.ttl
+N1	pib-hub/01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl	debt	name does not match <name>_v<MAJOR>_<MINOR>_<PATCH>.ttl
+N1	pib-hub/01-ontologies/pib_wiring_expressions_v1_0_0_2.ttl	debt	name does not match <name>_v<MAJOR>_<MINOR>_<PATCH>.ttl
+N1	pib-hub/13-consumer-registry/TEMPLATE_consumer_registration_v1_0_0.ttl	debt	name does not match <name>_v<MAJOR>_<MINOR>_<PATCH>.ttl
+R1	pib-hub/01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl	debt	holds roles T+A (T 2, A 48, S 0)
+R1	pib-hub/01-ontologies/pib_wiring_composition_v1_0_0.ttl	debt	holds roles T+A (T 4, A 3, S 0)
+R1	pib-hub/01-ontologies/pib_wiring_expressions_v1_0_0_2.ttl	debt	holds roles T+A (T 4, A 18, S 0)
+R1	pib-hub/01-ontologies/profile_tbox_v1_2_0.ttl	debt	holds roles T+A (T 17, A 1, S 0)
+R1	pib-hub/02-shacl-safeguards/pib_consumer_registration_shacl_v1_1_0.ttl	debt	holds roles T+S (T 16, A 0, S 6)
+R1	pib-hub/02-shacl-safeguards/pib_enumeration_rules_v2_3_0.ttl	debt	holds roles T+A+S (T 18, A 5, S 20)
+R1	pib-hub/07-spoke-contributions/o4sdlc_interface_contribution_v1_0_0.ttl	debt	holds roles T+A (T 5, A 4, S 0)
+R1	pib-hub/07-spoke-contributions/pamg_interface_contribution_v1_0_0.ttl	debt	holds roles T+A (T 5, A 4, S 0)
+R1	pib-hub/07-spoke-contributions/radar_interface_contribution_v1_0_0.ttl	debt	holds roles T+A (T 7, A 8, S 0)
+U1	pib-hub/A	debt	files=16: 16 active A files; the package ships one
+U1	pib-hub/S	debt	files=5: 5 active S files; the package ships one
+U1	pib-hub/T	debt	files=11: 11 active T files; the package ships one
+V1	pib-hub/08-registration/pib_orcp_submission_v1_0_0.ttl	debt	2 versions of pib_orcp_submission shipped side by side
+V1	pib-hub/08-registration/pib_orcp_submission_v2_0_0.ttl	debt	2 versions of pib_orcp_submission shipped side by side

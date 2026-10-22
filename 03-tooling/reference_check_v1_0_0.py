@@ -24,7 +24,13 @@ import os, re, sys
 
 ROOT = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..")
 # Folders whose contents record past state, or are not PIB's to repoint.
-EXEMPT_DIRS = ("09-handover-inbox", "08-registration", "10-experiments", "11-vendored-operator-rules", ".git")
+EXEMPT_DIRS = ("09-handover-inbox", "08-registration", "10-experiments", "11-vendored-operator-rules",
+               "14-vendored-oe-tooling", ".git")
+# `14-vendored-oe-tooling` joins the list for the same reason as the vendored algebra rules: its files are
+# another session's, read-only and hash-pinned here, and they cite their own siblings by name. The governance
+# structure checker names `oe_structure_classes_v1_0_0.py` in its own text while the file vendored beside it
+# is v1.3.0 — a stale reference in PIB's repository that PIB must not fix, because fixing it would edit a
+# file PIB does not own (B1). Reported to its session instead.
 # Within a current document, text after one of these markers is a dated record and is left alone.
 RECORD_MARKERS = ("## Status note appended", "## Correction appended", "## Re-vendored in PIB",
                   "## Execution record", "## Note appended", "---\n\n## Appended")

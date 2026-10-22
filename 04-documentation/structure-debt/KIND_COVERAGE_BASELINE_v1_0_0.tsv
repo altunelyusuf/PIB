@@ -1,0 +1,50 @@
+kind	subject	iri	definition (start)	reason
+class	integration-interface	http://purl.org/pib/integration-interface#Capability	A named, stable unit of meaning that can be produced by one interface and consumed by another (e.g. 'AnalysisA	held: no kind or category is stated yet
+class	integration-interface	http://purl.org/pib/integration-interface#IntegrationEdge	A candidate binding from a produced Capability (source) to a consuming interface (target) for a given Capabili	held: no kind or category is stated yet
+class	integration-interface	http://purl.org/pib/integration-interface#OntologyInterface	The declared integration interface of one participating ontology or system. Lists the Capabilities it produces	held: no kind or category is stated yet
+class	integration-interface	http://purl.org/pib/integration-interface#SelfCoverageAttestation	A machine-checkable claim that the declaring ontology is DL-consistent AND SHACL-conformant STANDALONE (withou	held: no kind or category is stated yet
+class	integration-interface	http://purl.org/pib/integration-interface#VariabilityOperator	Marker aligning an IntegrationEdge (or edge group) to a Variant Algebra operator. The operators carry their va	held: no kind or category is stated yet
+class	integration-interface	http://purl.org/pib/integration-interface#VariationCapacity	The count of valid WiringVariants admissible for an ecosystem integration model (the variant-algebra Variation	held: no kind or category is stated yet
+class	integration-interface	http://purl.org/pib/integration-interface#WiringVariant	One configuration of the variation space: a specific set of active IntegrationEdges that (a) satisfies every o	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#activeEdge	Lists the edges active in a given wiring variant.	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#consumes	Declares that the interface REQUIRES the named capability as input (design-time, no owl:imports). A wiring is 	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#edgeCapability	The capability flowing across the edge (must be produced by source and consumed by target).	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#edgeSource	The producing interface of an integration edge.	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#edgeTarget	The consuming interface of an integration edge.	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#forProfile	Profile-scoping: a WiringVariant is valid FOR a specific profile. The same edge may be active under one profil	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#governedByOperator	Binds an edge to the variant-algebra operator that governs its presence in a wiring.	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#hasInterface	Links a participating ontology/system IRI to its OntologyInterface declaration.	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#hasSelfCoverage	Attaches the standalone-consistency + SHACL attestation to an interface. Required before the interface may par	held: no kind or category is stated yet
+property	integration-interface	http://purl.org/pib/integration-interface#produces	Declares that the interface EXPORTS the named capability (design-time). The contract validator MUST verify the	held: no kind or category is stated yet
+class	wiring-expression	http://purl.org/pib/wiring-expression#WiringExpression	A constraint on an integration wiring, written as an expression tree whose nodes are applications of variant-a	held: no kind or category is stated yet
+property	wiring-expression	http://purl.org/pib/wiring-expression#governsWiring	Binds an expression to the wiring variant whose admissibility it constrains. A wiring may be governed by more 	held: no kind or category is stated yet
+property	wiring-expression	http://purl.org/pib/wiring-expression#hasRootApplication	The outermost operator application of the expression tree. Inner applications are reached through the algebra'	held: no kind or category is stated yet
+class	profile	http://purl.org/pib/profile#ArtifactCategory	The kind of artifact a profile governs (e.g. capstone report, IEEE conference paper, research report, coursewa	held: no kind or category is stated yet
+class	profile	http://purl.org/pib/profile#DomainGeneralRule	A rule of the domain ontology itself, owned by no profile. These are the invariants every variant must satisfy	held: no kind or category is stated yet
+class	profile	http://purl.org/pib/profile#Profile	A named configuration that binds (1) one ArtifactCategory, (2) the SharedCriteria that apply to that category 	held: no kind or category is stated yet
+class	profile	http://purl.org/pib/profile#ProfileLocalRule	A rule owned by a profile. Applying it to another profile does not enforce a standard; it rejects a legal vari	held: no kind or category is stated yet
+class	profile	http://purl.org/pib/profile#ProfileSpecific	A scope that names the profile property and value under which its rule applies. Declaring it does not weaken t	held: no kind or category is stated yet
+class	profile	http://purl.org/pib/profile#RuleScope	The declared applicability of a validation rule with respect to profiles. A rule is either general, binding ev	held: no kind or category is stated yet
+class	profile	http://purl.org/pib/profile#SharedCriterion	A criterion that applies to an artifact category and is meaningful to MORE THAN ONE system (e.g. 'must contain	held: no kind or category is stated yet
+class	profile	http://purl.org/pib/profile#WiringVariant	A reference to one validated configuration of the integration variation space (defined in the Integration-Inte	held: no kind or category is stated yet
+property	profile	http://purl.org/pib/profile#appliesUnderProfileCondition	Names the profile property whose value a profile-specific rule depends on, so the dependency is readable as me	held: no kind or category is stated yet
+property	profile	http://purl.org/pib/profile#canonicalProfileOf	Asserts that a profile is THE canonical profile for an artifact (inverse: artifact hasCanonicalProfile). Exact	held: no kind or category is stated yet
+property	profile	http://purl.org/pib/profile#conditionProperty		held: no kind or category is stated yet
+property	profile	http://purl.org/pib/profile#declaredByProfile	Binds a rule to the profile that declares it. A rule with this property is local to that profile and must neve	held: no kind or category is stated yet
+property	profile	http://purl.org/pib/profile#hasCategory	Binds a profile to the single artifact category it governs.	held: no kind or category is stated yet
+property	profile	http://purl.org/pib/profile#hasRuleScope	Declares a rule's applicability. Absent, the rule is general: absence is not a scope, it is the default. Prese	held: no kind or category is stated yet
+property	profile	http://purl.org/pib/profile#hasSharedCriterion	Associates a profile with the cross-system criteria for its category.	held: no kind or category is stated yet
+property	profile	http://purl.org/pib/profile#selectsWiring	The variant-binding link: associates a profile with the ONE validated integration wiring variant it resolves t	held: no kind or category is stated yet
+class	consumer-registry	http://purl.org/pib/consumer-registry#ConsumerRegistration	A consumer ontology's own statement of where its bytes are, what it exchanges, and how to verify both.	held: no kind or category is stated yet
+class	consumer-registry	http://purl.org/pib/consumer-registry#ProfileProposal	A consumer's proposal for a shared profile: the artifact category it governs, the criteria it claims are share	held: no kind or category is stated yet
+property	consumer-registry	http://purl.org/pib/consumer-registry#declaresInterface		held: no kind or category is stated yet
+property	consumer-registry	http://purl.org/pib/consumer-registry#proposesCategory		held: no kind or category is stated yet
+property	consumer-registry	http://purl.org/pib/consumer-registry#proposesSharedCriterion		held: no kind or category is stated yet
+property	consumer-registry	http://purl.org/pib/consumer-registry#registersFile		held: no kind or category is stated yet
+class	enumeration	http://purl.org/pib/enumeration#GroupSpace		held: no kind or category is stated yet
+class	enumeration	http://purl.org/pib/enumeration#Phase		held: no kind or category is stated yet
+class	enumeration	http://purl.org/pib/enumeration#ProfileVariant		held: no kind or category is stated yet
+class	enumeration	http://purl.org/pib/enumeration#TaxonNode	A node of the derived taxonomy. Interior nodes are partial commitments (a genus); leaves are complete variants	held: no kind or category is stated yet
+property	enumeration	http://purl.org/pib/enumeration#coupledWith		held: no kind or category is stated yet
+property	enumeration	http://purl.org/pib/enumeration#differsBy		held: no kind or category is stated yet
+property	enumeration	http://purl.org/pib/enumeration#groupOf		held: no kind or category is stated yet
