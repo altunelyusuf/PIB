@@ -24,7 +24,7 @@ PIB's answer has three parts:
 | Path | Contents |
 |---|---|
 | `01-ontologies/` | `profile` and `integration-interface` TBoxes, the four canonical **assessment profiles**, the wiring-composition record, and a worked capstone example |
-| `02-shacl-safeguards/` | `pib_invariants` — G1 one-wiring-per-profile, G2 profile scoping, G3 self-coverage required before wiring, G4 contract closure, G5 well-formed edges |
+| `02-shacl-safeguards/` | `pib_shacl` — the package's one SHACL file: the five invariants (G1 one-wiring-per-profile, G2 profile scoping, G3 self-coverage required before wiring, G4 contract closure, G5 well-formed edges), the calculation's rule shapes, and the registration shapes |
 | `03-tooling/` | `variation_capacity` and `algebra_conformance_check` (harnesses that drive the ontology's rules — PIB's own, and the algebra's vendored ones) and `self_coverage_checker` (parse + SHACL + HermiT) |
 | `04-documentation/` | Blueprint, published vocabulary, composition and materialization records, the profile architecture, and `structure-debt/` — this package's own debt registers, which may only fall |
 | `05-prov-records/` | PROV-O provenance |
@@ -91,14 +91,14 @@ from pyshacl import validate
 g = rdflib.Graph()
 for f in glob.glob('01-ontologies/*.ttl') + glob.glob('07-spoke-contributions/vendored/*.ttl'):
     g.parse(f, format='turtle')
-s = rdflib.Graph().parse('02-shacl-safeguards/pib_invariants_v1_0_0.ttl', format='turtle')
+s = rdflib.Graph().parse('02-shacl-safeguards/pib_shacl_v1_0_0.ttl', format='turtle')
 print(validate(g, shacl_graph=s, advanced=True)[0])   # -> True, 0 violations
 PY
 ```
 
 **The calculation runs in the ontology.** Candidate generation, admissibility against the algebra's
 operators, and counting are SHACL rules and SPARQL — see
-`02-shacl-safeguards/pib_enumeration_rules_v2_4_0.ttl`. The Python files are harnesses: they load
+`02-shacl-safeguards/pib_shacl_v1_0_0.ttl`, with the phase order declared in the A-Box. The Python files are harnesses: they load
 graphs, drive the rule engine to a fixpoint, run a query and print. No constraint's meaning lives in
 code. Spaces are split into independent groups of coupled features, each enumerated on its own, and
 the group capacities are multiplied in the ontology — so cost grows with the number of groups, not

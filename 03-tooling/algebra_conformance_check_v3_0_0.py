@@ -66,7 +66,7 @@ from rdflib.collection import Collection
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-VENDORED = os.path.join(ROOT, "11-vendored-operator-rules")
+VENDORED = os.path.join(ROOT, "11-vendored-operator-rules", "vendored")
 PIBE = rdflib.Namespace("http://purl.org/pib/enumeration#")
 VA = rdflib.Namespace("http://example.org/variant-algebra#")
 IN = rdflib.Namespace("http://purl.org/pib/algebra-input#")

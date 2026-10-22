@@ -1,0 +1,629 @@
+@prefix asmt: <http://purl.org/pib/assessment#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix iif: <http://purl.org/pib/integration-interface#> .
+@prefix ns1: <http://purl.org/pib/composition#> .
+@prefix ns2: <http://example.org/oepack-release-history#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pib: <http://purl.org/pib/profile#> .
+@prefix pibcr: <http://purl.org/pib/consumer-registry#> .
+@prefix pibe: <http://purl.org/pib/enumeration#> .
+@prefix pibx: <http://purl.org/pib/wiring-expression#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix va: <http://example.org/variant-algebra#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/your-package#MyPackageRegistration> a pibcr:ConsumerRegistration ;
+    rdfs:label "Registration: <your package name>"@en ;
+    pibcr:atCommit "<full 40-character commit SHA, or a tag name>" ;
+    pibcr:atRepository "https://github.com/<owner>/<repo>"^^xsd:anyURI ;
+    pibcr:contactSession "<the session or person who maintains this package>" ;
+    pibcr:declaresInterface <http://example.org/your-package#MyPackage_if> ;
+    pibcr:registersFile <http://example.org/your-package#File_my_tbox> ;
+    pibcr:repositoryReachable true .
+
+<http://purl.org/pib/assessment> rdfs:label "PIB assessment profiles — HUB-published canonical set"@en ;
+    dcterms:created "2026-06-09"^^xsd:date ;
+    dcterms:creator <http://purl.org/pib/prov#Agent_YusufAltunel>,
+        "Yusuf Altunel" ;
+    dcterms:description "Canonical assessment profiles materialized by the HUB. OBAF retired: assessment is PAMG made ontology-native and profile-driven, riding on OEE's measurement facets; ontology-development assessment belongs to OEE. Each pib:Profile pins one reproducible WiringVariant (VariationCapacity recorded), validated against the pinned VAF; every participating interface carries a G3 self-coverage attestation recording its real on-disk result. ZeroTime deferred (ZT4SWE unresolved). MINOR v1.1.0: added the Repetition operator individual, completing the six variability operators this vocabulary already states it governs — the variant-algebra engine's own definition scopes its variability family to exactly Mandatory, Optional, Exclusive, Or, Dependency and Repetition, and only five had been declared here. PATCH v1.1.0.1 corrects what followed: the claim that the algebra's remaining operators were deliberately not imported is no longer true and was never a sound reason. From PIB v1.6.0 the complete set of twelve operators is applied through the wiring-expression vocabulary, and from v2.0.0 admissibility is evaluated by rules in the ontology rather than by the pinned engine. No vocabulary in this file changed."@en ;
+    dcterms:identifier "assessment" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:priorVersion <http://purl.org/pib/assessment/1.1.0.1> ;
+    owl:versionIRI <http://purl.org/pib/assessment/1.2.0> ;
+    owl:versionInfo "1.2.0" ;
+    prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+asmt:Op_Dependency a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Dependency operator"@en .
+
+asmt:Op_Exclusive a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Exclusive operator"@en .
+
+asmt:Op_Optional a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Optional operator"@en .
+
+asmt:Op_Or a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Or operator"@en .
+
+asmt:Op_Repetition a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Repetition operator"@en .
+
+<http://purl.org/pib/composition> rdfs:label "PIB Phase-3 wiring composition record"@en ;
+    dcterms:created "2026-06-06"^^xsd:date ;
+    dcterms:creator <http://purl.org/pib/prov#Agent_YusufAltunel>,
+        "Yusuf Altunel" ;
+    dcterms:identifier "composition" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-06-06"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:versionIRI <http://purl.org/pib/composition/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+ns1:src_o4sdlc a prov:Entity ;
+    rdfs:label "O4SDLC interface contribution v1.0.0"@en ;
+    dcterms:identifier "sha256:c2d4ce934d8691fa017002d278c647c3f0e143bc259ea916273d37e12e2f84d1" .
+
+ns1:src_pamg a prov:Entity ;
+    rdfs:label "PAMG interface contribution v1.0.0 (loose, ex:PAMG_if form)"@en ;
+    dcterms:identifier "sha256:8f1e2bc1302c8b4115218cac017d2dcb742d47af6f757178e235ea8a812cfeba" .
+
+ns1:src_radar a prov:Entity ;
+    rdfs:label "RADAR interface contribution v1.0.0"@en ;
+    dcterms:identifier "sha256:c226b671eb8570dbe6c45f00e4d763f9efa01c04befd94cd60689fb25ce8d950" .
+
+pibe:CheckPhase a pibe:Phase ;
+    rdfs:label "Check: confirm admissibility of every complete candidate — a safety net"@en ;
+    pibe:phaseName "check" ;
+    pibe:phaseOrder 3 .
+
+pibe:CombinePhase a pibe:Phase ;
+    rdfs:label "Combine: multiply the group capacities into each space's capacity"@en ;
+    pibe:phaseName "combine" ;
+    pibe:phaseOrder 4 .
+
+pibe:GenerationPhase a pibe:Phase ;
+    rdfs:label "Generation: enumerate the admissible selections of each group, pruning as it goes"@en ;
+    pibe:phaseName "generation" ;
+    pibe:phaseOrder 2 .
+
+pibe:PartitionPhase a pibe:Phase ;
+    rdfs:label "Partition: split each space into independent groups of coupled features"@en ;
+    pibe:phaseName "partition" ;
+    pibe:phaseOrder 1 .
+
+pibe:TaxonomyPhase a pibe:Phase ;
+    rdfs:label "Taxonomy: express the branch structure the generation phase already built"@en ;
+    pibe:phaseName "taxonomy" ;
+    pibe:phaseOrder 5 .
+
+<http://purl.org/pib/enumeration/rules> rdfs:label "PIB enumeration rules — variant generation and admissibility in the ontology"@en ;
+    dcterms:description "Generates every admissible candidate selection over a declared variation space, pruning as it goes, then checks admissibility as a safety net and leaves the admissible set standing to be counted."@en ;
+    dcterms:identifier "rules" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.3.0> ;
+    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.4.0> ;
+    owl:versionInfo "2.4.0" .
+
+<http://purl.org/pib/example#IEEEPaperWiring> ns1:engine "Variant_Algebra_Framework_v1_0_0 (pinned BruteForceBackend)" ;
+    ns1:publishable true ;
+    ns1:variationCapacity 9 ;
+    ns1:wiringValid true ;
+    iif:forProfile <http://purl.org/pib/example#IEEEPaperProfile> ;
+    rdfs:comment "VC=9. Same variation space as Capstone: RADAR reused the shared HasAnalysisDesignModel criterion over the same chain, so the contributed edge set (hence the capacity) is identical; the profile selects a different reproducible point."@en .
+
+<http://purl.org/pib/example#O4SDLC_if> a iif:OntologyInterface ;
+    rdfs:label "O4SDLC interface"@en ;
+    iif:produces <http://purl.org/pib/example#AnalysisDesignVocabulary> .
+
+<http://purl.org/pib/example#PAMG_if> a iif:OntologyInterface ;
+    rdfs:label "PAMG interface"@en ;
+    iif:consumes <http://purl.org/pib/example#AdequacyMeasurement> ;
+    iif:produces <http://purl.org/pib/example#InstitutionalGrade> .
+
+<http://purl.org/pib/example#RADAR_if> a iif:OntologyInterface ;
+    rdfs:label "RADAR interface"@en ;
+    iif:consumes <http://purl.org/pib/example#AnalysisDesignVocabulary> ;
+    iif:produces <http://purl.org/pib/example#AdequacyMeasurement> .
+
+<http://purl.org/pib/profile> rdfs:label "Profile Ontology — shared artifact-category & variant-configuration vocabulary"@en ;
+    dcterms:created "2026-06-05"^^xsd:date ;
+    dcterms:creator <http://purl.org/pib/prov#Agent_YusufAltunel>,
+        "Yusuf Altunel" ;
+    dcterms:description "Single source of truth for artifact CATEGORY across the generic ontology ecosystem (RDODI generates, RADAR measures, PAMG grades). A Profile binds a category identity, the criteria SHARED across systems, and a selection of one validated integration wiring variant. System-specific behaviour (RDODI generation templates, RADAR measurement dimensions, PAMG grading weights) is NOT modelled here — it is attached by each system to the shared Profile IRI, keeping this vocabulary free of scope-foreign content (OE L-64). PATCH v1.0.0.1: BP-D24 metadata completed (added dcterms:modified, dcterms:identifier, prov:wasAttributedTo, machine-linkable dcterms:creator IRI, and Activity-IRI prov:wasGeneratedBy); no vocabulary change."@en ;
+    dcterms:identifier "profile" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:priorVersion <http://purl.org/pib/profile/1.2.0> ;
+    owl:versionIRI <http://purl.org/pib/profile/1.3.0> ;
+    owl:versionInfo "1.3.0" ;
+    prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+pib:General a pib:RuleScope,
+        owl:NamedIndividual ;
+    rdfs:label "General — binds every profile, unconditionally"@en ;
+    skos:definition "A rule of the domain itself — declared at the meta level, owned by no profile, and binding every profile. Generality is a consequence of having no profile home, not of an annotation: see the correction recorded in v1.2.0."@en .
+
+<http://purl.org/pib/prov#Org_IKU_ComputerEngineering> a prov:Agent,
+        prov:Organization ;
+    rdfs:label "İstanbul Kültür Üniversitesi — Computer Engineering"@en .
+
+<http://purl.org/pib/prov#PIB_v1_0_0> a prov:Entity ;
+    rdfs:label "Profile + Integration-Interface Blueprint v1.0.0"@en ;
+    dcterms:created "2026-06-05"^^xsd:date ;
+    prov:wasDerivedFrom <http://purl.org/pib/prov#oe_pack>,
+        <http://purl.org/pib/prov#vaf_pin> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+<http://purl.org/pib/wiring-expression> rdfs:label "PIB wiring expressions — nested operator expressions over integration wirings"@en ;
+    dcterms:created "2026-09-17"^^xsd:date ;
+    dcterms:creator <http://purl.org/pib/prov#Agent_YusufAltunel>,
+        "Yusuf Altunel" ;
+    dcterms:description "Lets a PIB wiring constraint be written as a NESTED EXPRESSION built from the variant algebra's operators, rather than as a flat list of operator applications. The algebra's operators are constructors in an expression language, not a fixed menu of features: composing them expresses constraints none of them expresses alone (a k-of-n bound, for example, is not expressible with mandatory, optional, exclusive, or, or dependency, but is expressible by composing repetition with a contributes-to grouping). This vocabulary therefore REFERENCES the algebra's own operator classes and operand/nesting predicates rather than redeclaring them — the algebra stays with its owner — and adds only what is genuinely PIB's: the binding from an expression to the wiring it governs, and the named operator individuals PIB applies. Complete adoption: all twelve concrete operators are available, not the six the previously pinned engine generation carried."@en ;
+    dcterms:identifier "wiring-expression" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:priorVersion <http://purl.org/pib/wiring-expression/1.0.0.2> ;
+    owl:versionIRI <http://purl.org/pib/wiring-expression/1.1.0> ;
+    owl:versionInfo "1.1.0" ;
+    prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+pibx:CapstoneWiringExpression a pibx:WiringExpression,
+        owl:NamedIndividual ;
+    rdfs:label "Capstone wiring constraint"@en ;
+    pibx:expressionIntent "At most two measurement facets may feed the grader, and exactly one grader may be selected — both conditions together." ;
+    pibx:governsWiring asmt:Wiring_CoreSoftwareDevelopment ;
+    pibx:hasRootApplication pibx:CapstoneConstraintApp .
+
+pibx:Cartesian a va:CartesianOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Cartesian — pairs every member of one operand set with every member of the other"@en .
+
+pibx:Dependency a va:DependencyOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Dependency — selecting the dependent requires the prerequisite"@en .
+
+pibx:Division a va:DivisionOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Division — removes elements cancelled by another operand"@en .
+
+pibx:Intersection a va:IntersectionOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Intersection — retains only operands jointly present"@en ;
+    skos:scopeNote "ELEMENT-level, like the algebra's rule that implements it: it intersects operands that co-occur, not sets of whole wirings. The question 'which wirings are admissible under two profiles at once' is set-level and is answered by enumerating both profiles' constraints in one space, not by this operator. Measured 2026-09-22: on the same subject matter the algebra's rule returns one element while the enumeration returns a capacity of 2. The same distinction applies to addition, subtraction, division, inverse and cartesian here."@en .
+
+pibx:Inverse a va:InverseOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Inverse — marks an element for removal before a wiring is emitted"@en .
+
+pibx:Mandatory a va:MandatoryOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Mandatory — the operand appears in every admissible wiring"@en .
+
+pibx:Optional a va:OptionalOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Optional — the operand may be present or absent"@en .
+
+pibx:Or a va:OrOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Or — at least one of the operands must be selected"@en .
+
+pibx:Subtraction a va:SubtractionOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Subtraction — the first operand with the second excluded"@en .
+
+<http://example.org/your-package#File_my_tbox> a ns2:OntologyFile ;
+    rdfs:label "my_tbox_v1_0_0.ttl"@en ;
+    ns2:hasFileSHA256 "<sha256 of the file at that commit>" ;
+    ns2:hasVersionInfo "1.0.0" ;
+    pibcr:atPath "01-ontologies/my_tbox_v1_0_0.ttl" .
+
+<http://example.org/your-package#MyPackage_if> a iif:OntologyInterface ;
+    rdfs:label "What my package exchanges"@en ;
+    iif:consumes <http://example.org/your-package#SomeOtherCapability> ;
+    iif:hasSelfCoverage <http://example.org/your-package#MySelfCoverage> ;
+    iif:produces <http://example.org/your-package#SomeCapability> .
+
+<http://example.org/your-package#MySelfCoverage> a iif:SelfCoverageAttestation ;
+    rdfs:label "Self-coverage: my package parses and is internally consistent standalone"@en .
+
+<http://example.org/your-package#SomeCapability> a iif:Capability ;
+    rdfs:label "A capability you produce"@en .
+
+<http://example.org/your-package#SomeOtherCapability> a iif:Capability ;
+    rdfs:label "A capability you consume"@en .
+
+asmt:CoreSoftwareDevelopment a pib:ArtifactCategory,
+        owl:NamedIndividual ;
+    rdfs:label "Core software development project"@en .
+
+asmt:Edge_CoreSoftwareDevelopment_0 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "O4SDLC_if->RADAR_if [AnalysisDesignVocabulary]"@en ;
+    iif:edgeCapability asmt:AnalysisDesignVocabulary ;
+    iif:edgeSource asmt:O4SDLC_if ;
+    iif:edgeTarget asmt:RADAR_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_CoreSoftwareDevelopment_1 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "RADAR_if->PAMG_if [AdequacyMeasurement]"@en ;
+    iif:edgeCapability asmt:AdequacyMeasurement ;
+    iif:edgeSource asmt:RADAR_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_Gamification_0 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "GamOnt_if->PAMG_if [GamificationModel]"@en ;
+    iif:edgeCapability asmt:GamificationModel ;
+    iif:edgeSource asmt:GamOnt_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyBased_0 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "O4SDLC_if->RADAR_if [AnalysisDesignVocabulary]"@en ;
+    iif:edgeCapability asmt:AnalysisDesignVocabulary ;
+    iif:edgeSource asmt:O4SDLC_if ;
+    iif:edgeTarget asmt:RADAR_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyBased_1 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "RADAR_if->PAMG_if [AdequacyMeasurement]"@en ;
+    iif:edgeCapability asmt:AdequacyMeasurement ;
+    iif:edgeSource asmt:RADAR_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyBased_2 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "OEE_if->PAMG_if [OntologyQualityMeasurement]"@en ;
+    iif:edgeCapability asmt:OntologyQualityMeasurement ;
+    iif:edgeSource asmt:OEE_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyDevelopment_0 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "O4SDLC_if->RADAR_if [AnalysisDesignVocabulary]"@en ;
+    iif:edgeCapability asmt:AnalysisDesignVocabulary ;
+    iif:edgeSource asmt:O4SDLC_if ;
+    iif:edgeTarget asmt:RADAR_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyDevelopment_1 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "RADAR_if->PAMG_if [AdequacyMeasurement]"@en ;
+    iif:edgeCapability asmt:AdequacyMeasurement ;
+    iif:edgeSource asmt:RADAR_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:Edge_OntologyDevelopment_2 a iif:IntegrationEdge,
+        owl:NamedIndividual ;
+    rdfs:label "OEE_if->PAMG_if [OntologyQualityMeasurement]"@en ;
+    iif:edgeCapability asmt:OntologyQualityMeasurement ;
+    iif:edgeSource asmt:OEE_if ;
+    iif:edgeTarget asmt:PAMG_if ;
+    iif:governedByOperator asmt:Op_Mandatory .
+
+asmt:GamOnt_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "GamOnt_if"@en ;
+    iif:hasSelfCoverage asmt:SelfCov_GamOnt ;
+    iif:produces asmt:GamificationModel .
+
+asmt:GamificationProject a pib:ArtifactCategory,
+        owl:NamedIndividual ;
+    rdfs:label "Educational gamification project"@en .
+
+asmt:HasAnalysisDesignModel a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "contains an Analysis & Design model"@en .
+
+asmt:HasCodeMeasurement a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "has code measurement"@en .
+
+asmt:HasGroundingOntology a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "grounded in a published ontology"@en .
+
+asmt:HasPlayEvidence a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "grounded in real game/play results"@en .
+
+asmt:HasThesisFidelity a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "proposal↔implementation fidelity demonstrated"@en .
+
+asmt:InstitutionalGrade a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Institutional grade (PAMG, computed in-ontology)"@en .
+
+asmt:OntologyBasedSystem a pib:ArtifactCategory,
+        owl:NamedIndividual ;
+    rdfs:label "Ontology-based system (uses an ontology at runtime)"@en .
+
+asmt:OntologyDeliverable a pib:ArtifactCategory,
+        owl:NamedIndividual ;
+    rdfs:label "Ontology-development deliverable (the ontology is the product)"@en .
+
+asmt:Profile_CoreSoftwareDevelopment a pib:Profile,
+        owl:NamedIndividual ;
+    rdfs:label "CoreSoftwareDevelopment profile"@en ;
+    pib:hasCategory asmt:CoreSoftwareDevelopment ;
+    pib:hasSharedCriterion asmt:HasCodeMeasurement ;
+    pib:selectsWiring asmt:Wiring_CoreSoftwareDevelopment .
+
+asmt:Profile_Gamification a pib:Profile,
+        owl:NamedIndividual ;
+    rdfs:label "Gamification profile"@en ;
+    pib:hasCategory asmt:GamificationProject ;
+    pib:hasSharedCriterion asmt:HasPlayEvidence,
+        asmt:HasThesisFidelity ;
+    pib:selectsWiring asmt:Wiring_Gamification .
+
+asmt:Profile_OntologyBased a pib:Profile,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyBased profile"@en ;
+    pib:hasCategory asmt:OntologyBasedSystem ;
+    pib:hasSharedCriterion asmt:HasGroundingOntology,
+        asmt:HasOntologyQuality ;
+    pib:selectsWiring asmt:Wiring_OntologyBased .
+
+asmt:Profile_OntologyDevelopment a pib:Profile,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyDevelopment profile"@en ;
+    pib:hasCategory asmt:OntologyDeliverable ;
+    pib:hasSharedCriterion asmt:HasAnalysisDesignModel,
+        asmt:HasOntologyQuality ;
+    pib:selectsWiring asmt:Wiring_OntologyDevelopment .
+
+asmt:SelfCov_GamOnt a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for GamOnt (gamont_tbox_v1_1_0.ttl)"@en ;
+    dcterms:source "sha256:9996f9077c8eaec0d9153fb9127131ea969dc929c92e0bfc104bc0371e00eceb" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:SelfCov_O4SDLC a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for O4SDLC (o4sdlc_interface_contribution_v1_0_0.ttl)"@en ;
+    dcterms:source "sha256:c2d4ce934d8691fa017002d278c647c3f0e143bc259ea916273d37e12e2f84d1" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:SelfCov_OEE a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for OEE (measurement_tbox_v2_8_0.ttl)"@en ;
+    dcterms:source "sha256:1069f7c2f389aaeb85a0ca346925d51f3e4331e3f2c1155c7bdf082f2b4e2eb0" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:SelfCov_PAMG a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for PAMG (pamg_interface_contribution_v1_0_0.ttl)"@en ;
+    dcterms:source "sha256:8f1e2bc1302c8b4115218cac017d2dcb742d47af6f757178e235ea8a812cfeba" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:SelfCov_RADAR a iif:SelfCoverageAttestation,
+        owl:NamedIndividual ;
+    rdfs:label "Self-coverage attestation for RADAR (radar_interface_contribution_v1_0_0.ttl)"@en ;
+    dcterms:source "sha256:c226b671eb8570dbe6c45f00e4d763f9efa01c04befd94cd60689fb25ce8d950" ;
+    skos:note "self_covered=True; dl_consistent=True; method=self_coverage_checker_v1_1_0_1 --hermit (pySHACL 0.31.0 / HermiT owlready2), real on-disk artifact, attested by HUB" .
+
+asmt:Wiring_Gamification a iif:WiringVariant,
+        owl:NamedIndividual ;
+    rdfs:label "Gamification wiring"@en ;
+    asmt:variationCapacity 1 ;
+    iif:forProfile asmt:Profile_Gamification ;
+    iif:hasEdge asmt:Edge_Gamification_0 .
+
+asmt:Wiring_OntologyBased a iif:WiringVariant,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyBased wiring"@en ;
+    asmt:variationCapacity 1 ;
+    iif:forProfile asmt:Profile_OntologyBased ;
+    iif:hasEdge asmt:Edge_OntologyBased_0,
+        asmt:Edge_OntologyBased_1,
+        asmt:Edge_OntologyBased_2 .
+
+asmt:Wiring_OntologyDevelopment a iif:WiringVariant,
+        owl:NamedIndividual ;
+    rdfs:label "OntologyDevelopment wiring"@en ;
+    asmt:variationCapacity 1 ;
+    iif:forProfile asmt:Profile_OntologyDevelopment ;
+    iif:hasEdge asmt:Edge_OntologyDevelopment_0,
+        asmt:Edge_OntologyDevelopment_1,
+        asmt:Edge_OntologyDevelopment_2 .
+
+<http://purl.org/pib/example#CapstoneProfile> a pib:Profile ;
+    rdfs:label "Capstone Profile"@en ;
+    pib:hasCategory <http://purl.org/pib/example#CapstoneReport> ;
+    pib:hasSharedCriterion <http://purl.org/pib/example#HasAnalysisDesignModel> ;
+    pib:selectsWiring <http://purl.org/pib/example#CapstoneWiring> .
+
+<http://purl.org/pib/example#CapstoneReport> a pib:ArtifactCategory ;
+    rdfs:label "İKÜ Capstone Report"@en .
+
+<http://purl.org/pib/example#CapstoneWiring> a iif:WiringVariant ;
+    rdfs:label "Capstone wiring variant"@en ;
+    ns1:engine "Variant_Algebra_Framework_v1_0_0 (pinned BruteForceBackend)" ;
+    ns1:publishable true ;
+    ns1:variationCapacity 9 ;
+    ns1:wiringValid true ;
+    iif:forProfile <http://purl.org/pib/example#CapstoneProfile> ;
+    rdfs:comment "VC=9 admissible wirings over the contributed O4SDLC->RADAR->PAMG chain; 4/4 collision guards reject as expected. Publishable: wiring valid AND all 3 participating interfaces carry G3 self-coverage; composed graph conforms (0 violations)."@en .
+
+<http://purl.org/pib/example#HasAnalysisDesignModel> a pib:SharedCriterion ;
+    rdfs:label "must contain an Analysis & Design model"@en ;
+    dcterms:source "İKÜ capstone rubric; shared by RADAR (measures adequacy) and PAMG (grades)." .
+
+<http://purl.org/pib/example#InstitutionalGrade> a iif:Capability ;
+    rdfs:label "Institutional grade"@en .
+
+pibx:Addition a va:AdditionOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Addition — co-inclusion: both operands enter the same set"@en .
+
+pibx:AlternativeGrader a va:Feature,
+        owl:NamedIndividual ;
+    rdfs:label "Alternative grader — any grader other than the institutional one"@en .
+
+pibx:CapstoneConstraintApp a va:AdditionOperator,
+        va:OperatorApplication,
+        owl:NamedIndividual ;
+    rdfs:label "Both the measurement budget and the grading discipline apply together"@en ;
+    va:hasInnerOperator pibx:Exclusive,
+        pibx:Repetition ;
+    va:hasOperand pibx:GradingDisciplineApp,
+        pibx:MeasurementBudgetApp ;
+    va:hasOperator pibx:Addition .
+
+pibx:FacetGroup a va:Feature,
+        owl:NamedIndividual ;
+    rdfs:label "Measurement facet group — the facets competing for the budget"@en .
+
+pibx:GradingDisciplineApp a va:ExclusiveOperator,
+        va:OperatorApplication,
+        owl:NamedIndividual ;
+    rdfs:label "Exactly one grader: the institutional grader, or an alternative, never both"@en ;
+    va:hasOperator pibx:Exclusive ;
+    va:members ( asmt:PAMG_if pibx:AlternativeGrader ) .
+
+pibx:MeasurementBudgetApp a va:OperatorApplication,
+        va:RepetitionOperator,
+        owl:NamedIndividual ;
+    rdfs:label "At most two measurement facets may feed the grader"@en ;
+    va:appliesTo pibx:FacetGroup ;
+    va:hasMaxRepetitions 2 ;
+    va:hasOperator pibx:Repetition .
+
+asmt:HasOntologyQuality a pib:SharedCriterion,
+        owl:NamedIndividual ;
+    rdfs:label "has ontology-quality measurement"@en .
+
+asmt:OEE_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "OEE_if"@en ;
+    iif:hasSelfCoverage asmt:SelfCov_OEE ;
+    iif:produces asmt:OntologyQualityMeasurement .
+
+asmt:Wiring_CoreSoftwareDevelopment a iif:WiringVariant,
+        owl:NamedIndividual ;
+    rdfs:label "CoreSoftwareDevelopment wiring"@en ;
+    asmt:variationCapacity 1 ;
+    iif:forProfile asmt:Profile_CoreSoftwareDevelopment ;
+    iif:hasEdge asmt:Edge_CoreSoftwareDevelopment_0,
+        asmt:Edge_CoreSoftwareDevelopment_1 .
+
+<http://purl.org/pib/example#AdequacyMeasurement> a iif:Capability ;
+    rdfs:label "Adequacy measurement"@en .
+
+<http://purl.org/pib/example#AnalysisDesignVocabulary> a iif:Capability ;
+    rdfs:label "Analysis & Design vocabulary"@en .
+
+<http://purl.org/pib/prov#oe_pack> a prov:Entity ;
+    rdfs:label "OE Pack v20.11.0 / ABox v2.2.0 (governance)"@en .
+
+<http://purl.org/pib/prov#vaf_pin> a prov:Entity ;
+    rdfs:label "Variant_Algebra_Framework_v1_0_0 (pinned engine)"@en .
+
+pibx:Exclusive a va:ExclusiveOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Exclusive (optional-wrapped) — at most one of the operands may be selected"@en ;
+    skos:scopeNote "PIB means the OPTIONAL-WRAPPED exclusive: at most one, zero allowed. The variant algebra defines the bare exclusive operator as EXACTLY one (thesis eq. 2.35), which is a different constraint: PIB's worked capstone has capacity 9 under at-most-one and 6 under exactly-one. Recorded here because this individual is typed by the algebra's class, whose own definition states the exactly-one reading."@en .
+
+pibx:Repetition a va:RepetitionOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Repetition — bounds how many contributors to a group may be selected"@en .
+
+asmt:GamificationModel a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Gamification model + fidelity"@en .
+
+asmt:O4SDLC_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "O4SDLC_if"@en ;
+    iif:hasSelfCoverage asmt:SelfCov_O4SDLC ;
+    iif:produces asmt:AnalysisDesignVocabulary .
+
+asmt:OntologyQualityMeasurement a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Ontology-quality measurement (OEE facet)"@en .
+
+<http://purl.org/pib> a owl:Ontology ;
+    rdfs:label "PIB — A-Box — every individual and all instance data"@en ;
+    dcterms:description "PIB (Profile + Integration-Interface Blueprint). One file per role, per BP-D54: what used to be a separate subject is a module inside these three files, recorded at its own former IRI, and every term keeps the IRI it always had. A consumer that names a term is unaffected; a consumer that named a FILE reads this one instead. The former files leave the package and stay recoverable from git history and the release tags."@en ;
+    dcterms:identifier "pib" ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    owl:versionIRI <http://purl.org/pib/abox/1.0.0> ;
+    owl:versionInfo "1.0.0" .
+
+asmt:AdequacyMeasurement a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Adequacy/quality measurement"@en .
+
+asmt:AnalysisDesignVocabulary a iif:Capability,
+        owl:NamedIndividual ;
+    rdfs:label "Analysis & Design vocabulary"@en .
+
+<http://purl.org/pib/prov#authoring> a prov:Activity ;
+    rdfs:label "PIB blueprint authoring (PAMG session)"@en ;
+    prov:used <http://purl.org/pib/prov#oe_pack>,
+        <http://purl.org/pib/prov#vaf_pin> ;
+    prov:wasAssociatedWith <http://purl.org/pib/prov#Agent_YusufAltunel> .
+
+asmt:RADAR_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "RADAR_if"@en ;
+    iif:consumes asmt:AnalysisDesignVocabulary ;
+    iif:hasSelfCoverage asmt:SelfCov_RADAR ;
+    iif:produces asmt:AdequacyMeasurement .
+
+asmt:PAMG_if a iif:OntologyInterface,
+        owl:NamedIndividual ;
+    rdfs:label "PAMG_if"@en ;
+    iif:consumes asmt:AdequacyMeasurement,
+        asmt:GamificationModel,
+        asmt:OntologyQualityMeasurement ;
+    iif:hasSelfCoverage asmt:SelfCov_PAMG ;
+    iif:produces asmt:InstitutionalGrade .
+
+asmt:Op_Mandatory a iif:VariabilityOperator,
+        owl:NamedIndividual ;
+    rdfs:label "Mandatory operator"@en .
+
+<http://purl.org/pib/prov#Agent_YusufAltunel> a prov:Agent,
+        prov:Person ;
+    rdfs:label "Yusuf Altunel"@en .
+

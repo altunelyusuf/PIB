@@ -10,8 +10,9 @@ loose **produces/consumes** integration contract, validated by the pinned **Vari
 
 ## Layout
 ```
-01-ontologies/         profile_tbox + integration_interface_tbox + worked-example ABox
-02-shacl-safeguards/   pib_invariants (G1 one-wiring-per-profile, G2 profile-scoped, G3 self-coverage
+01-ontologies/         pib_tbox + pib_abox — the package's one T-Box and one A-Box, every former
+                       subject a module at its own IRI (BP-D54)
+02-shacl-safeguards/   pib_shacl — one SHACL file (G1 one-wiring-per-profile, G2 profile-scoped, G3 self-coverage
                        required, G4 contract-closure, G5 edge well-formed)
 03-tooling/            variation_capacity + algebra_conformance_check (ontology-rule harnesses)
                        + self_coverage_checker

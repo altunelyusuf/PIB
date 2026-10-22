@@ -21,7 +21,7 @@ Copies rot silently; a hash tells you the moment they do.
 ## What to file
 
 One Turtle file in `pending/`, named `registration_<your-package>_v<major>_<minor>_<patch>.ttl`. Start from
-`consumer_registration_template_v1_0_0.ttl` in this folder. It declares:
+`pib_abox_v1_0_0.ttl (the template is a module of the A-Box)` in this folder. It declares:
 
 | You declare | Why PIB needs it |
 |---|---|
@@ -38,7 +38,7 @@ is yours; what it exchanges is the contract.
 ## What PIB does with it
 
 1. `03-tooling/consumer_registration_check_v1_0_0.py` validates your record against
-   `02-shacl-safeguards/pib_consumer_registration_shacl_v1_2_0.ttl` — a malformed record is rejected with a
+   `02-shacl-safeguards/pib_shacl_v1_0_0.ttl` — a malformed record is rejected with a
    reason, never half-adapted.
 2. Where your repository is reachable, the same tool **fetches your files and compares hashes**. A mismatch
    is reported, never silently accepted: it means your registration and your repository disagree.

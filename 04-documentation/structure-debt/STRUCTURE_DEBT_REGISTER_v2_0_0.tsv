@@ -1,0 +1,26 @@
+# STRUCTURE DEBT REGISTER (this package's own) v2.0.0 -- the lines of pib-hub, and of no other package.
+# The owner ruled on 2026-10-07 that a package carries its own register and clears its own lines in its own release, which is
+# what BP-D54 always said; the governance aggregate carries the ceilings and the ecosystem-wide view.
+# A line may be removed here, and a count lowered here, with nobody else involved: debt may always shrink. A count may NOT be
+# raised here, a line the aggregate does not carry may NOT be added, and a status may NOT be raised to `exception`: the checker
+# fails the run and the aggregate generator refuses it, keeping the previous ceiling. Those go through the owner's ruling,
+# recorded in the aggregate line as `ruling: ...`.
+#
+# v2.0.0 (PIB v3.0.0, 2026-10-22). MAJOR, and nearly empty: ONE line left of the eighteen first measured.
+#   v1.0.0 (PIB v2.19.0) 18 lines -- the first measurement of the governed home, not the nine the governance handover offered,
+#     which measured the retired monorepo directory at file versions this repository had left behind.
+#   v1.1.0 (PIB v2.20.0) 14 -- the four N1 lines gone: every badly-named file reissued under a conforming name and version.
+#   v1.2.0 (PIB v2.21.0)  9 -- three sets of files put in the folder class that describes them (other packages' copies under
+#     vendored/, the operator fixtures under fixtures/, the superseded ORCP submission under archive/). Both V1 lines and three
+#     R1 lines gone, with no file edited.
+#   v2.0.0 (PIB v3.0.0)   1 -- the merge: eleven files became one T-Box, one A-Box and one SHACL file, every former subject a
+#     module at its own IRI, every term keeping the IRI it always had. Six R1 lines and the T and S counts are gone.
+#
+# THE ONE LINE LEFT IS NOT PIB'S TO CLOSE. The registration submission is an A-role file, and the governance owner ruled on
+# 2026-10-07 that a registration is a unit of its own that obeys the three-file rule separately. Merging it into the domain
+# A-Box would break that ruling; naming it as a unit needs a row in the governance session's own units table
+# (OE_STRUCTURE_UNITS), which is that session's file to edit. Asked for in
+# 09-handover-inbox/accepted/HANDOVER_PIB_to_OE_archive-report-and-two-asks_v1_0_0.md section 2. Until the row exists, the
+# count is 2 and PIB can lower it no further without breaking a rule to satisfy a check.
+# rule	path	status	note
+U1	pib-hub/A	debt	files=2: 2 active A files; the package ships one

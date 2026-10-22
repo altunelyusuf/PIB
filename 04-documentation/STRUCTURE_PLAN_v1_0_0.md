@@ -110,3 +110,58 @@ nothing was raised.
 **What step 2 still has to do:** the 9 R1 lines (files mixing roles), the 3 U1 lines (11 T-Box, 16
 A-Box and 5 SHACL files where the package ships one of each) and the 2 V1 lines. That is the MAJOR
 release this plan describes, and the plan above stands unchanged.
+
+
+---
+
+## Execution record — step 2 done in PIB v3.0.0 (2026-10-22), and one line that is not PIB's to close
+
+**Authorized.** The owner authorized this work on 2026-10-22, in answer to the ruling asked for in the
+return to the governance session.
+
+**Before the merge, three reclassifications** — read from the governance session's own class table
+rather than guessed, and each one a statement about what the files are rather than where they sit:
+the three spoke contributions are copies of other packages (`vendored/`), the five operator fixtures
+are deliberate test inputs (`fixtures/`), the superseded ORCP submission is retired history
+(`archive/`). Two further sets the same reading caught, which the plan had not: PIB's **vendored
+algebra files** were being counted as PIB's own, because `11-vendored-operator-rules` does not begin
+with `vendored`, and the **experiment probe** in `10-experiments` was counted as a live shapes file.
+Both moved to the class that describes them. Eighteen lines fell to nine without a file being edited.
+
+**The merge.** Eleven files became three: `01-ontologies/pib_tbox_v1_0_0.ttl` (105 classes and
+properties), `01-ontologies/pib_abox_v1_0_0.ttl` (97 individuals and all instance data), and
+`02-shacl-safeguards/pib_shacl_v1_0_0.ttl` (31 shapes — the five invariants, the twenty rule shapes of
+the calculation, the registration shapes). Seven former subjects are recorded as modules at their own
+IRIs, carrying the metadata their file headers carried. **Every term keeps the IRI it always had**, so
+a consumer that names a term is unaffected; a consumer that named a *file* reads one of these three.
+
+**The split was made with the checker's own role definitions**, imported from the vendored copy rather
+than reimplemented, so the measurement afterwards cannot disagree with the intent. Verified as a move:
+1270 source triples, 1270 accounted for, all 305 typed named subjects present, and each new file holds
+exactly one role and one ontology header.
+
+**What the plan said would make it wrong, and what actually bit.** The plan said: *if the module form
+turns out not to carry something PIB's rules depend on, the merge is the wrong shape and the plan
+changes rather than the rules bending to it.* It happened, in the smallest possible way. The five
+**phases** of the calculation are instance data — a name and an order each — so one file per role put
+them in the A-Box while their rule shapes stayed in the SHACL file, and the harness raised
+`rule shape CompleteRuleShape declares no known phase` on the first run. Nothing bent: the phase order
+is still declared in the ontology and not in the harness, which is the whole point of declaring it; the
+harness now reads the phases from the A-Box and the shapes from the SHACL file. The capacity figures
+came out identical.
+
+**Unchanged, and checked rather than asserted:** capstone 9, ontology-development 1, budget 11,
+later-prerequisite 6, or-spread 12, combined 3, five independent groups 243, unsatisfiable 0 — and the
+algebra's own rules still produce identical variant sets on all eight spaces.
+
+**One guard was added rather than lost.** With one SHACL file, the calculation's rule shapes sit beside
+shapes that are not part of it. The harness selects the phased ones, and a shape that carries
+`sh:rule` with no phase is now an **error** rather than a shape quietly skipped: a rule dropped from
+every phase would never run and the capacity would simply come out wrong. Measured on the merged file:
+exactly the 20 rule shapes carry phases, and the 11 plain constraint shapes carry neither.
+
+**The one line left is not PIB's to close.** The registration submission is an A-role file, and the
+governance owner ruled that a registration is a unit of its own obeying the three-file rule separately.
+Merging it into the domain A-Box would break that ruling to satisfy a count. Naming it as a unit needs
+a row in the governance session's units table, which is that session's file; it is asked for, with its
+reason, in `09-handover-inbox/accepted/HANDOVER_PIB_to_OE_archive-report-and-two-asks_v1_0_0.md`.

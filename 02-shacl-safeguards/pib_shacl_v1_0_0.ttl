@@ -1,0 +1,599 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix iif: <http://purl.org/pib/integration-interface#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pib: <http://purl.org/pib/profile#> .
+@prefix pibcr: <http://purl.org/pib/consumer-registry#> .
+@prefix pibe: <http://purl.org/pib/enumeration#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://purl.org/pib/consumer-registry> rdfs:label "PIB consumer registration — vocabulary and shapes"@en ;
+    dcterms:created "2026-09-23"^^xsd:date ;
+    dcterms:creator "Yusuf Altunel" ;
+    dcterms:description "Lets a consumer ontology register itself with PIB by pointer and hash rather than by copy, so every claim PIB makes about it can be re-derived from the consumer's own repository."@en ;
+    dcterms:identifier "consumer-registry" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:priorVersion <http://purl.org/pib/consumer-registry/1.1.0> ;
+    owl:versionIRI <http://purl.org/pib/consumer-registry/1.2.0> ;
+    owl:versionInfo "1.2.0" .
+
+pibcr:ProfileProposalShape a sh:NodeShape ;
+    rdfs:label "A profile proposal must name its proposer, its category, and its variation space"@en ;
+    sh:property [ sh:message "A proposal must carry a human-readable label naming the profile." ;
+            sh:minCount 1 ;
+            sh:path rdfs:label ],
+        [ sh:maxCount 1 ;
+            sh:message "A proposal must name the consumer proposing it — approval is autonomous, so the record must say on whose behalf it was granted." ;
+            sh:minCount 1 ;
+            sh:path pibcr:proposedBy ],
+        [ sh:maxCount 1 ;
+            sh:message "A proposal must bind exactly one artifact category; a profile governs one kind of artifact." ;
+            sh:minCount 1 ;
+            sh:path pibcr:proposesCategory ],
+        [ sh:maxCount 1 ;
+            sh:message "A proposal must express its variation space in the algebra's DSL, so admissibility can be computed rather than asserted." ;
+            sh:minCount 1 ;
+            sh:minLength 10 ;
+            sh:path pibcr:wiringInDSL ] ;
+    sh:targetClass pibcr:ProfileProposal .
+
+pibcr:ProposedCategoryShape a sh:NodeShape ;
+    rdfs:label "A proposed category must state its name and whether it is new"@en ;
+    sh:property [ sh:message "A category must carry the name it is claimed under — that name is what a collision is detected against." ;
+            sh:minCount 1 ;
+            sh:path pibcr:categoryLabel ],
+        [ sh:datatype xsd:boolean ;
+            sh:message "State whether this category is new or already published. A consumer may introduce one, but not silently." ;
+            sh:minCount 1 ;
+            sh:path pibcr:isNewCategory ] ;
+    sh:targetObjectsOf pibcr:proposesCategory .
+
+pibcr:ProposedSharedCriterionShape a sh:NodeShape ;
+    rdfs:label "A shared criterion must be used by more than one system"@en ;
+    sh:property [ sh:message "A shared criterion must carry a label." ;
+            sh:minCount 1 ;
+            sh:path rdfs:label ],
+        [ sh:message "A shared criterion must name at least TWO systems that use it. The profile vocabulary defines a shared criterion as one meaningful to more than one system; a criterion only its proposer uses is system-specific behaviour and belongs in that system, not in the shared profile." ;
+            sh:minCount 2 ;
+            sh:path pibcr:criterionUsedBySystem ] ;
+    sh:targetObjectsOf pibcr:proposesSharedCriterion .
+
+pibcr:RegisteredFileShape a sh:NodeShape ;
+    rdfs:label "Every registered file must carry a hash, a version and a path"@en ;
+    sh:property [ sh:message "Every registered file needs its path within the repository, or PIB cannot fetch it." ;
+            sh:minCount 1 ;
+            sh:path pibcr:atPath ],
+        [ sh:maxCount 1 ;
+            sh:message "Every registered file needs its SHA-256 — that is what lets PIB prove it read exactly what you published." ;
+            sh:minCount 1 ;
+            sh:path <http://example.org/oepack-release-history#hasFileSHA256> ;
+            sh:pattern "^[0-9a-f]{64}$" ],
+        [ sh:message "Every registered file needs its version." ;
+            sh:minCount 1 ;
+            sh:path <http://example.org/oepack-release-history#hasVersionInfo> ] ;
+    sh:targetObjectsOf pibcr:registersFile .
+
+pibcr:RegisteredInterfaceShape a sh:NodeShape ;
+    rdfs:label "A declared interface must produce something and attest its own self-coverage"@en ;
+    sh:property [ sh:message "An interface must produce at least one capability; a consumer that produces nothing cannot be wired to." ;
+            sh:minCount 1 ;
+            sh:path iif:produces ],
+        [ sh:message "An interface must carry a self-coverage attestation: PIB's own invariants refuse to publish a wiring without one." ;
+            sh:minCount 1 ;
+            sh:path iif:hasSelfCoverage ] ;
+    sh:targetObjectsOf pibcr:declaresInterface .
+
+pibcr:RegistrationShape a sh:NodeShape ;
+    rdfs:label "A registration must say where its bytes are, what it exchanges, and who maintains it"@en ;
+    sh:property [ sh:message "A registration must carry a human-readable label naming the package." ;
+            sh:minCount 1 ;
+            sh:path rdfs:label ],
+        [ sh:maxCount 1 ;
+            sh:message "A registration must give exactly one repository URL — PIB reads your bytes, never a pasted snapshot." ;
+            sh:minCount 1 ;
+            sh:path pibcr:atRepository ],
+        [ sh:maxCount 1 ;
+            sh:message "A registration must pin a commit SHA or tag, so the reading is reproducible and cannot move." ;
+            sh:minCount 1 ;
+            sh:minLength 5 ;
+            sh:path pibcr:atCommit ],
+        [ sh:datatype xsd:boolean ;
+            sh:message "State whether PIB's credentials can reach the repository. An unreachable pointer is recorded as unreachable, never as verified." ;
+            sh:minCount 1 ;
+            sh:path pibcr:repositoryReachable ],
+        [ sh:message "A registration must list at least one ontology file to adapt." ;
+            sh:minCount 1 ;
+            sh:path pibcr:registersFile ],
+        [ sh:message "A registration must declare an interface: without produces/consumes there is no contract to compose a wiring from." ;
+            sh:minCount 1 ;
+            sh:path pibcr:declaresInterface ],
+        [ sh:message "Name the session or person maintaining the package, so findings can be sent to its owner rather than acted on unilaterally." ;
+            sh:minCount 1 ;
+            sh:path pibcr:contactSession ] ;
+    sh:targetClass pibcr:ConsumerRegistration .
+
+pibe:CompleteRuleShape a sh:NodeShape ;
+    rdfs:label "Complete: a candidate that has decided every feature of its space is a full variant"@en ;
+    pibe:phase "generation" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this a pibe:CompleteCandidate }
+        WHERE { $this pibe:inSpace ?space ; pibe:decidedUpTo ?k . 
+                FILTER NOT EXISTS { ?space pibe:hasFeature ?lf . ?lf pibe:featureIndex ?j . FILTER(?j > ?k) }
+                FILTER NOT EXISTS { $this a pibe:CompleteCandidate } }
+    """ ] ;
+    sh:target [ a sh:SPARQLTarget ;
+            sh:select """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        SELECT $this WHERE { $this a pibe:Candidate ; pibe:inSpace ?s ; pibe:decidedUpTo ?k .
+            FILTER NOT EXISTS { ?s pibe:hasFeature ?lf . ?lf pibe:featureIndex ?j . FILTER(?j > ?k) }
+            FILTER NOT EXISTS { $this a pibe:CompleteCandidate } }
+    """ ] .
+
+pibe:ConstraintScopingRuleShape a sh:NodeShape ;
+    rdfs:label "Scope: each constraint also applies within the group holding the features it binds"@en ;
+    pibe:phase "partition" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { ?op pibe:inSpace $this }
+        WHERE {
+            $this pibe:groupOf ?parent ; pibe:hasFeature ?f .
+            ?op pibe:inSpace ?parent .
+            {   ?op pibe:requires ?f } UNION { ?op pibe:groupMember ?f } UNION { ?op pibe:dependent ?f }
+            UNION { ?op pibe:budgetGroup ?g . ?f pibe:contributesToGroup ?g }
+        }
+    """ ] ;
+    sh:targetClass pibe:GroupSpace .
+
+pibe:CouplingRuleShape a sh:NodeShape ;
+    rdfs:label "Coupling: two features are coupled when a constraint of the space binds them both"@en ;
+    pibe:phase "partition" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { ?a pibe:coupledWith ?b . ?b pibe:coupledWith ?a }
+        WHERE {
+            FILTER NOT EXISTS { $this pibe:groupOf ?anyParent }
+            {   ?op pibe:inSpace $this ; pibe:groupMember ?a , ?b .           # exclusive and or
+                FILTER(?a != ?b)
+            } UNION {
+                ?op pibe:inSpace $this ; pibe:dependent ?a ; pibe:prerequisite ?b .
+            } UNION {
+                # PIB's repetition is a budget shared by its contributors: they are coupled
+                ?op a pibe:RepetitionConstraint ; pibe:inSpace $this ; pibe:budgetGroup ?g .
+                ?a pibe:contributesToGroup ?g . ?b pibe:contributesToGroup ?g .
+                $this pibe:hasFeature ?a , ?b .
+                FILTER(?a != ?b)
+            }
+        }
+    """ ] ;
+    sh:targetClass pibe:VariationSpace .
+
+pibe:DependencyCheckShape a sh:NodeShape ;
+    rdfs:label "Dependency: a candidate including a dependent without its prerequisite is inadmissible"@en ;
+    pibe:phase "check" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:DependencyConstraint ; pibe:inSpace ?space ;
+                    pibe:dependent ?d ; pibe:prerequisite ?p .
+                $this pibe:includes ?d .
+                FILTER NOT EXISTS { $this pibe:includes ?p }
+            }
+        """ ] ;
+    sh:targetClass pibe:CompleteCandidate .
+
+pibe:EmptySpaceDriftShape a sh:NodeShape ;
+    rdfs:label "Empty-space drift: a space declaring no features is marked, not rejected"@en ;
+    pibe:phase "check" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this pibe:driftSuspected true }
+        WHERE {
+            FILTER NOT EXISTS { $this pibe:hasFeature ?anyFeature }
+            FILTER NOT EXISTS { $this pibe:driftSuspected true }
+        }
+    """ ] ;
+    sh:targetClass pibe:VariationSpace .
+
+pibe:ExcludeBranchRuleShape a sh:NodeShape ;
+    rdfs:label "Exclude branch: leave the next feature out, unless doing so already breaks a constraint"@en ;
+    pibe:phase "generation" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT {
+            ?out a pibe:Candidate ; pibe:inSpace ?space ; pibe:decidedUpTo ?next ;
+                 pibe:derivedFrom $this .
+            ?out pibe:includes ?pf .
+        }
+        WHERE {
+            $this pibe:inSpace ?space ; pibe:decidedUpTo ?k .
+            ?space pibe:hasFeature ?feature . ?feature pibe:featureIndex ?idx .
+            FILTER(?idx > ?k)
+            FILTER NOT EXISTS { ?space pibe:hasFeature ?nearer . ?nearer pibe:featureIndex ?ni .
+                                FILTER(?ni > ?k && ?ni < ?idx) }
+            BIND(?idx AS ?next)
+            BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "o")) AS ?out)
+            FILTER NOT EXISTS { ?out pibe:inSpace ?space }
+            # mandatory: this feature is required
+            FILTER NOT EXISTS { ?op a pibe:MandatoryConstraint ; pibe:inSpace ?space ; pibe:requires ?feature }
+            # dependency: an already-selected feature needs this one
+            FILTER NOT EXISTS { ?op a pibe:DependencyConstraint ; pibe:inSpace ?space ;
+                                    pibe:prerequisite ?feature ; pibe:dependent ?dep .
+                                ?dep pibe:featureIndex ?di . FILTER(?di <= ?k)
+                                $this pibe:includes ?dep }
+            # or: this is the group's last undecided member and none of the others is selected
+            FILTER NOT EXISTS { ?op a pibe:OrConstraint ; pibe:inSpace ?space ; pibe:groupMember ?feature .
+                                FILTER NOT EXISTS { ?op pibe:groupMember ?later . ?later pibe:featureIndex ?li .
+                                                    FILTER(?li > ?idx) }
+                                FILTER NOT EXISTS { ?op pibe:groupMember ?m . $this pibe:includes ?m } }
+            OPTIONAL { $this pibe:includes ?pf }
+        }
+    """ ] ;
+    sh:target [ a sh:SPARQLTarget ;
+            sh:select """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        SELECT $this WHERE { $this a pibe:Candidate ; pibe:inSpace ?s ; pibe:decidedUpTo ?k .
+            ?s pibe:hasFeature ?nf . ?nf pibe:featureIndex ?idx . FILTER(?idx > ?k)
+            FILTER NOT EXISTS { ?s pibe:hasFeature ?nearer . ?nearer pibe:featureIndex ?ni .
+                                FILTER(?ni > ?k && ?ni < ?idx) }
+            BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "o")) AS ?child)
+            FILTER NOT EXISTS { ?child pibe:inSpace ?s } }
+    """ ] .
+
+pibe:ExclusiveCheckShape a sh:NodeShape ;
+    rdfs:label "Exclusive: a candidate including two members of an exclusive group is inadmissible"@en ;
+    pibe:phase "check" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:ExclusiveConstraint ; pibe:inSpace ?space ;
+                    pibe:groupMember ?m1 , ?m2 .
+                FILTER(STR(?m1) < STR(?m2))
+                $this pibe:includes ?m1 , ?m2 .
+            }
+        """ ] ;
+    sh:targetClass pibe:CompleteCandidate .
+
+pibe:GroupCapacityRuleShape a sh:NodeShape ;
+    rdfs:label "Group capacity: the number of admissible complete candidates of a group, zero included"@en ;
+    pibe:phase "combine" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this pibe:groupCapacity ?n }
+        WHERE {
+            {   SELECT $this (COUNT(DISTINCT ?c) AS ?n) WHERE {
+                    $this a pibe:GroupSpace .
+                    OPTIONAL { ?c a pibe:CompleteCandidate ; pibe:inSpace $this .
+                               FILTER NOT EXISTS { ?c pibe:isInadmissible true } }
+                } GROUP BY $this
+            }
+            FILTER NOT EXISTS { $this pibe:groupCapacity ?already }
+        }
+    """ ] ;
+    sh:targetClass pibe:GroupSpace .
+
+pibe:GroupRuleShape a sh:NodeShape ;
+    rdfs:label "Group: each feature belongs to the group named by the lowest index it is coupled to, directly or not"@en ;
+    pibe:phase "partition" ;
+    rdfs:comment "Groups are excluded at the TARGET, not inside the query: the aggregate subquery below does not see the current node bound, so a filter placed there would silently exclude nothing and every group would be split again and marked partitioned."@en ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT {
+            ?grp a pibe:VariationSpace , pibe:GroupSpace ;
+                 pibe:groupOf $this ; pibe:groupOrder ?minj ; pibe:hasFeature ?f .
+            $this pibe:isPartitioned true .
+        }
+        WHERE {
+            {   SELECT $this ?f (MIN(?j) AS ?minj) WHERE {
+                    $this pibe:hasFeature ?f .
+                    ?f pibe:coupledWith* ?r .
+                    $this pibe:hasFeature ?r . ?r pibe:featureIndex ?j .
+                } GROUP BY $this ?f
+            }
+            BIND(IRI(CONCAT(STR($this), "__g", STR(?minj))) AS ?grp)
+        }
+    """ ] ;
+    sh:target [ a sh:SPARQLTarget ;
+            sh:select """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        SELECT $this WHERE { $this a pibe:VariationSpace . FILTER NOT EXISTS { $this pibe:groupOf ?anyParent } }
+    """ ] .
+
+pibe:IncludeBranchRuleShape a sh:NodeShape ;
+    rdfs:label "Include branch: add the next feature, unless doing so already breaks a constraint"@en ;
+    pibe:phase "generation" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT {
+            ?in a pibe:Candidate ; pibe:inSpace ?space ; pibe:decidedUpTo ?next ;
+                pibe:includes ?feature ; pibe:derivedFrom $this .
+            ?in pibe:includes ?pf .
+        }
+        WHERE {
+            $this pibe:inSpace ?space ; pibe:decidedUpTo ?k .
+            ?space pibe:hasFeature ?feature . ?feature pibe:featureIndex ?idx .
+            FILTER(?idx > ?k)
+            FILTER NOT EXISTS { ?space pibe:hasFeature ?nearer . ?nearer pibe:featureIndex ?ni .
+                                FILTER(?ni > ?k && ?ni < ?idx) }
+            BIND(?idx AS ?next)
+            BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "i")) AS ?in)
+            FILTER NOT EXISTS { ?in pibe:inSpace ?space }
+            # exclusive: a group-mate is already selected
+            FILTER NOT EXISTS { ?op a pibe:ExclusiveConstraint ; pibe:inSpace ?space ;
+                                    pibe:groupMember ?feature , ?mate .
+                                FILTER(?mate != ?feature) $this pibe:includes ?mate }
+            # dependency: this feature needs a prerequisite already decided and not selected
+            FILTER NOT EXISTS { ?op a pibe:DependencyConstraint ; pibe:inSpace ?space ;
+                                    pibe:dependent ?feature ; pibe:prerequisite ?pre .
+                                ?pre pibe:featureIndex ?pi . FILTER(?pi <= ?k)
+                                FILTER NOT EXISTS { $this pibe:includes ?pre } }
+            # repetition: the group's budget is already used up
+            FILTER NOT EXISTS { ?op a pibe:RepetitionConstraint ; pibe:inSpace ?space ;
+                                    pibe:budgetGroup ?g ; pibe:maxSelected ?max .
+                                ?feature pibe:contributesToGroup ?g .
+                                { SELECT ?g (COUNT(?sel) AS ?used) WHERE {
+                                    $this pibe:includes ?sel . ?sel pibe:contributesToGroup ?g } GROUP BY ?g }
+                                FILTER(?used >= ?max) }
+            OPTIONAL { $this pibe:includes ?pf }
+        }
+    """ ] ;
+    sh:target [ a sh:SPARQLTarget ;
+            sh:select """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        SELECT $this WHERE { $this a pibe:Candidate ; pibe:inSpace ?s ; pibe:decidedUpTo ?k .
+            ?s pibe:hasFeature ?nf . ?nf pibe:featureIndex ?idx . FILTER(?idx > ?k)
+            FILTER NOT EXISTS { ?s pibe:hasFeature ?nearer . ?nearer pibe:featureIndex ?ni .
+                                FILTER(?ni > ?k && ?ni < ?idx) }
+            BIND(IRI(CONCAT(STR($this), "_", STR(?idx), "i")) AS ?child)
+            FILTER NOT EXISTS { ?child pibe:inSpace ?s } }
+    """ ] .
+
+pibe:MandatoryCheckShape a sh:NodeShape ;
+    rdfs:label "Mandatory: a complete candidate missing a required feature is inadmissible"@en ;
+    pibe:phase "check" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:MandatoryConstraint ; pibe:inSpace ?space ; pibe:requires ?f .
+                FILTER NOT EXISTS { $this pibe:includes ?f }
+            }
+        """ ] ;
+    sh:targetClass pibe:CompleteCandidate .
+
+pibe:OrCheckShape a sh:NodeShape ;
+    rdfs:label "Or: a candidate including no member of an or-group is inadmissible"@en ;
+    pibe:phase "check" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:OrConstraint ; pibe:inSpace ?space .
+                FILTER NOT EXISTS { ?op pibe:groupMember ?m . $this pibe:includes ?m }
+            }
+        """ ] ;
+    sh:targetClass pibe:CompleteCandidate .
+
+pibe:RepetitionCheckShape a sh:NodeShape ;
+    rdfs:label "Repetition: a candidate exceeding a group's budget is inadmissible (the k-of-n bound)"@en ;
+    pibe:phase "check" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+            PREFIX pibe: <http://purl.org/pib/enumeration#>
+            CONSTRUCT { $this pibe:isInadmissible true ; pibe:violates ?op }
+            WHERE {
+                $this pibe:inSpace ?space .
+                ?op a pibe:RepetitionConstraint ; pibe:inSpace ?space ;
+                    pibe:budgetGroup ?g ; pibe:maxSelected ?max .
+                {
+                    SELECT $this ?g (COUNT(?f) AS ?n) WHERE {
+                        $this pibe:includes ?f . ?f pibe:contributesToGroup ?g .
+                    } GROUP BY $this ?g
+                }
+                FILTER(?n > ?max)
+            }
+        """ ] ;
+    sh:targetClass pibe:CompleteCandidate .
+
+pibe:RunningProductRuleShape a sh:NodeShape ;
+    rdfs:label "Running product: each group multiplies its capacity into the product of the groups before it"@en ;
+    pibe:phase "combine" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this pibe:runningProduct ?p }
+        WHERE {
+            $this pibe:groupOf ?parent ; pibe:groupOrder ?o ; pibe:groupCapacity ?n .
+            FILTER NOT EXISTS { $this pibe:runningProduct ?already }
+            OPTIONAL {
+                ?prev pibe:groupOf ?parent ; pibe:groupOrder ?po . FILTER(?po < ?o)
+                FILTER NOT EXISTS { ?mid pibe:groupOf ?parent ; pibe:groupOrder ?mo . FILTER(?mo > ?po && ?mo < ?o) }
+            }
+            OPTIONAL { ?prev pibe:runningProduct ?pp }
+            FILTER(!BOUND(?prev) || BOUND(?pp))
+            BIND(IF(BOUND(?prev), ?pp * ?n, ?n) AS ?p)
+        }
+    """ ] ;
+    sh:targetClass pibe:GroupSpace .
+
+pibe:SeedRuleShape a sh:NodeShape ;
+    rdfs:label "Seed: every variation space starts with one undecided candidate"@en ;
+    pibe:phase "generation" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { ?seed a pibe:Candidate ; pibe:inSpace $this ; pibe:decidedUpTo 0 . }
+        WHERE { BIND(IRI(CONCAT(STR($this), "__c")) AS ?seed)
+                FILTER NOT EXISTS { ?seed pibe:inSpace $this }
+                FILTER NOT EXISTS { $this pibe:isPartitioned true } }
+    """ ] ;
+    sh:targetClass pibe:VariationSpace .
+
+pibe:SpaceCapacityRuleShape a sh:NodeShape ;
+    rdfs:label "Space capacity: the running product at the space's last group"@en ;
+    pibe:phase "combine" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { ?parent pibe:variationCapacity ?p }
+        WHERE {
+            $this pibe:groupOf ?parent ; pibe:groupOrder ?o ; pibe:runningProduct ?p .
+            FILTER NOT EXISTS { ?later pibe:groupOf ?parent ; pibe:groupOrder ?lo . FILTER(?lo > ?o) }
+            FILTER NOT EXISTS { ?parent pibe:variationCapacity ?already }
+        }
+    """ ] ;
+    sh:targetClass pibe:GroupSpace .
+
+pibe:TaxonDisjointRuleShape a sh:NodeShape ;
+    rdfs:label "Siblings are disjoint: one takes the feature the other leaves"@en ;
+    pibe:phase "taxonomy" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        PREFIX owl: <http://www.w3.org/2002/07/owl#>
+        CONSTRUCT { $this owl:disjointWith ?sibling }
+        WHERE {
+            $this pibe:derivedFrom ?parent . ?sibling pibe:derivedFrom ?parent .
+            FILTER(STR($this) < STR(?sibling))
+        }
+    """ ] ;
+    sh:targetClass pibe:Candidate .
+
+pibe:TaxonForcedRuleShape a sh:NodeShape ;
+    rdfs:label "A single surviving child is a forced decision, not a branch"@en ;
+    pibe:phase "taxonomy" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this pibe:forcedDecision true }
+        WHERE {
+            $this pibe:derivedFrom ?parent .
+            FILTER NOT EXISTS { ?other pibe:derivedFrom ?parent . FILTER(?other != $this) }
+        }
+    """ ] ;
+    sh:targetClass pibe:Candidate .
+
+pibe:TaxonLeafRuleShape a sh:NodeShape ;
+    rdfs:label "A complete, admissible candidate is a leaf: one profile variant"@en ;
+    pibe:phase "taxonomy" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        CONSTRUCT { $this a pibe:ProfileVariant }
+        WHERE { FILTER NOT EXISTS { $this pibe:isInadmissible true } }
+    """ ] ;
+    sh:targetClass pibe:CompleteCandidate .
+
+pibe:TaxonNodeRuleShape a sh:NodeShape ;
+    rdfs:label "Every candidate is a taxon node, subordinate to the candidate it came from"@en ;
+    pibe:phase "taxonomy" ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:construct """
+        PREFIX pibe: <http://purl.org/pib/enumeration#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        CONSTRUCT {
+            $this a pibe:TaxonNode ; rdfs:subClassOf ?parent .
+            $this pibe:differsBy ?feature ; pibe:branchKind ?kind .
+        }
+        WHERE {
+            $this pibe:derivedFrom ?parent .
+            $this pibe:decidedUpTo ?k .
+            ?space pibe:hasFeature ?feature . $this pibe:inSpace ?space .
+            ?feature pibe:featureIndex ?k .
+            BIND(IF(EXISTS { $this pibe:includes ?feature }, "takes", "leaves") AS ?kind)
+        }
+    """ ] ;
+    sh:targetClass pibe:Candidate .
+
+<http://purl.org/pib/enumeration/rules> rdfs:label "PIB enumeration rules — variant generation and admissibility in the ontology"@en ;
+    dcterms:description "Generates every admissible candidate selection over a declared variation space, pruning as it goes, then checks admissibility as a safety net and leaves the admissible set standing to be counted."@en ;
+    dcterms:identifier "rules" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.3.0> ;
+    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.4.0> ;
+    owl:versionInfo "2.4.0" .
+
+iif:ContractClosureShape a sh:NodeShape ;
+    sh:sparql [ a sh:SPARQLConstraint ;
+            sh:message "Capability is consumed by some interface but produced by none — dangling consume (contract does not close)."@en ;
+            sh:select """
+            PREFIX iif: <http://purl.org/pib/integration-interface#>
+            SELECT $this WHERE {
+              ?consumer iif:consumes $this .
+              FILTER NOT EXISTS { ?producer iif:produces $this . }
+            }
+        """ ] ;
+    sh:targetClass iif:Capability .
+
+iif:IntegrationEdgeShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path iif:edgeSource ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path iif:edgeTarget ],
+        [ sh:maxCount 1 ;
+            sh:minCount 1 ;
+            sh:path iif:edgeCapability ],
+        [ sh:message "Every IntegrationEdge must declare its governing variant-algebra operator."@en ;
+            sh:minCount 1 ;
+            sh:path iif:governedByOperator ] ;
+    sh:targetClass iif:IntegrationEdge .
+
+iif:InterfaceSelfCoverageShape a sh:NodeShape ;
+    sh:property [ sh:message "An OntologyInterface must carry a SelfCoverageAttestation before participating in any wiring (profile-independent hard gate)."@en ;
+            sh:minCount 1 ;
+            sh:path iif:hasSelfCoverage ] ;
+    sh:targetClass iif:OntologyInterface .
+
+iif:WiringVariantShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 1 ;
+            sh:message "A WiringVariant must be scoped to exactly one Profile."@en ;
+            sh:minCount 1 ;
+            sh:path iif:forProfile ] ;
+    sh:targetClass iif:WiringVariant .
+
+pib:ProfileShape a sh:NodeShape ;
+    sh:property [ sh:maxCount 1 ;
+            sh:message "A Profile must bind exactly one ArtifactCategory."@en ;
+            sh:minCount 1 ;
+            sh:path pib:hasCategory ],
+        [ sh:maxCount 1 ;
+            sh:message "A Profile must select EXACTLY ONE validated WiringVariant (reproducibility)."@en ;
+            sh:minCount 1 ;
+            sh:path pib:selectsWiring ] ;
+    sh:targetClass pib:Profile .
+
+<http://purl.org/pib> a owl:Ontology ;
+    rdfs:label "PIB — SHACL — every shape, the calculation's rules among them"@en ;
+    dcterms:description "PIB (Profile + Integration-Interface Blueprint). One file per role, per BP-D54: what used to be a separate subject is a module inside these three files, recorded at its own former IRI, and every term keeps the IRI it always had. A consumer that names a term is unaffected; a consumer that named a FILE reads this one instead. The former files leave the package and stay recoverable from git history and the release tags."@en ;
+    dcterms:identifier "pib" ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    owl:versionIRI <http://purl.org/pib/shacl/1.0.0> ;
+    owl:versionInfo "1.0.0" .
+

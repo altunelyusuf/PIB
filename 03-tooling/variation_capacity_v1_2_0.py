@@ -37,8 +37,11 @@ Usage:
 """
 import sys, os
 
-RULES = os.path.join(os.path.dirname(__file__), "..", "02-shacl-safeguards",
-                     "pib_enumeration_rules_v2_4_0.ttl")
+RULES = os.path.join(os.path.dirname(__file__), "..", "02-shacl-safeguards", "pib_shacl_v1_0_0.ttl")
+# The phases are INSTANCE DATA — five individuals with a name and an order — so one file per role puts
+# them in the A-Box while their rule shapes stay in the SHACL file. The harness reads both; the phase
+# order is still declared in the ontology and not in this code, which is the point of declaring it.
+PHASES = os.path.join(os.path.dirname(__file__), "..", "01-ontologies", "pib_abox_v1_0_0.ttl")
 FIXTURES = os.path.join(os.path.dirname(__file__), "..", "12-operator-fixtures", "fixtures")
 
 CAPACITY_QUERY = """
@@ -65,13 +68,22 @@ def phased_shapes():
     SH = rdflib.Namespace("http://www.w3.org/ns/shacl#")
     P = rdflib.Namespace("http://purl.org/pib/enumeration#")
     rules = rdflib.Graph(); rules.parse(RULES, format="turtle")
-    order = [str(rules.value(ph, P.phaseName))
-             for ph in sorted(rules.subjects(rdflib.RDF.type, P.Phase), key=lambda ph: int(rules.value(ph, P.phaseOrder)))]
+    phases = rdflib.Graph(); phases.parse(PHASES, format="turtle")
+    order = [str(phases.value(ph, P.phaseName))
+             for ph in sorted(phases.subjects(rdflib.RDF.type, P.Phase), key=lambda ph: int(phases.value(ph, P.phaseOrder)))]
+    if not order:
+        raise ValueError("no phase is declared: the calculation has no order to run in")
     graphs = {name: rdflib.Graph() for name in order}
+    # The package ships ONE SHACL file (BP-D54), so the calculation's rule shapes sit beside the
+    # invariants and the registration shapes. The phases are selected by their own declaration, and a
+    # shape that carries sh:rule without one is an error rather than a shape quietly left out: a rule
+    # dropped from every phase would never run, and the capacity would simply come out wrong.
     for shape in rules.subjects(rdflib.RDF.type, SH.NodeShape):
         phase = str(rules.value(shape, P.phase) or "")
         if phase not in graphs:
-            raise ValueError(f"rule shape {shape} declares no known phase")
+            if (shape, SH.rule, None) in rules:
+                raise ValueError(f"rule shape {shape} declares no known phase")
+            continue          # a plain constraint shape, not part of the calculation
         stack, seen = [shape], set()
         while stack:
             x = stack.pop()

@@ -72,3 +72,22 @@ are value domains — closed sets of values, not things with instances of their 
 The assignments follow the ecosystem's own precedents, read from the governance vocabulary rather than
 chosen here: a constraint is a specification, a criterion and a candidate are information artifacts, a
 closed list of category values is a value domain, a phase is a process.
+
+
+---
+
+## The files changed and the IRIs did not (PIB v3.0.0, 2026-10-22)
+
+The package now ships **one T-Box, one A-Box and one SHACL file** (BP-D54): eleven files became
+`01-ontologies/pib_tbox_v1_0_0.ttl`, `01-ontologies/pib_abox_v1_0_0.ttl` and
+`02-shacl-safeguards/pib_shacl_v1_0_0.ttl`. Each former subject — profile, integration-interface,
+wiring-expression, composition, assessment, consumer-registry, enumeration — is recorded inside as a
+**module at its own former IRI**, carrying the metadata its file header carried.
+
+**Nothing a spoke declares against has moved.** Every term keeps the IRI it always had, the ontology
+IRIs above are unchanged, and `rdfs:isDefinedBy` still points at the former subject's IRI. A spoke that
+names a term needs no change at all.
+
+**What does change** is a consumer that loaded a PIB *file* by path: the eleven files are gone from the
+package and recoverable from git history and the release tags. The package IRI `http://purl.org/pib`
+is what the three files declare, each with its own version, and the modules are `dcterms:isPartOf` it.

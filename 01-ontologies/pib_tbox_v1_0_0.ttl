@@ -1,0 +1,668 @@
+@prefix asmt: <http://purl.org/pib/assessment#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix iif: <http://purl.org/pib/integration-interface#> .
+@prefix kb: <http://example.org/knowledge-base#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix pib: <http://purl.org/pib/profile#> .
+@prefix pibcr: <http://purl.org/pib/consumer-registry#> .
+@prefix pibe: <http://purl.org/pib/enumeration#> .
+@prefix pibx: <http://purl.org/pib/wiring-expression#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix va: <http://example.org/variant-algebra#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://purl.org/pib/assessment> rdfs:label "PIB assessment profiles — HUB-published canonical set"@en ;
+    dcterms:created "2026-06-09"^^xsd:date ;
+    dcterms:creator <http://purl.org/pib/prov#Agent_YusufAltunel>,
+        "Yusuf Altunel" ;
+    dcterms:description "Canonical assessment profiles materialized by the HUB. OBAF retired: assessment is PAMG made ontology-native and profile-driven, riding on OEE's measurement facets; ontology-development assessment belongs to OEE. Each pib:Profile pins one reproducible WiringVariant (VariationCapacity recorded), validated against the pinned VAF; every participating interface carries a G3 self-coverage attestation recording its real on-disk result. ZeroTime deferred (ZT4SWE unresolved). MINOR v1.1.0: added the Repetition operator individual, completing the six variability operators this vocabulary already states it governs — the variant-algebra engine's own definition scopes its variability family to exactly Mandatory, Optional, Exclusive, Or, Dependency and Repetition, and only five had been declared here. PATCH v1.1.0.1 corrects what followed: the claim that the algebra's remaining operators were deliberately not imported is no longer true and was never a sound reason. From PIB v1.6.0 the complete set of twelve operators is applied through the wiring-expression vocabulary, and from v2.0.0 admissibility is evaluated by rules in the ontology rather than by the pinned engine. No vocabulary in this file changed."@en ;
+    dcterms:identifier "assessment" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:priorVersion <http://purl.org/pib/assessment/1.1.0.1> ;
+    owl:versionIRI <http://purl.org/pib/assessment/1.2.0> ;
+    owl:versionInfo "1.2.0" ;
+    prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+asmt:variationCapacity a owl:DatatypeProperty ;
+    rdfs:label "variation capacity"@en .
+
+<http://purl.org/pib/composition> rdfs:label "PIB Phase-3 wiring composition record"@en ;
+    dcterms:created "2026-06-06"^^xsd:date ;
+    dcterms:creator <http://purl.org/pib/prov#Agent_YusufAltunel>,
+        "Yusuf Altunel" ;
+    dcterms:identifier "composition" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-06-06"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:versionIRI <http://purl.org/pib/composition/1.0.0> ;
+    owl:versionInfo "1.0.0" ;
+    prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+<http://purl.org/pib/composition#engine> a owl:DatatypeProperty ;
+    rdfs:label "VAF engine used"@en .
+
+<http://purl.org/pib/composition#publishable> a owl:DatatypeProperty ;
+    rdfs:label "publishable (wiring valid AND interfaces self-cover)"@en .
+
+<http://purl.org/pib/composition#variationCapacity> a owl:DatatypeProperty ;
+    rdfs:label "variation capacity (count of admissible wirings)"@en .
+
+<http://purl.org/pib/composition#wiringValid> a owl:DatatypeProperty ;
+    rdfs:label "VAF reports the wiring space admissible"@en .
+
+<http://purl.org/pib/consumer-registry> rdfs:label "PIB consumer registration — vocabulary and shapes"@en ;
+    dcterms:created "2026-09-23"^^xsd:date ;
+    dcterms:creator "Yusuf Altunel" ;
+    dcterms:description "Lets a consumer ontology register itself with PIB by pointer and hash rather than by copy, so every claim PIB makes about it can be re-derived from the consumer's own repository."@en ;
+    dcterms:identifier "consumer-registry" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:priorVersion <http://purl.org/pib/consumer-registry/1.1.0> ;
+    owl:versionIRI <http://purl.org/pib/consumer-registry/1.2.0> ;
+    owl:versionInfo "1.2.0" .
+
+pibcr:ConsumerRegistration a owl:Class ;
+    rdfs:label "Consumer registration"@en ;
+    kb:hasClassKind kb:ClassKind_InformationArtifact ;
+    skos:definition "A consumer ontology's own statement of where its bytes are, what it exchanges, and how to verify both."@en .
+
+pibcr:ProfileProposal a owl:Class ;
+    rdfs:label "Profile proposal"@en ;
+    kb:hasClassKind kb:ClassKind_InformationArtifact ;
+    skos:definition "A consumer's proposal for a shared profile: the artifact category it governs, the criteria it claims are shared across systems, and its variation space expressed in the variant algebra's notation."@en .
+
+pibcr:atCommit a owl:DatatypeProperty ;
+    rdfs:label "at commit or tag"@en .
+
+pibcr:atPath a owl:DatatypeProperty ;
+    rdfs:label "path within the repository"@en .
+
+pibcr:atRepository a owl:DatatypeProperty ;
+    rdfs:label "at repository"@en .
+
+pibcr:categoryLabel a owl:DatatypeProperty ;
+    rdfs:label "category label — the human name the category is claimed under"@en .
+
+pibcr:contactSession a owl:DatatypeProperty ;
+    rdfs:label "contact session"@en .
+
+pibcr:criterionUsedBySystem a owl:DatatypeProperty ;
+    rdfs:label "system that uses this criterion"@en .
+
+pibcr:declaresInterface a owl:ObjectProperty ;
+    rdfs:label "declares interface"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Structural ;
+    skos:definition "Binds a consumer registration to the integration interface the consumer declares: the capabilities it produces and consumes, which is what makes it wireable at all."@en .
+
+pibcr:isNewCategory a owl:DatatypeProperty ;
+    rdfs:label "is a new category rather than one already published"@en .
+
+pibcr:proposedBy a owl:DatatypeProperty ;
+    rdfs:label "proposed by"@en .
+
+pibcr:proposesCategory a owl:ObjectProperty ;
+    rdfs:label "proposes category"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Intentional ;
+    skos:definition "Names the artifact category a profile proposal would govern. A consumer may introduce a category that does not yet exist, which is the point of letting consumers propose profiles rather than only select them."@en .
+
+pibcr:proposesSharedCriterion a owl:ObjectProperty ;
+    rdfs:label "proposes shared criterion"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Intentional ;
+    skos:definition "Names a criterion a profile proposal claims is shared. A criterion is shared only if it is meaningful to more than one system, which the approval gate checks by requiring at least two naming systems rather than taking the claim."@en .
+
+pibcr:registersFile a owl:ObjectProperty ;
+    rdfs:label "registers file"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    skos:definition "Names a file of the registering consumer ontology, by location and hash, so that what was registered can be verified against the bytes rather than taken from the registration's own description."@en .
+
+pibcr:repositoryReachable a owl:DatatypeProperty ;
+    rdfs:label "repository reachable with PIB's credentials"@en .
+
+pibcr:wiringInDSL a owl:DatatypeProperty ;
+    rdfs:label "variation space, in the variant algebra's DSL"@en .
+
+pibe:CompleteCandidate a owl:Class ;
+    rdfs:label "Complete candidate — every feature of its group decided"@en ;
+    kb:hasClassKind kb:ClassKind_InformationArtifact ;
+    rdfs:subClassOf pibe:Candidate ;
+    skos:definition "A candidate whose decided index has reached the last feature of its group. The check phase re-tests each one against every constraint as a safety net, so that a capacity which matched while admitting the wrong selections cannot pass; the taxonomy phase reads the complete candidates of each group as the taxonomy's leaves."@en .
+
+pibe:ExclusiveConstraint a owl:Class ;
+    rdfs:label "Exclusive constraint — at most one of its members"@en ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    rdfs:subClassOf pibe:Constraint ;
+    skos:definition "Permits at most one of the features named by pibe:groupMember: selecting two is a violation, selecting none is not. PIB's reading is AT MOST ONE, where the variant algebra's own exclusive operator means EXACTLY ONE; handed to the algebra, this constraint is therefore written as a budget of one, because writing it as the algebra's exclusive would silently drop the selection that takes neither."@en .
+
+pibe:GroupSpace a owl:Class ;
+    rdfs:label "Group space — an independent group of coupled features, enumerated on its own"@en ;
+    kb:hasClassKind kb:ClassKind_SetOrClass ;
+    rdfs:subClassOf pibe:VariationSpace ;
+    skos:definition "An independent group of coupled features, split out of a variation space by the partition phase and enumerated on its own. Two features are coupled when a constraint names both; groups that share no constraint multiply, which is what makes capacity polynomial rather than exponential in the number of features."@en .
+
+pibe:OrConstraint a owl:Class ;
+    rdfs:label "Or constraint — at least one of its members"@en ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    rdfs:subClassOf pibe:Constraint ;
+    skos:definition "Requires at least one of the features named by pibe:groupMember. Selecting all of them is admissible; selecting none is a violation."@en .
+
+pibe:Phase a owl:Class ;
+    rdfs:label "Rule phase"@en ;
+    kb:hasClassKind kb:ClassKind_Process ;
+    skos:definition "One stage of the calculation, declared in the ontology rather than sequenced by the harness: each phase runs its own rules to a fixpoint before the next begins. The order is partition, generation, check, combine, taxonomy."@en .
+
+pibe:ProfileVariant a owl:Class ;
+    rdfs:label "Profile variant — a leaf of the taxonomy, one admissible profile"@en ;
+    kb:hasClassKind kb:ClassKind_Category ;
+    rdfs:subClassOf pibe:TaxonNode ;
+    skos:definition "A leaf of the derived taxonomy: a complete, admissible selection over every feature of its group — a species, in the taxonomy's own terms, as against the partial commitments at the interior nodes."@en .
+
+pibe:branchKind a owl:DatatypeProperty ;
+    rdfs:label "branch kind — whether this node takes or leaves the feature"@en .
+
+pibe:budgetGroup a owl:ObjectProperty ;
+    rdfs:label "budget group — the group a repetition constraint bounds"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Structural ;
+    rdfs:domain pibe:RepetitionConstraint ;
+    skos:definition "The group whose contributing features a repetition constraint bounds."@en .
+
+pibe:contributesToGroup a owl:ObjectProperty ;
+    rdfs:label "contributes to group — this feature counts against the group's budget"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    skos:definition "Declares that selecting this feature counts against the named group's budget. This is also what couples the contributors: features sharing a budget group cannot be partitioned into separate independent groups."@en .
+
+pibe:coupledWith a owl:ObjectProperty ;
+    rdfs:label "coupled with — shares a constraint with"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Connectedness ;
+    skos:definition "Declares that two features share a constraint and therefore cannot be partitioned into separate independent groups. The partition phase closes this relation transitively to find the groups."@en .
+
+pibe:decidedUpTo a owl:DatatypeProperty ;
+    rdfs:label "decided up to — the highest feature index this candidate has decided"@en ;
+    rdfs:domain pibe:Candidate ;
+    rdfs:range xsd:integer ;
+    skos:definition "The feature index this candidate has decided up to; zero for a seed. The generation phase branches only at the next index, so this is what keeps the enumeration from revisiting a decision."@en .
+
+pibe:dependent a owl:ObjectProperty ;
+    rdfs:label "dependent — the feature that requires another"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Requirement ;
+    rdfs:domain pibe:DependencyConstraint ;
+    skos:definition "The feature whose selection requires the prerequisite's."@en .
+
+pibe:derivedFrom a owl:ObjectProperty ;
+    rdfs:label "derived from — the candidate this one was branched from"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Provenance ;
+    rdfs:domain pibe:Candidate ;
+    rdfs:range pibe:Candidate ;
+    skos:definition "The candidate this one was branched from, carrying its decisions forward. It makes the enumeration auditable: every candidate's decisions can be traced back to the seed."@en .
+
+pibe:differsBy a owl:ObjectProperty ;
+    rdfs:label "differs by — the feature whose decision distinguishes this node from its parent"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Comparative ;
+    skos:definition "The feature whose decision distinguishes a taxon node from its parent. It is what makes the taxonomy readable as a sequence of decisions rather than only as a tree of sets."@en .
+
+pibe:driftSuspected a owl:DatatypeProperty ;
+    rdfs:label "drift suspected"@en ;
+    skos:definition "Marks a variation space that is structurally admissible but suspicious: it declares no features, so its capacity of 1 reports the empty selection rather than anything the space was meant to describe."@en .
+
+pibe:featureCount a owl:DatatypeProperty ;
+    rdfs:label "feature count — how many features the space declares"@en ;
+    rdfs:domain pibe:VariationSpace ;
+    rdfs:range xsd:integer ;
+    skos:definition "The number of features the space declares, stated so that a candidate can be recognised as complete and so that a space declaring none is detectable rather than merely silent."@en .
+
+pibe:featureIndex a owl:DatatypeProperty ;
+    rdfs:label "feature index — the position at which this feature is decided"@en ;
+    rdfs:domain rdfs:Resource ;
+    rdfs:range xsd:integer ;
+    skos:definition "The position of a feature in the order the generation phase decides them. The order makes branching deterministic and lets a candidate record how far it has been decided."@en .
+
+pibe:forcedDecision a owl:DatatypeProperty ;
+    rdfs:label "forced decision — the only surviving option, not a real branch"@en .
+
+pibe:groupCapacity a owl:DatatypeProperty ;
+    rdfs:label "group capacity — admissible selections of one group"@en .
+
+pibe:groupMember a owl:ObjectProperty ;
+    rdfs:label "group member — a feature named by an exclusive or or constraint"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    skos:definition "Names a feature belonging to the member list of an exclusive or an or constraint. The two constraint kinds read the same property and differ in what they require of it: at most one, and at least one."@en .
+
+pibe:groupOf a owl:ObjectProperty ;
+    rdfs:label "group of — the space this group was split from"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Compositional ;
+    skos:definition "The variation space a group space was split from, so that the combine phase can multiply the groups' capacities back into the space they came from."@en .
+
+pibe:groupOrder a owl:DatatypeProperty ;
+    rdfs:label "group order — the lowest feature index in the group"@en .
+
+pibe:hasFeature a owl:ObjectProperty ;
+    rdfs:label "has feature — a feature of this space"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    rdfs:domain pibe:VariationSpace ;
+    skos:definition "Names a feature that the space's selections decide. The features of a space are the dimensions of its variation; a space with none yields no capacity."@en .
+
+pibe:inSpace a owl:ObjectProperty ;
+    rdfs:label "in space — the space or group this belongs to"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    skos:definition "Places a candidate or a constraint in the space or group it belongs to. A candidate's space is always a group space once the partition phase has run, never the parent space, which is why a reader looking for candidates in the parent finds none."@en .
+
+pibe:includes a owl:ObjectProperty ;
+    rdfs:label "includes — a feature selected in this candidate"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    rdfs:domain pibe:Candidate ;
+    skos:definition "Names a feature the candidate selects. The features a candidate has decided against are absent rather than recorded as excluded, so a candidate's selection is read as the set of its includes."@en .
+
+pibe:isInadmissible a owl:DatatypeProperty ;
+    rdfs:label "is inadmissible — this candidate violates a constraint"@en ;
+    rdfs:domain pibe:Candidate ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Marks a candidate that violates a constraint. With exact pruning no COMPLETE candidate carries it — a branch is cut before it completes — so a complete candidate carrying this mark means the pruning and the check disagree, which is what the check phase exists to catch."@en .
+
+pibe:isMetaSpace a owl:DatatypeProperty ;
+    rdfs:label "is meta space — this space carries the domain's own invariants"@en ;
+    rdfs:domain pibe:VariationSpace ;
+    rdfs:range xsd:boolean ;
+    skos:definition "Marks a space as the meta layer: the features and constraints every variant of the domain must satisfy, as against a profile's own choices. The profile architecture's enforcement rules read it to tell a misplaced profile-local rule from a domain invariant."@en .
+
+pibe:isPartitioned a owl:DatatypeProperty ;
+    rdfs:label "is partitioned — enumerated through its groups"@en .
+
+pibe:maxSelected a owl:DatatypeProperty ;
+    rdfs:label "max selected — the budget"@en ;
+    rdfs:domain pibe:RepetitionConstraint ;
+    rdfs:range xsd:integer ;
+    skos:definition "The greatest number of contributing features a selection may take from the budget group."@en .
+
+pibe:phase a owl:DatatypeProperty ;
+    rdfs:label "rule phase"@en ;
+    skos:definition "Which phase a rule shape belongs to: 'generation' shapes run repeatedly until the graph stops growing; 'check' shapes run once afterwards. Declared here so the phase order is part of the ontology, not of the harness."@en .
+
+pibe:phaseName a owl:DatatypeProperty ;
+    rdfs:label "phase name"@en .
+
+pibe:phaseOrder a owl:DatatypeProperty ;
+    rdfs:label "phase order"@en .
+
+pibe:prerequisite a owl:ObjectProperty ;
+    rdfs:label "prerequisite — the feature the dependent requires"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Requirement ;
+    rdfs:domain pibe:DependencyConstraint ;
+    skos:definition "The feature that must be selected whenever the dependent is."@en .
+
+pibe:refinesMetaSpace a owl:ObjectProperty ;
+    rdfs:label "refines meta space — this profile space specialises that meta space"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Taxonomic ;
+    rdfs:domain pibe:VariationSpace ;
+    rdfs:range pibe:VariationSpace ;
+    skos:definition "Binds a profile's own variation space to the meta space whose invariants it inherits. A profile may add choices and may not lift an invariant, which is what makes the two layers safe to validate separately."@en .
+
+pibe:requires a owl:ObjectProperty ;
+    rdfs:label "requires — the feature a mandatory constraint demands"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Requirement ;
+    rdfs:domain pibe:MandatoryConstraint ;
+    skos:definition "The feature a mandatory constraint demands in every selection."@en .
+
+pibe:runningProduct a owl:DatatypeProperty ;
+    rdfs:label "running product of group capacities, in group order"@en .
+
+pibe:variationCapacity a owl:DatatypeProperty ;
+    rdfs:label "variation capacity — admissible wirings of a whole space"@en .
+
+pibe:violates a owl:ObjectProperty ;
+    rdfs:label "violates — the constraint this candidate breaks"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Normative ;
+    rdfs:domain pibe:Candidate ;
+    rdfs:range pibe:Constraint ;
+    skos:definition "Names the constraint a candidate breaks, so that a rejection says which condition failed rather than only that one did."@en .
+
+<http://purl.org/pib/enumeration/rules> rdfs:label "PIB enumeration rules — variant generation and admissibility in the ontology"@en ;
+    dcterms:description "Generates every admissible candidate selection over a declared variation space, pruning as it goes, then checks admissibility as a safety net and leaves the admissible set standing to be counted."@en ;
+    dcterms:identifier "rules" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.3.0> ;
+    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.4.0> ;
+    owl:versionInfo "2.4.0" .
+
+iif:VariationCapacity a owl:Class ;
+    rdfs:label "VariationCapacity"@en ;
+    kb:hasClassKind kb:ClassKind_Measurement ;
+    skos:definition "The count of valid WiringVariants admissible for an ecosystem integration model (the variant-algebra Variation Capacity metric applied to the wiring space). Computed by the pinned VAF engine; a measure of how much integration variability the ecosystem actually supports."@en .
+
+iif:activeEdge a owl:ObjectProperty ;
+    rdfs:label "activeEdge"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    rdfs:domain iif:WiringVariant ;
+    rdfs:range iif:IntegrationEdge ;
+    skos:definition "Lists the edges active in a given wiring variant."@en .
+
+iif:consumes a owl:ObjectProperty ;
+    rdfs:label "consumes"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Requirement ;
+    rdfs:domain iif:OntologyInterface ;
+    rdfs:range iif:Capability ;
+    skos:definition "Declares that the interface REQUIRES the named capability as input (design-time, no owl:imports). A wiring is valid only if every active consume is matched by an active produce of the same Capability."@en .
+
+iif:edgeCapability a owl:ObjectProperty ;
+    rdfs:label "edgeCapability"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Structural ;
+    rdfs:domain iif:IntegrationEdge ;
+    rdfs:range iif:Capability ;
+    skos:definition "The capability flowing across the edge (must be produced by source and consumed by target)."@en .
+
+iif:edgeSource a owl:ObjectProperty ;
+    rdfs:label "edgeSource"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Structural ;
+    rdfs:domain iif:IntegrationEdge ;
+    rdfs:range iif:OntologyInterface ;
+    skos:definition "The producing interface of an integration edge."@en .
+
+iif:edgeTarget a owl:ObjectProperty ;
+    rdfs:label "edgeTarget"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Structural ;
+    rdfs:domain iif:IntegrationEdge ;
+    rdfs:range iif:OntologyInterface ;
+    skos:definition "The consuming interface of an integration edge."@en .
+
+iif:forProfile a owl:ObjectProperty ;
+    rdfs:label "forProfile"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Characterization ;
+    rdfs:domain iif:WiringVariant ;
+    rdfs:range pib:Profile ;
+    skos:definition "Profile-scoping: a WiringVariant is valid FOR a specific profile. The same edge may be active under one profile and inactive under another — this is how profile-driven wiring variants and cross-category collision-avoidance are realised at the integration layer."@en .
+
+iif:governedByOperator a owl:ObjectProperty ;
+    rdfs:label "governedByOperator"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Normative ;
+    rdfs:domain iif:IntegrationEdge ;
+    rdfs:range iif:VariabilityOperator ;
+    skos:definition "Binds an edge to the variant-algebra operator that governs its presence in a wiring."@en .
+
+iif:hasEdge a owl:ObjectProperty .
+
+iif:hasInterface a owl:ObjectProperty ;
+    rdfs:label "hasInterface"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Compositional ;
+    skos:definition "Links a participating ontology/system IRI to its OntologyInterface declaration."@en .
+
+iif:hasSelfCoverage a owl:ObjectProperty ;
+    rdfs:label "hasSelfCoverage"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Assessment ;
+    rdfs:domain iif:OntologyInterface ;
+    rdfs:range iif:SelfCoverageAttestation ;
+    skos:definition "Attaches the standalone-consistency + SHACL attestation to an interface. Required before the interface may participate in any wiring."@en .
+
+iif:produces a owl:ObjectProperty ;
+    rdfs:label "produces"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Provenance ;
+    rdfs:domain iif:OntologyInterface ;
+    rdfs:range iif:Capability ;
+    skos:definition "Declares that the interface EXPORTS the named capability (design-time). The contract validator MUST verify the declaring ontology actually defines vocabulary backing this capability (OE L-58: a declaration blind to content is documentation that lies)."@en .
+
+<http://purl.org/pib/profile> rdfs:label "Profile Ontology — shared artifact-category & variant-configuration vocabulary"@en ;
+    dcterms:created "2026-06-05"^^xsd:date ;
+    dcterms:creator <http://purl.org/pib/prov#Agent_YusufAltunel>,
+        "Yusuf Altunel" ;
+    dcterms:description "Single source of truth for artifact CATEGORY across the generic ontology ecosystem (RDODI generates, RADAR measures, PAMG grades). A Profile binds a category identity, the criteria SHARED across systems, and a selection of one validated integration wiring variant. System-specific behaviour (RDODI generation templates, RADAR measurement dimensions, PAMG grading weights) is NOT modelled here — it is attached by each system to the shared Profile IRI, keeping this vocabulary free of scope-foreign content (OE L-64). PATCH v1.0.0.1: BP-D24 metadata completed (added dcterms:modified, dcterms:identifier, prov:wasAttributedTo, machine-linkable dcterms:creator IRI, and Activity-IRI prov:wasGeneratedBy); no vocabulary change."@en ;
+    dcterms:identifier "profile" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:priorVersion <http://purl.org/pib/profile/1.2.0> ;
+    owl:versionIRI <http://purl.org/pib/profile/1.3.0> ;
+    owl:versionInfo "1.3.0" ;
+    prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+pib:DomainGeneralRule a owl:Class ;
+    rdfs:label "Domain-general rule — a meta-level rule binding every variant"@en ;
+    kb:hasClassKind kb:ClassKind_ValueDomain ;
+    rdfs:subClassOf pib:RuleScope ;
+    skos:definition "A rule of the domain ontology itself, owned by no profile. These are the invariants every variant must satisfy to be an artifact of this domain at all, as distinct from what makes it one particular variant."@en .
+
+pib:ProfileLocalRule a owl:Class ;
+    rdfs:label "Profile-local rule — describes one variant, binds only it"@en ;
+    kb:hasClassKind kb:ClassKind_ValueDomain ;
+    rdfs:subClassOf pib:RuleScope ;
+    skos:definition "A rule owned by a profile. Applying it to another profile does not enforce a standard; it rejects a legal variant for failing to be a different variant."@en .
+
+pib:ProfileSpecific a owl:Class ;
+    rdfs:label "Profile-specific — binds only where a stated profile condition holds"@en ;
+    kb:hasClassKind kb:ClassKind_ValueDomain ;
+    rdfs:subClassOf pib:RuleScope ;
+    skos:definition "A scope that names the profile property and value under which its rule applies. Declaring it does not weaken the rule; it makes an existing dependency visible to a reader and checkable by a tool."@en .
+
+pib:appliesUnderProfileCondition a owl:ObjectProperty ;
+    rdfs:label "applies under profile condition"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Characterization ;
+    skos:definition "Names the profile property whose value a profile-specific rule depends on, so the dependency is readable as metadata rather than only inside the rule's own query. A rule whose query tests a profile property but declares no condition is the case worth catching: its scope is real but invisible."@en .
+
+pib:canonicalProfileOf a owl:ObjectProperty ;
+    rdfs:label "canonicalProfileOf"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Correspondence ;
+    skos:definition "Asserts that a profile is THE canonical profile for an artifact (inverse: artifact hasCanonicalProfile). Exactly-one is the collision-avoidance invariant; checked by SHACL in the consuming context."@en .
+
+pib:conditionProperty a owl:ObjectProperty ;
+    rdfs:label "condition property — the profile property the rule tests"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ReferenceByName ;
+    skos:definition "The profile property a profile-specific rule's condition reads. It is the property itself, named as a link rather than written into the rule's query text, so that a reader can see which profile fact the rule depends on without parsing the rule."@en .
+
+pib:conditionValue a owl:DatatypeProperty ;
+    rdfs:label "condition value — the value under which the rule binds"@en .
+
+pib:declaredByProfile a owl:ObjectProperty ;
+    rdfs:label "declared by profile — the profile that owns this rule"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Provenance ;
+    rdfs:range pib:Profile ;
+    skos:definition "Binds a rule to the profile that declares it. A rule with this property is local to that profile and must never be evaluated against an artifact of another profile; a rule without it belongs to the domain and binds every profile. This is the structural fact that determines scope, replacing v1.1.0's optional annotation."@en .
+
+pib:hasCategory a owl:ObjectProperty ;
+    rdfs:label "hasCategory"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Characterization ;
+    rdfs:domain pib:Profile ;
+    rdfs:range pib:ArtifactCategory ;
+    skos:definition "Binds a profile to the single artifact category it governs."@en .
+
+pib:hasRuleScope a owl:ObjectProperty ;
+    rdfs:label "has rule scope"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Characterization ;
+    rdfs:range pib:RuleScope ;
+    skos:definition "Declares a rule's applicability. Absent, the rule is general: absence is not a scope, it is the default. Present with a profile condition, the rule binds only where that condition holds."@en .
+
+pib:hasSharedCriterion a owl:ObjectProperty ;
+    rdfs:label "hasSharedCriterion"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Requirement ;
+    rdfs:domain pib:Profile ;
+    rdfs:range pib:SharedCriterion ;
+    skos:definition "Associates a profile with the cross-system criteria for its category."@en .
+
+pib:selectsWiring a owl:ObjectProperty ;
+    rdfs:label "selectsWiring"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Intentional ;
+    rdfs:domain pib:Profile ;
+    rdfs:range pib:WiringVariant ;
+    skos:definition "The variant-binding link: associates a profile with the ONE validated integration wiring variant it resolves to. Functional in intent — a profile must select exactly one wiring for reproducibility (enforced by SHACL, not OWL cardinality, to preserve self-coverage)."@en .
+
+<http://purl.org/pib/wiring-expression> rdfs:label "PIB wiring expressions — nested operator expressions over integration wirings"@en ;
+    dcterms:created "2026-09-17"^^xsd:date ;
+    dcterms:creator <http://purl.org/pib/prov#Agent_YusufAltunel>,
+        "Yusuf Altunel" ;
+    dcterms:description "Lets a PIB wiring constraint be written as a NESTED EXPRESSION built from the variant algebra's operators, rather than as a flat list of operator applications. The algebra's operators are constructors in an expression language, not a fixed menu of features: composing them expresses constraints none of them expresses alone (a k-of-n bound, for example, is not expressible with mandatory, optional, exclusive, or, or dependency, but is expressible by composing repetition with a contributes-to grouping). This vocabulary therefore REFERENCES the algebra's own operator classes and operand/nesting predicates rather than redeclaring them — the algebra stays with its owner — and adds only what is genuinely PIB's: the binding from an expression to the wiring it governs, and the named operator individuals PIB applies. Complete adoption: all twelve concrete operators are available, not the six the previously pinned engine generation carried."@en ;
+    dcterms:identifier "wiring-expression" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:priorVersion <http://purl.org/pib/wiring-expression/1.0.0.2> ;
+    owl:versionIRI <http://purl.org/pib/wiring-expression/1.1.0> ;
+    owl:versionInfo "1.1.0" ;
+    prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+pibx:expressionIntent a owl:DatatypeProperty ;
+    rdfs:label "expression intent"@en ;
+    rdfs:domain pibx:WiringExpression ;
+    rdfs:range xsd:string ;
+    skos:definition "A one-sentence statement, in plain words, of what the expression requires — so a reviewer can challenge the constraint without reconstructing it from operator identifiers."@en .
+
+pibx:governsWiring a owl:ObjectProperty ;
+    rdfs:label "governs wiring"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Normative ;
+    rdfs:domain pibx:WiringExpression ;
+    rdfs:range iif:WiringVariant ;
+    skos:definition "Binds an expression to the wiring variant whose admissibility it constrains. A wiring may be governed by more than one expression; all of them must hold."@en .
+
+pibx:hasRootApplication a owl:ObjectProperty ;
+    rdfs:label "has root application"@en ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Compositional ;
+    rdfs:domain pibx:WiringExpression ;
+    rdfs:range va:OperatorApplication ;
+    skos:definition "The outermost operator application of the expression tree. Inner applications are reached through the algebra's own operand and inner-operator predicates, so nesting is expressed in the algebra's vocabulary rather than a parallel PIB one."@en .
+
+pibe:MandatoryConstraint a owl:Class ;
+    rdfs:label "Mandatory constraint — the named feature appears in every selection"@en ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    rdfs:subClassOf pibe:Constraint ;
+    skos:definition "Requires the feature named by pibe:requires in every admissible selection. It is a statement about every variant rather than a choice within one, which is why the profile architecture places it at the meta layer and not in a profile."@en .
+
+pibe:TaxonNode a owl:Class ;
+    rdfs:label "Taxon node — a point in the profile taxonomy"@en ;
+    kb:hasClassKind kb:ClassKind_Category ;
+    skos:definition "A node of the derived taxonomy. Interior nodes are partial commitments (a genus); leaves are complete variants (a species)."@en .
+
+<http://purl.org/pib/integration-interface> rdfs:label "Integration-Interface Ontology — produces/consumes contracts & the wiring variation space"@en ;
+    dcterms:created "2026-06-05"^^xsd:date ;
+    dcterms:creator <http://purl.org/pib/prov#Agent_YusufAltunel>,
+        "Yusuf Altunel" ;
+    dcterms:description "Loose-integration vocabulary for the ontology ecosystem. Each ontology DECLARES its interface (what it produces = public exports; what it consumes = required inputs) WITHOUT owl:imports. Integration is therefore a DECLARED, VALIDATED CONTRACT, not a hard import — preserving each ontology's standalone self-coverage. The set of possible produces→consumes bindings is a variation space whose features are governed by variant-algebra operators (Mandatory/Optional/Exclusive/Or/Dependency/Repetition); a Profile selects one validated WiringVariant from it. Distinct from PROV-O: this is a DESIGN-TIME capability/interface declaration; PROV-O records RUNTIME history. They compose, they are not conflated. PATCH v1.0.0.1: BP-D24 metadata completed (added dcterms:modified, dcterms:identifier, prov:wasAttributedTo, machine-linkable dcterms:creator IRI, and Activity-IRI prov:wasGeneratedBy); no vocabulary change."@en ;
+    dcterms:identifier "integration-interface" ;
+    dcterms:isPartOf <http://purl.org/pib> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
+    dcterms:rights "© 2026 Yusuf Altunel. CC-BY-4.0." ;
+    dcterms:rightsHolder "Yusuf Altunel" ;
+    owl:priorVersion <http://purl.org/pib/integration-interface/1.0.0.2> ;
+    owl:versionIRI <http://purl.org/pib/integration-interface/1.1.0> ;
+    owl:versionInfo "1.1.0" ;
+    prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
+    prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
+
+iif:SelfCoverageAttestation a owl:Class ;
+    rdfs:label "SelfCoverageAttestation"@en ;
+    kb:hasClassKind kb:ClassKind_Proposition ;
+    skos:definition "A machine-checkable claim that the declaring ontology is DL-consistent AND SHACL-conformant STANDALONE (without any consumed ontology merged in). Self-coverage is a HARD, profile-INDEPENDENT gate: loose integration only works if every node is self-sufficient. The attestation records the reasoner verdict, the SHACL result, and the SHA of the ontology version attested."@en .
+
+iif:VariabilityOperator a owl:Class ;
+    rdfs:label "VariabilityOperator"@en ;
+    kb:hasClassKind kb:ClassKind_ValueDomain ;
+    rdfs:isDefinedBy <http://www.variant-algebra.org/ontology> ;
+    skos:definition "Marker aligning an IntegrationEdge (or edge group) to a Variant Algebra operator. The operators carry their variant-algebra semantics: Mandatory (edge must be active), Optional (may), Exclusive (at most one of a group), Or (at least one), Dependency (active edge requires another), Repetition (bounded multiplicity), together with the algebra's algebraic and structural operators. PIB applies the complete set of twelve through its wiring-expression vocabulary, where operator applications nest as expressions. Enumeration and admissibility are computed by rules in the ontology, not by an external engine."@en .
+
+pib:ArtifactCategory a owl:Class ;
+    rdfs:label "ArtifactCategory"@en ;
+    kb:hasClassKind kb:ClassKind_ValueDomain ;
+    skos:definition "The kind of artifact a profile governs (e.g. capstone report, IEEE conference paper, research report, courseware, technical document). The category is the stable identity all systems agree on; it does not carry system-specific behaviour."@en .
+
+pib:SharedCriterion a owl:Class ;
+    rdfs:label "SharedCriterion"@en ;
+    kb:hasClassKind kb:ClassKind_InformationArtifact ;
+    skos:definition "A criterion that applies to an artifact category and is meaningful to MORE THAN ONE system (e.g. 'must contain an Analysis & Design model', 'must declare requirements'). Criteria specific to a single system (a grading weight, a generation template) are deliberately excluded and remain in that system."@en .
+
+pib:WiringVariant a owl:Class ;
+    rdfs:label "WiringVariant"@en ;
+    kb:hasClassKind kb:ClassKind_ModelElement ;
+    rdfs:isDefinedBy <http://purl.org/pib/integration-interface> ;
+    skos:definition "A reference to one validated configuration of the integration variation space (defined in the Integration-Interface ontology). A Profile selects exactly one. Punned here so a Profile can point at it without importing the interface ontology (loose coupling)."@en .
+
+pibe:DependencyConstraint a owl:Class ;
+    rdfs:label "Dependency constraint — the dependent requires its prerequisite"@en ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    rdfs:subClassOf pibe:Constraint ;
+    skos:definition "Forbids a selection that includes the feature named by pibe:dependent without the feature named by pibe:prerequisite. The prerequisite may carry a later feature index than the dependent, so the generation phase cannot prune on it until both indices are decided; the fixture LaterPrereq exists to hold that case."@en .
+
+pibe:RepetitionConstraint a owl:Class ;
+    rdfs:label "Repetition constraint — a budget over the features contributing to a group"@en ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    rdfs:subClassOf pibe:Constraint ;
+    skos:definition "Permits at most pibe:maxSelected of the features that pibe:contributesToGroup the group named by pibe:budgetGroup. This is the one place PIB couples features deliberately: without the coupling each contributor would become its own independent group and a budget of two over four contributors would count 16 selections instead of 11."@en .
+
+iif:Capability a owl:Class ;
+    rdfs:label "Capability"@en ;
+    kb:hasClassKind kb:ClassKind_InformationEntity ;
+    skos:definition "A named, stable unit of meaning that can be produced by one interface and consumed by another (e.g. 'AnalysisAndDesignVocabulary', 'AdequacyMeasurement', 'InstitutionalGrade'). The matchable token of the produces/consumes contract."@en .
+
+iif:WiringVariant a owl:Class ;
+    rdfs:label "WiringVariant"@en ;
+    kb:hasClassKind kb:ClassKind_ModelElement ;
+    skos:definition "One configuration of the variation space: a specific set of active IntegrationEdges that (a) satisfies every operator constraint and (b) leaves no active consume without a matching active produce. A WiringVariant is VALID iff the pinned VAF engine reports it admissible AND every participating node passes self-coverage. A Profile selects exactly one valid WiringVariant — the reproducible point."@en .
+
+pibx:WiringExpression a owl:Class ;
+    rdfs:label "Wiring expression"@en ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    skos:definition "A constraint on an integration wiring, written as an expression tree whose nodes are applications of variant-algebra operators and whose leaves are the capabilities and interfaces of a PIB wiring. An expression may nest to any depth: an operator application is itself a valid operand of another operator application."@en .
+
+pib:RuleScope a owl:Class ;
+    rdfs:label "Rule scope — whether a rule binds every profile or only some"@en ;
+    kb:hasClassKind kb:ClassKind_ValueDomain ;
+    skos:definition "The declared applicability of a validation rule with respect to profiles. A rule is either general, binding every profile unconditionally, or profile-specific, binding only where a stated condition on the profile holds."@en .
+
+iif:IntegrationEdge a owl:Class ;
+    rdfs:label "IntegrationEdge"@en ;
+    kb:hasClassKind kb:ClassKind_Relation ;
+    skos:definition "A candidate binding from a produced Capability (source) to a consuming interface (target) for a given Capability. Edges are the FEATURES of the variation space; whether an edge is active in a given wiring is decided by its governing operator and the selected profile."@en .
+
+iif:OntologyInterface a owl:Class ;
+    rdfs:label "OntologyInterface"@en ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    skos:definition "The declared integration interface of one participating ontology or system. Lists the Capabilities it produces and the Capabilities it consumes, plus its self-coverage attestation. Declaring an interface does NOT import the counterpart ontology — names are referenced, not merged."@en .
+
+pib:Profile a owl:Class ;
+    rdfs:label "Profile"@en ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    rdfs:comment "Consolidates the fragmented profile notions found in the ecosystem: PAMG's Profile (binding of Rubric+DocumentGenre+MetricSet) and RDODI's profile registry. RADAR had none — this fills that gap."@en ;
+    skos:definition "A named configuration that binds (1) one ArtifactCategory, (2) the SharedCriteria that apply to that category across all consuming systems, and (3) exactly one validated WiringVariant selected from the integration variation space. A Profile is the variant CONFIGURATION in the variant-algebra sense: it resolves the ecosystem's integration variation space to one reproducible, validated point. Every artifact carries exactly one canonical Profile IRI so that all systems (generator/measurer/grader) interpret its category identically — preventing cross-category collisions."@en .
+
+pibe:Constraint a owl:Class ;
+    rdfs:label "Constraint — a condition every admissible selection must satisfy"@en ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    skos:definition "A condition declared in a variation space that every admissible selection must satisfy. The five kinds below are the constraint forms PIB declares; each has one rule in the check phase that marks a violating candidate, and most also have a rule in the generation phase that prunes a branch before it completes."@en .
+
+pibe:VariationSpace a owl:Class ;
+    rdfs:label "Variation space — the configurations a profile's features admit"@en ;
+    kb:hasClassKind kb:ClassKind_SetOrClass ;
+    skos:definition "The set of all admissible selections over a declared set of features, given the constraints declared in the same space. The partition phase splits a space into independent GroupSpaces; the combine phase multiplies their capacities back into the space's own. A space declaring no feature yields no capacity at all and is marked drift-suspected rather than rejected, on the owner's ruling: an empty component can occur legitimately between processing steps but never in a published profile."@en .
+
+<http://purl.org/pib> a owl:Ontology ;
+    rdfs:label "PIB — T-Box — every class and property of the package"@en ;
+    dcterms:description "PIB (Profile + Integration-Interface Blueprint). One file per role, per BP-D54: what used to be a separate subject is a module inside these three files, recorded at its own former IRI, and every term keeps the IRI it always had. A consumer that names a term is unaffected; a consumer that named a FILE reads this one instead. The former files leave the package and stay recoverable from git history and the release tags."@en ;
+    dcterms:identifier "pib" ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dcterms:modified "2026-10-22"^^xsd:date ;
+    owl:versionIRI <http://purl.org/pib/tbox/1.0.0> ;
+    owl:versionInfo "1.0.0" .
+
+pibe:Candidate a owl:Class ;
+    rdfs:label "Candidate — a selection decided up to some feature index"@en ;
+    kb:hasClassKind kb:ClassKind_InformationArtifact ;
+    skos:definition "A selection under construction: the features decided so far, carried forward from the candidate it was branched from, with the index it has been decided up to. The generation phase branches each candidate twice at the next index, including and excluding that feature, and prunes a branch the moment a constraint can no longer be satisfied."@en .
+

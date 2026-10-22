@@ -92,7 +92,7 @@ Two consequences that decide real cases:
 ## External dependency
 
 PIB's calculation runs **in the ontology**: candidate generation, admissibility and counting are SHACL
-rules and SPARQL (`02-shacl-safeguards/pib_enumeration_rules_v2_4_0.ttl`). The Python files are
+rules and SPARQL (`02-shacl-safeguards/pib_shacl_v1_0_0.ttl`). The Python files are
 harnesses — they drive the rule engine and report; no constraint's meaning lives in code.
 
 The variant-algebra **engine is no longer a runtime dependency**: as of v2.0.0 nothing in this package
@@ -123,7 +123,7 @@ returned contract are in `08-registration/`.
    Run `03-tooling/reference_check_v1_0_0.py` first: it fails the release if a current document cites a
    file the package no longer ships. It exists because two releases in one day went out citing renamed
    files after that warning was printed and stepped over — a warning nobody stops for is not a safeguard.
-   and `pib_invariants` over `01-ontologies/` **plus** `07-spoke-contributions/` (validating
+   and the invariants of `pib_shacl` over `01-ontologies/` **plus** `07-spoke-contributions/vendored/` (validating
    `01-ontologies/` alone produces the known G3 standalone-vs-merged artifact, not a real failure).
 2. Bump `VERSION.txt` per BP-D7 and regenerate `MANIFEST_SHA256.txt`; confirm it self-verifies.
 3. Commit with a `Session:` trailer naming the session, push, and tag `vX.Y.Z`.
