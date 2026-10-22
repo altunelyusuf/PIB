@@ -19,7 +19,7 @@ import os, subprocess, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 GATES = [
-    ("reference check", ["reference_check_v1_0_0.py"]),
+    ("reference check", ["reference_check_v1_1_0.py"]),
     ("handover inbox", ["handover_inbox_check_v1_0_0.py"]),
     ("rule scope", ["rule_scope_check_v1_0_0.py"]),
     ("structure debt ratchet", ["structure_debt_check_v1_1_0.py", "--self-test"]),

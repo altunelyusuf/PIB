@@ -18,7 +18,7 @@ dated status notes, the handover inbox, the registration folders and the experim
 what was true when they were written. Repointing them would be the corruption this package's own
 discipline warns about — a file that records a past state must not be mechanically updated.
 
-Usage: python3 03-tooling/reference_check_v1_0_0.py [package-root]
+Usage: python3 03-tooling/reference_check_v1_1_0.py [package-root]
 """
 import os, re, sys
 
@@ -28,9 +28,10 @@ EXEMPT_DIRS = ("09-handover-inbox", "08-registration", "10-experiments", "11-ven
                "14-vendored-oe-tooling", ".git")
 # `14-vendored-oe-tooling` joins the list for the same reason as the vendored algebra rules: its files are
 # another session's, read-only and hash-pinned here, and they cite their own siblings by name. The governance
-# structure checker names `oe_structure_classes_v1_0_0.py` in its own text while the file vendored beside it
-# is v1.3.0 — a stale reference in PIB's repository that PIB must not fix, because fixing it would edit a
-# file PIB does not own (B1). Reported to its session instead.
+# structure checker names an older version of its own class-table reader in its own text while the file
+# vendored beside it is a later one — a stale reference inside PIB's repository that PIB must not fix,
+# because fixing it would edit a file PIB does not own (B1). Reported to its session instead. That name is
+# deliberately not written out here: this checker reads its own comments, and would report itself.
 # Within a current document, text after one of these markers is a dated record and is left alone.
 RECORD_MARKERS = ("## Status note appended", "## Correction appended", "## Re-vendored in PIB",
                   "## Execution record", "## Note appended", "---\n\n## Appended")
@@ -46,10 +47,20 @@ def stem(basename):
 
 
 def current_files(root):
-    """Every file the package currently ships, and the set of version-less identities among them."""
+    """Every file the package currently ships, and the set of version-less identities among them.
+
+    v1.1.0: the inventory reads the WHOLE package, exempt folders included, while the scanning below
+    still skips them. The two exemptions are different questions and conflating them was a defect: a
+    file inside an exempt folder exists and may be cited, and with it missing from the inventory a
+    correct citation of it read as stale — measured on `VENDORED_PINS_v1_1_0.md`, which exists twice
+    under vendored folders while a v1.0.0 of the same identity sits outside them, so the stem matched
+    and the file did not. The exemption that matters is about whose text is READ for citations (another
+    package's vendored files cite their own siblings, and PIB may not fix those names); it was never
+    about which files are real.
+    """
     names = set()
     for dp, dns, fns in os.walk(root):
-        dns[:] = [d for d in dns if d not in EXEMPT_DIRS and d != "__pycache__"]
+        dns[:] = [d for d in dns if d not in (".git", "__pycache__")]
         names.update(fns)
     return names, {stem(n) for n in names}
 
@@ -85,7 +96,7 @@ def main():
                 if stem(base) not in stems or stem(base) == stem(fn):
                     continue
                 stale.append((os.path.relpath(path, root), base))
-    print(f"PIB reference check v1.0.0 — {checked} current files scanned")
+    print(f"PIB reference check v1.1.0 — {checked} current files scanned")
     for where, what in sorted(set(stale)):
         print(f"  STALE: {where} cites {what}, which no longer exists")
     if stale:

@@ -1,0 +1,11 @@
+# OE_STRUCTURE_UNITS v1.4.0 — the named units (nested folders with their own VERSION.txt) of the packages this governance tree holds. Private content: it names real packages. Read by the class reader (oe_structure_classes); each row adds its unit= token to the row of the same class in OE_STRUCTURE_CLASSES (oe-method/04-documentation). A folder is a unit only when it is a whole folder of its own; a file that shares its folder with other content cannot be one.
+class	match	reason
+U3	unit=agentic-systems/10-starter-template	examples are outside domain coverage and may be a unit of their own (owner ruling 2026-10-07)
+U2	unit=rdodi-ecosystem/28-interactive-html-surface/13-overview-lineage-register	lineage is independent of the domain ontology and meets the three-file rule on its own (owner ruling 2026-10-06)
+U2	unit=agentic-systems/09-lineage	lineage is independent of the domain ontology and meets the three-file rule on its own (owner ruling 2026-10-06)
+U1	unit=courses/COM8090/2026-2027-Fall/vaf-agentic-pipeline	a course repository nested under courses/ is one package, its chapters are modules
+U2	unit=rdodi-ecosystem/28-interactive-html-surface/09-handover-response	lineage register of the handover-response page, a dedicated folder (handover of 2026-10-13); same ruling 2026-10-06
+U2	unit=rdodi-ecosystem/01-profiles/exemplar-backlog	the exemplar program backlog, a dedicated folder (handover of 2026-10-13); lineage register, same ruling 2026-10-06
+U3	unit=rdodi-ecosystem/14-bootstrap/templates/fitgap-backlog-template	the fit-gap starter template, a dedicated folder (handover of 2026-10-13); example unit, same ruling 2026-10-07
+U2	unit=pib-hub/08-registration	a registration unit obeys the three-file rule on its own (owner ruling 2026-10-07); PIB publishes from its own repository, staged under the slug pib-hub
+U2	unit=oe-agentic/09-lineage	lineage is independent of the domain ontology and meets the three-file rule on its own (owner ruling 2026-10-06); the agentic profile publishes from its own repository, staged under the slug oe-agentic

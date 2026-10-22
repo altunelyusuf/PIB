@@ -47,3 +47,20 @@ re-vendors when the governance session re-issues it.
 checker resolves every top-level folder as its own package and reports 23 violations across 9
 "packages" instead of 18 across one. The wrapper passes it so the measurement cannot be taken the
 wrong way by accident.
+
+
+## The two governance tables, carried in `04-documentation/`
+
+`OE_STRUCTURE_CLASSES_v1_7_0.tsv` (the folder and file classes) and `OE_STRUCTURE_UNITS_v1_4_0.tsv`
+(the named units, including PIB's registration unit) are **copies of the governance session's files**,
+read-only here and never edited. They do not sit in this folder because their reader looks for them in
+`<root>/04-documentation` for "a package that carries its own copy", which is exactly what PIB is: a
+package published from its own repository, where the governance tree is not beside it.
+
+Without the units table PIB's own gate cannot see the row that names its registration unit, and the
+unit's version file would be reported as a folder whose class is unknown — worse than the line it
+closes. With both tables, PIB measures **zero structure violations**.
+
+They are `.tsv`, so no scanning tool reads them as ontology content. PIB re-copies them when that
+session re-issues them; a change there that PIB has not copied shows up as a measurement that differs
+from the governance tree's, which is the visible failure rather than a silent one.

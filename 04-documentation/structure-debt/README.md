@@ -13,9 +13,9 @@ that child and parent agree by construction a measurement rather than an argumen
 here until the governance session added `--abox FILE` in answer to PIB's report, since it refuses
 without the taxonomy of kinds.
 
-| File | What it holds | State at PIB v3.1.0 |
+| File | What it holds | State at PIB v3.3.0 |
 |---|---|---|
-| `STRUCTURE_DEBT_REGISTER_v2_0_0.tsv` | files that break a structure rule | **1 line** (18 at v2.19.0, 14 at v2.20.0, 9 at v2.21.0) |
+| `STRUCTURE_DEBT_REGISTER_v3_0_0.tsv` | files that break a structure rule | **empty — the checker reports CLEAN** (18 at v2.19.0, 14 at v2.20.0, 9 at v2.21.0, 1 at v3.0.0) |
 | `KIND_COVERAGE_BASELINE_v1_1_0.tsv` | this package's classes and object properties carrying no kind or category | **empty** (was 49) |
 | `KIND_COVERAGE_DECISIONS_v1_0_0.tsv` | terms this package does not type, each with its reason | 2 — a vendored RADAR contribution, its own session's to type. Since v2.21.0 those files sit under a `vendored/` folder, which the checker does not read at all, so the two entries hold nothing the scan would otherwise raise; they are kept as the record of **why** PIB does not type another package's terms, which is the question a future session will ask. |
 
@@ -27,15 +27,23 @@ when it was tried, and the checker duly reported a term called `iri` as cleared.
 carry the column header on line 1 and nothing else but data, and their explanation is here. The
 structure register's checker does skip `#` comments, and that file keeps its own history in its header.
 
-## The one line left, and why PIB cannot close it
+## How the last line closed, and why it took three exchanges
 
-The package now ships one T-Box, one A-Box and one SHACL file. The remaining line says there are
-**two** A-role files, and the second is the registration submission — which the governance owner ruled
-on 2026-10-07 is a **unit of its own**, obeying the three-file rule separately. Merging it into the
-domain A-Box would break that ruling in order to satisfy a count; naming it as a unit needs a row in
-the governance session's units table, which is that session's file to edit. Asked for, with its
-reason, in `../../09-handover-inbox/accepted/HANDOVER_PIB_to_OE_archive-report-and-two-asks_v1_0_0.md`
-section 2. Until the row exists this line stays, and lowering it would be the wrong kind of green.
+The package ships one T-Box, one A-Box and one SHACL file. The last line said there were **two** A-role
+files, the second being the registration submission — a **unit of its own** by the governance owner's
+ruling of 2026-10-07. Folding it into the domain A-Box would have satisfied the count by breaking that
+ruling, so PIB did not: it asked for a row in the governance units table instead, which is that
+session's file to edit.
+
+The row came back carrying the wording PIB had asked for, `unit=PIB/08-registration`, and matched
+nothing: PIB's gate resolves every path under the staged slug. PIB measured which form works rather
+than guessing — `PIB/08-registration` → X1, `08-registration` → X1, `pib-hub/08-registration` → clean —
+and that session corrected the one token. The unit now carries its own `VERSION.txt`, and PIB carries
+its own copy of the two governance tables in `04-documentation/`, which is where their reader looks for
+a package that holds one. **Zero violations.**
+
+The register file stays, empty. It is the ratchet's floor, and an absent register is indistinguishable
+from one nobody wrote.
 
 ## What may be done here without asking anyone
 

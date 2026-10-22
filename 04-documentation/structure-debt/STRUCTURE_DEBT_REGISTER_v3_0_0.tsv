@@ -1,0 +1,28 @@
+# STRUCTURE DEBT REGISTER (this package's own) v3.0.0 -- the lines of pib-hub, and of no other package.
+# The owner ruled on 2026-10-07 that a package carries its own register and clears its own lines in its own release, which is
+# what BP-D54 always said; the governance aggregate carries the ceilings and the ecosystem-wide view.
+# A line may be removed here, and a count lowered here, with nobody else involved: debt may always shrink. A count may NOT be
+# raised here, a line the aggregate does not carry may NOT be added, and a status may NOT be raised to `exception`: the checker
+# fails the run and the aggregate generator refuses it, keeping the previous ceiling. Those go through the owner's ruling,
+# recorded in the aggregate line as `ruling: ...`.
+#
+# v3.0.0 (PIB v3.3.0, 2026-10-22). EMPTY. The checker reports `VERDICT: CLEAN` with no violation at all. The file stays rather
+#   than being deleted: it is the ratchet's floor, and an absent register is indistinguishable from one nobody wrote.
+#
+# How the eighteen lines went, in five releases:
+#   v1.0.0 (PIB v2.19.0) 18 -- the first measurement of the governed home, and NOT the nine the governance handover offered,
+#     which measured the retired monorepo directory at file versions this repository had left behind.
+#   v1.1.0 (PIB v2.20.0) 14 -- the four N1 lines: every badly-named file reissued under a conforming name and version.
+#   v1.2.0 (PIB v2.21.0)  9 -- five sets of files put in the folder class that describes them, read from the governance class
+#     table rather than guessed: other packages' copies under vendored/, the operator fixtures under fixtures/, the superseded
+#     ORCP submission under archive/, and -- found by the same reading -- PIB's own vendored algebra files, which were being
+#     counted as PIB's own, and an experiment probe counted as a live shapes file. Both V1 and three R1 lines went, no file edited.
+#   v2.0.0 (PIB v3.0.0)   1 -- the merge: eleven files became one T-Box, one A-Box and one SHACL file, every former subject a
+#     module at its own IRI, every term keeping the IRI it always had. Six R1 lines and the T and S counts went.
+#   v3.0.0 (PIB v3.3.0)   0 -- the registration unit is declared. The last line was never PIB's to close by merging: a
+#     registration is a unit of its own by the owner's ruling of 2026-10-07, and folding it into the domain A-Box to satisfy a
+#     count would have broken that ruling. It needed a row in the governance units table keyed by the staged slug, which that
+#     session added after PIB measured which form matches (PIB/08-registration -> X1, 08-registration -> X1,
+#     pib-hub/08-registration -> clean). The unit now carries its own VERSION.txt and PIB carries its own copy of the two
+#     governance tables in 04-documentation/, which is where their reader looks for a package that holds one.
+# rule	path	status	note
