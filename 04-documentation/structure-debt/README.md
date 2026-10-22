@@ -2,11 +2,18 @@
 
 Three files, and one rule they share: **a count may fall and may never rise.** They record what does
 not yet meet a governance standard, so that the gap is measured rather than discovered, and so that a
-release cannot quietly add to it. `03-tooling/structure_debt_check_v1_0_0.py` enforces them in PIB's
+release cannot quietly add to it. `03-tooling/structure_debt_check_v1_1_0.py` enforces them in PIB's
 blocking release gate, with the governance session's own checkers vendored under
 `14-vendored-oe-tooling/`.
 
-| File | What it holds | State at PIB v3.0.0 |
+Since v3.1.0 that gate runs a **third** check with no register of its own: kind **consistency**, a
+class's kind against its named parents'. It has nothing to record because it finds nothing — 11
+subclass links between two typed classes, no contradiction — which is what makes PIB's earlier claim
+that child and parent agree by construction a measurement rather than an argument. It could not run
+here until the governance session added `--abox FILE` in answer to PIB's report, since it refuses
+without the taxonomy of kinds.
+
+| File | What it holds | State at PIB v3.1.0 |
 |---|---|---|
 | `STRUCTURE_DEBT_REGISTER_v2_0_0.tsv` | files that break a structure rule | **1 line** (18 at v2.19.0, 14 at v2.20.0, 9 at v2.21.0) |
 | `KIND_COVERAGE_BASELINE_v1_1_0.tsv` | this package's classes and object properties carrying no kind or category | **empty** (was 49) |

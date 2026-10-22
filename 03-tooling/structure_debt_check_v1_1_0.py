@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PIB Structure Debt Check v1.0.0 — the ratchet, run inside PIB's own gate
+PIB Structure Debt Check v1.1.0 — the ratchet, run inside PIB's own gate
 ========================================================================
 Runs the governance session's two structure checkers against this package, with this package's own
 registers, and exits non-zero if the debt has grown. Without this, PIB's registers would be files
@@ -35,6 +35,8 @@ TOOLS = os.path.join(ROOT, "14-vendored-oe-tooling")
 DEBT = os.path.join(ROOT, "04-documentation", "structure-debt")
 STRUCTURE = os.path.join(TOOLS, "oe_structure_check_v1_7_1.py")
 COVERAGE = os.path.join(TOOLS, "oe_kind_coverage_v1_1_0.py")
+CONSISTENCY = os.path.join(TOOLS, "oe_kind_consistency_v1_1_0.py")
+GOV_ABOX = os.path.join(TOOLS, "vendored", "oegov_abox_v1_37_0.ttl")
 AS_PACKAGE = "pib-hub"      # the slug the publisher stages this repository under
 
 
@@ -54,9 +56,14 @@ def coverage(root=ROOT, baseline=None, decisions=None):
     return _run([COVERAGE, root, "--baseline", baseline, "--decisions", decisions])
 
 
+def consistency(root=ROOT, abox=None, lst=False):
+    return _run([CONSISTENCY, root, "--abox", abox or GOV_ABOX] + (["--list"] if lst else []))
+
+
 def run(verbose=True):
     failed = 0
-    for name, (code, out) in (("structure", structure()), ("kinds and categories", coverage())):
+    for name, (code, out) in (("structure", structure()), ("kinds and categories", coverage()),
+                              ("kind consistency", consistency())):
         verdict = [l for l in out.splitlines() if l.startswith(("VERDICT", "REFUSED"))]
         if verbose:
             print(f"  {'pass' if code == 0 else 'FAIL'}  {name}: {verdict[-1] if verdict else out.splitlines()[-1]}")
@@ -67,12 +74,16 @@ def run(verbose=True):
 def self_test():
     """Both checks must be able to fail on a real change, not on a flag.
 
-    A copy of the package is made and one new defect is planted in each direction: a Turtle file
-    whose name breaks the version pattern and whose single class carries no kind. The structure check
-    must report it as NEW against the register, and the coverage check as NEW against the baseline.
-    A checker that passes a planted defect is not guarding anything.
+    A copy of the package is made and a real defect is planted for each check: a Turtle file whose
+    name breaks the version pattern and whose single class carries no kind, and a class given a kind
+    that contradicts its parent's. The structure check must report the first as NEW against the
+    register, the coverage check the second as NEW against the baseline, and the consistency check the
+    third as a contradiction. A checker that passes a planted defect is not guarding anything — and
+    the plant must be seen to apply: the first draft of the third mutation silently failed to match the
+    text it edited and the check duly passed, which proved nothing, so it now raises if its pattern is
+    gone.
     """
-    print("PIB structure debt check v1.0.0 — self-test")
+    print("PIB structure debt check v1.1.0 — self-test")
     print(f"  as published: {run(verbose=False)} failing check(s)   (expected 0)")
     tmp = tempfile.mkdtemp()
     try:
@@ -92,10 +103,25 @@ def self_test():
                                                         "KIND_COVERAGE_DECISIONS_v1_0_0.tsv"))
         s_new = s_code != 0 and "NEW" in s_out
         c_new = c_code != 0 and "new untyped" in c_out
+        # the third mutation: a kind that contradicts its parent's, which coverage cannot see
+        tbox = os.path.join(copy, "01-ontologies", "pib_tbox_v1_0_0.ttl")
+        text = open(tbox, encoding="utf-8").read()
+        old = ("pibe:CompleteCandidate a owl:Class ;\n"
+               "    rdfs:label \"Complete candidate — every feature of its group decided\"@en ;\n"
+               "    kb:hasClassKind kb:ClassKind_InformationArtifact ;")
+        if old not in text:
+            raise SystemExit("self-test cannot plant the contradiction: the T-Box text it edits has changed")
+        open(tbox, "w", encoding="utf-8").write(
+            text.replace(old, old.replace("ClassKind_InformationArtifact", "ClassKind_Process"), 1))
+        # --list so the contradiction itself is printed: an exit code alone would not show WHICH link
+        # the check found, and this test exists to prove it finds the planted one and not something else
+        k_code, k_out = consistency(root=copy, lst=True)
+        k_new = k_code != 0 and "CompleteCandidate (kind Process) is under Candidate" in k_out
         print(f"  a file whose name breaks the pattern is caught as NEW: {s_new}")
         print(f"  a class with no kind is caught as NEW: {c_new}")
-        ok = s_new and c_new
-        print(f"  both checks can fail: {ok}")
+        print(f"  a kind that contradicts its parent's is caught: {k_new}")
+        ok = s_new and c_new and k_new
+        print(f"  all three checks can fail: {ok}")
         return 0 if ok else 1
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -104,5 +130,5 @@ def self_test():
 if __name__ == "__main__":
     if "--self-test" in sys.argv[1:]:
         sys.exit(self_test())
-    print("PIB structure debt check v1.0.0")
+    print("PIB structure debt check v1.1.0")
     sys.exit(1 if run() else 0)
