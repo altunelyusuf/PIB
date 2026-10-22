@@ -7,6 +7,7 @@
 @prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix kb:    <http://example.org/knowledge-base#> .
 
 # ============================================================================
 # PIB consumer registration shapes v1.0.0
@@ -21,9 +22,9 @@
 # ============================================================================
 
 <http://purl.org/pib/consumer-registry>
-    a owl:Ontology ; owl:versionInfo "1.1.0" ;
-    owl:versionIRI <http://purl.org/pib/consumer-registry/1.1.0> ;
-    owl:priorVersion <http://purl.org/pib/consumer-registry/1.0.0> ;
+    a owl:Ontology ; owl:versionInfo "1.2.0" ;
+    owl:versionIRI <http://purl.org/pib/consumer-registry/1.2.0> ;
+    owl:priorVersion <http://purl.org/pib/consumer-registry/1.1.0> ;
     rdfs:label "PIB consumer registration — vocabulary and shapes"@en ;
     dcterms:description "Lets a consumer ontology register itself with PIB by pointer and hash rather than by copy, so every claim PIB makes about it can be re-derived from the consumer's own repository."@en ;
     dcterms:license <https://creativecommons.org/licenses/by/4.0/> ;
@@ -31,17 +32,22 @@
     dcterms:rightsHolder "Yusuf Altunel" ;
     dcterms:publisher "İstanbul Kültür Üniversitesi — Computer Engineering" ;
     dcterms:creator "Yusuf Altunel" ;
-    dcterms:created "2026-09-23"^^xsd:date ; dcterms:modified "2026-09-23"^^xsd:date ;
+    dcterms:created "2026-09-23"^^xsd:date ; dcterms:modified "2026-10-22"^^xsd:date ;
     dcterms:identifier "consumer-registry" .
 
-pibcr:ConsumerRegistration a owl:Class ; rdfs:label "Consumer registration"@en ;
+pibcr:ConsumerRegistration a owl:Class ;
+    kb:hasClassKind kb:ClassKind_InformationArtifact ; rdfs:label "Consumer registration"@en ;
     skos:definition "A consumer ontology's own statement of where its bytes are, what it exchanges, and how to verify both."@en .
 pibcr:atRepository a owl:DatatypeProperty ; rdfs:label "at repository"@en .
 pibcr:atCommit a owl:DatatypeProperty ; rdfs:label "at commit or tag"@en .
 pibcr:atPath a owl:DatatypeProperty ; rdfs:label "path within the repository"@en .
 pibcr:repositoryReachable a owl:DatatypeProperty ; rdfs:label "repository reachable with PIB's credentials"@en .
-pibcr:registersFile a owl:ObjectProperty ; rdfs:label "registers file"@en .
-pibcr:declaresInterface a owl:ObjectProperty ; rdfs:label "declares interface"@en .
+pibcr:registersFile a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ; rdfs:label "registers file"@en ;
+    skos:definition "Names a file of the registering consumer ontology, by location and hash, so that what was registered can be verified against the bytes rather than taken from the registration's own description."@en .
+pibcr:declaresInterface a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Structural ; rdfs:label "declares interface"@en ;
+    skos:definition "Binds a consumer registration to the integration interface the consumer declares: the capabilities it produces and consumes, which is what makes it wireable at all."@en .
 pibcr:contactSession a owl:DatatypeProperty ; rdfs:label "contact session"@en .
 
 pibcr:RegistrationShape a sh:NodeShape ;
@@ -89,13 +95,18 @@ pibcr:RegisteredInterfaceShape a sh:NodeShape ;
 # would let an autonomous approval publish something the standard forbids.
 # ============================================================================
 
-pibcr:ProfileProposal a owl:Class ; rdfs:label "Profile proposal"@en ;
+pibcr:ProfileProposal a owl:Class ;
+    kb:hasClassKind kb:ClassKind_InformationArtifact ; rdfs:label "Profile proposal"@en ;
     skos:definition "A consumer's proposal for a shared profile: the artifact category it governs, the criteria it claims are shared across systems, and its variation space expressed in the variant algebra's notation."@en .
 pibcr:proposedBy a owl:DatatypeProperty ; rdfs:label "proposed by"@en .
-pibcr:proposesCategory a owl:ObjectProperty ; rdfs:label "proposes category"@en .
+pibcr:proposesCategory a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Intentional ; rdfs:label "proposes category"@en ;
+    skos:definition "Names the artifact category a profile proposal would govern. A consumer may introduce a category that does not yet exist, which is the point of letting consumers propose profiles rather than only select them."@en .
 pibcr:categoryLabel a owl:DatatypeProperty ; rdfs:label "category label — the human name the category is claimed under"@en .
 pibcr:isNewCategory a owl:DatatypeProperty ; rdfs:label "is a new category rather than one already published"@en .
-pibcr:proposesSharedCriterion a owl:ObjectProperty ; rdfs:label "proposes shared criterion"@en .
+pibcr:proposesSharedCriterion a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Intentional ; rdfs:label "proposes shared criterion"@en ;
+    skos:definition "Names a criterion a profile proposal claims is shared. A criterion is shared only if it is meaningful to more than one system, which the approval gate checks by requiring at least two naming systems rather than taking the claim."@en .
 pibcr:criterionUsedBySystem a owl:DatatypeProperty ; rdfs:label "system that uses this criterion"@en .
 pibcr:wiringInDSL a owl:DatatypeProperty ; rdfs:label "variation space, in the variant algebra's DSL"@en .
 

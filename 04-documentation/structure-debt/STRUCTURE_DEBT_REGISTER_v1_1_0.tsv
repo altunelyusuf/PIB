@@ -1,4 +1,10 @@
 # STRUCTURE DEBT REGISTER (this package's own) v1.0.0 -- the lines of pib-hub, and of no other package.
+#
+# v1.1.0 (PIB v2.20.0, 2026-10-22): the four N1 lines are GONE -- every file whose name broke the version
+#   pattern was reissued under a conforming name and version, and the old ones left the package. The R1 lines
+#   are repointed to those new names: the files still mix roles, and that is step 2 of the structure plan.
+#   The kind-coverage baseline is empty in the same release: all 49 terms carry a kind or a category.
+#   Debt fell from 18 lines to 14. Nothing was raised.
 # The owner ruled on 2026-10-07 that a package carries its own register and clears its own lines in its own release, which is
 # what BP-D54 always said; the governance aggregate carries the ceilings and the ecosystem-wide view.
 # A line may be removed here, and a count lowered here, with nobody else involved: debt may always shrink. A count may NOT be
@@ -11,7 +17,7 @@
 # names a file of `Ontologies/pib-hub/` -- the RETIRED, FROZEN monorepo directory, whose own RETIRED_v1_0_0.md records that
 # PIB moved to `altunelyusuf/PIB` on 2026-09-10 and that this repository is "the governed home and the only source of truth
 # for PIB from v1.4.1 onward". Those nine lines are measurements of a tree PIB may not edit, at file versions this repository
-# left behind (`profile_tbox_v1_0_0_1.ttl` against today's `profile_tbox_v1_2_0.ttl`, for instance).
+# left behind (`profile_tbox_v1_0_0_1.ttl` against today's `profile_tbox_v1_3_0.ttl`, for instance).
 #
 # The eighteen lines below are the FIRST MEASUREMENT OF THE GOVERNED HOME, taken on 2026-10-22 with
 # `oe_structure_check_v1_7_1.py <this repo> --as-package pib-hub` -- the `--as-package` view the handover itself prescribes
@@ -23,16 +29,12 @@
 # together with the one question the rules do not settle: whether the retired directory should be treated as retired history,
 # which no session may clear while it is frozen.
 # rule	path	status	note
-N1	pib-hub/01-ontologies/integration_interface_tbox_v1_0_0_2.ttl	debt	name does not match <name>_v<MAJOR>_<MINOR>_<PATCH>.ttl
-N1	pib-hub/01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl	debt	name does not match <name>_v<MAJOR>_<MINOR>_<PATCH>.ttl
-N1	pib-hub/01-ontologies/pib_wiring_expressions_v1_0_0_2.ttl	debt	name does not match <name>_v<MAJOR>_<MINOR>_<PATCH>.ttl
-N1	pib-hub/13-consumer-registry/TEMPLATE_consumer_registration_v1_0_0.ttl	debt	name does not match <name>_v<MAJOR>_<MINOR>_<PATCH>.ttl
-R1	pib-hub/01-ontologies/pib_assessment_profiles_v1_1_0_1.ttl	debt	holds roles T+A (T 2, A 48, S 0)
+R1	pib-hub/01-ontologies/pib_assessment_profiles_v1_2_0.ttl	debt	holds roles T+A (T 2, A 48, S 0)
 R1	pib-hub/01-ontologies/pib_wiring_composition_v1_0_0.ttl	debt	holds roles T+A (T 4, A 3, S 0)
-R1	pib-hub/01-ontologies/pib_wiring_expressions_v1_0_0_2.ttl	debt	holds roles T+A (T 4, A 18, S 0)
-R1	pib-hub/01-ontologies/profile_tbox_v1_2_0.ttl	debt	holds roles T+A (T 17, A 1, S 0)
-R1	pib-hub/02-shacl-safeguards/pib_consumer_registration_shacl_v1_1_0.ttl	debt	holds roles T+S (T 16, A 0, S 6)
-R1	pib-hub/02-shacl-safeguards/pib_enumeration_rules_v2_3_0.ttl	debt	holds roles T+A+S (T 18, A 5, S 20)
+R1	pib-hub/01-ontologies/pib_wiring_expressions_v1_1_0.ttl	debt	holds roles T+A (T 4, A 18, S 0)
+R1	pib-hub/01-ontologies/profile_tbox_v1_3_0.ttl	debt	holds roles T+A (T 17, A 1, S 0)
+R1	pib-hub/02-shacl-safeguards/pib_consumer_registration_shacl_v1_2_0.ttl	debt	holds roles T+S (T 16, A 0, S 6)
+R1	pib-hub/02-shacl-safeguards/pib_enumeration_rules_v2_4_0.ttl	debt	holds roles T+A+S (T 18, A 5, S 20)
 R1	pib-hub/07-spoke-contributions/o4sdlc_interface_contribution_v1_0_0.ttl	debt	holds roles T+A (T 5, A 4, S 0)
 R1	pib-hub/07-spoke-contributions/pamg_interface_contribution_v1_0_0.ttl	debt	holds roles T+A (T 5, A 4, S 0)
 R1	pib-hub/07-spoke-contributions/radar_interface_contribution_v1_0_0.ttl	debt	holds roles T+A (T 7, A 8, S 0)

@@ -8,10 +8,10 @@ nobody reads: the checkers live in the governance tree, PIB's release runs from 
 ratchet that is only checked somewhere else is not a ratchet here.
 
   * **Structure** (`oe_structure_check`): names, mixed roles, versions side by side, one file per
-    role. Against `04-documentation/structure-debt/STRUCTURE_DEBT_REGISTER_v1_0_0.tsv`.
+    role. Against `04-documentation/structure-debt/STRUCTURE_DEBT_REGISTER_v1_1_0.tsv`.
   * **Kinds and categories** (`oe_kind_coverage`): every named class carries a kind and every object
     property a category, existing terms included (discipline v2.34.0). Against
-    `KIND_COVERAGE_BASELINE_v1_0_0.tsv`, with `KIND_COVERAGE_DECISIONS_v1_0_0.tsv` for the terms this
+    `KIND_COVERAGE_BASELINE_v1_1_0.tsv`, with `KIND_COVERAGE_DECISIONS_v1_0_0.tsv` for the terms this
     package does not type and why.
 
 **`--as-package` is not optional.** A package published from its own repository resolves every
@@ -44,12 +44,12 @@ def _run(cmd, cwd=ROOT):
 
 
 def structure(root=ROOT, register=None):
-    register = register or os.path.join(DEBT, "STRUCTURE_DEBT_REGISTER_v1_0_0.tsv")
+    register = register or os.path.join(DEBT, "STRUCTURE_DEBT_REGISTER_v1_1_0.tsv")
     return _run([STRUCTURE, root, "--as-package", AS_PACKAGE, "--register", register])
 
 
 def coverage(root=ROOT, baseline=None, decisions=None):
-    baseline = baseline or os.path.join(DEBT, "KIND_COVERAGE_BASELINE_v1_0_0.tsv")
+    baseline = baseline or os.path.join(DEBT, "KIND_COVERAGE_BASELINE_v1_1_0.tsv")
     decisions = decisions or os.path.join(DEBT, "KIND_COVERAGE_DECISIONS_v1_0_0.tsv")
     return _run([COVERAGE, root, "--baseline", baseline, "--decisions", decisions])
 
@@ -84,10 +84,10 @@ def self_test():
             "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n"
             "<http://purl.org/pib/planted#Thing> a owl:Class ; rdfs:label \"planted, untyped\"@en .\n")
         s_code, s_out = structure(root=copy, register=os.path.join(copy, "04-documentation", "structure-debt",
-                                                                   "STRUCTURE_DEBT_REGISTER_v1_0_0.tsv"))
+                                                                   "STRUCTURE_DEBT_REGISTER_v1_1_0.tsv"))
         c_code, c_out = coverage(root=copy,
                                  baseline=os.path.join(copy, "04-documentation", "structure-debt",
-                                                       "KIND_COVERAGE_BASELINE_v1_0_0.tsv"),
+                                                       "KIND_COVERAGE_BASELINE_v1_1_0.tsv"),
                                  decisions=os.path.join(copy, "04-documentation", "structure-debt",
                                                         "KIND_COVERAGE_DECISIONS_v1_0_0.tsv"))
         s_new = s_code != 0 and "NEW" in s_out

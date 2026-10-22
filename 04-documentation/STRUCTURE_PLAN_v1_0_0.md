@@ -74,3 +74,39 @@ rather than the rules bending to it. That is checked by running PIB's own capaci
 gates against the merged files before the old ones leave, and the release does not ship if they
 disagree with today's figures: capstone 9, ontology-development 1, budget 11, later-prerequisite 6,
 or-spread 12, combined 3, five independent groups 243, unsatisfiable 0.
+
+
+---
+
+## Execution record — step 1 done in PIB v2.20.0 (2026-10-22)
+
+**The vocabulary is declared.** The 26 terms that existed only inside rule bodies now have
+declarations, definitions written from what the rules actually do with them, kinds and categories, and
+domains and ranges where the rules fix them: `VariationSpace`, `Candidate`, `CompleteCandidate`,
+`Constraint` and its five kinds, and the eighteen properties. `GroupSpace` no longer names a parent
+that does not exist. Purely additive, and measured as such — PIB's capacity figures are unchanged
+(capstone 9, ontology-development 1, budget 11, later-prerequisite 6, or-spread 12, combined 3, five
+independent groups 243, unsatisfiable 0), and the algebra's own rules still produce identical variant
+sets on all eight spaces.
+
+**Every term is typed.** All 49 untyped terms carry a kind or a category, so the kind-coverage baseline
+is empty. The assignments follow the ecosystem's own precedents rather than being invented here, read
+from the governance vocabulary: a constraint is a specification, a criterion and a candidate are
+information artifacts, a closed list of category values is a value domain, a phase is a process. Where
+a class has a parent, child and parent carry the same kind by construction, so the consistency check
+has nothing to contradict when it is vendored.
+
+**Nine terms that had no definition at all now have one** — among them `conditionProperty`, which named
+a property with no statement of what it was for, and the four consumer-registry properties the
+approval gate reads.
+
+**Four N1 lines are gone.** Every file whose name broke the version pattern was reissued under a
+conforming name and version, with the old one leaving the package: the integration-interface T-Box at
+1.1.0, the profile T-Box at 1.3.0, the wiring expressions at 1.1.0, the assessment profiles at 1.2.0,
+the consumer-registration shapes at 1.2.0, the enumeration rules at 2.4.0, and the consumer
+registration template renamed out of its `TEMPLATE_` prefix. Structure debt fell from 18 lines to 14;
+nothing was raised.
+
+**What step 2 still has to do:** the 9 R1 lines (files mixing roles), the 3 U1 lines (11 T-Box, 16
+A-Box and 5 SHACL files where the package ships one of each) and the 2 V1 lines. That is the MAJOR
+release this plan describes, and the plan above stands unchanged.

@@ -6,6 +6,7 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
 @prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix kb:    <http://example.org/knowledge-base#> .
 
 # ============================================================================
 # PIB Enumeration Rules v2.3.0 — variant enumeration and admissibility, computed in the ontology.
@@ -45,9 +46,9 @@
 
 <http://purl.org/pib/enumeration/rules>
     a owl:Ontology ;
-    owl:versionInfo "2.3.0" ;
-    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.3.0> ;
-    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.2.0> ;
+    owl:versionInfo "2.4.0" ;
+    owl:versionIRI <http://purl.org/pib/enumeration/rules/2.4.0> ;
+    owl:priorVersion <http://purl.org/pib/enumeration/rules/2.3.0> ;
     rdfs:label "PIB enumeration rules — variant generation and admissibility in the ontology"@en ;
     dcterms:description "Generates every admissible candidate selection over a declared variation space, pruning as it goes, then checks admissibility as a safety net and leaves the admissible set standing to be counted."@en .
 
@@ -275,7 +276,9 @@ pibe:RepetitionCheckShape a sh:NodeShape ;
 # Each phase runs to a fixpoint before the next begins.
 # ---------------------------------------------------------------------------
 
-pibe:Phase a owl:Class ; rdfs:label "Rule phase"@en .
+pibe:Phase a owl:Class ;
+    kb:hasClassKind kb:ClassKind_Process ; rdfs:label "Rule phase"@en ;
+    skos:definition "One stage of the calculation, declared in the ontology rather than sequenced by the harness: each phase runs its own rules to a fixpoint before the next begins. The order is partition, generation, check, combine, taxonomy."@en .
 pibe:phaseName a owl:DatatypeProperty ; rdfs:label "phase name"@en .
 pibe:phaseOrder a owl:DatatypeProperty ; rdfs:label "phase order"@en .
 
@@ -288,10 +291,16 @@ pibe:CheckPhase      a pibe:Phase ; pibe:phaseName "check"      ; pibe:phaseOrde
 pibe:CombinePhase    a pibe:Phase ; pibe:phaseName "combine"    ; pibe:phaseOrder 4 ;
     rdfs:label "Combine: multiply the group capacities into each space's capacity"@en .
 
-pibe:GroupSpace a owl:Class ; rdfs:subClassOf pibe:VariationSpace ;
-    rdfs:label "Group space — an independent group of coupled features, enumerated on its own"@en .
-pibe:coupledWith a owl:ObjectProperty ; rdfs:label "coupled with — shares a constraint with"@en .
-pibe:groupOf a owl:ObjectProperty ; rdfs:label "group of — the space this group was split from"@en .
+pibe:GroupSpace a owl:Class ;
+    kb:hasClassKind kb:ClassKind_SetOrClass ; rdfs:subClassOf pibe:VariationSpace ;
+    rdfs:label "Group space — an independent group of coupled features, enumerated on its own"@en ;
+    skos:definition "An independent group of coupled features, split out of a variation space by the partition phase and enumerated on its own. Two features are coupled when a constraint names both; groups that share no constraint multiply, which is what makes capacity polynomial rather than exponential in the number of features."@en .
+pibe:coupledWith a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Connectedness ; rdfs:label "coupled with — shares a constraint with"@en ;
+    skos:definition "Declares that two features share a constraint and therefore cannot be partitioned into separate independent groups. The partition phase closes this relation transitively to find the groups."@en .
+pibe:groupOf a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Compositional ; rdfs:label "group of — the space this group was split from"@en ;
+    skos:definition "The variation space a group space was split from, so that the combine phase can multiply the groups' capacities back into the space they came from."@en .
 pibe:groupOrder a owl:DatatypeProperty ; rdfs:label "group order — the lowest feature index in the group"@en .
 pibe:isPartitioned a owl:DatatypeProperty ; rdfs:label "is partitioned — enumerated through its groups"@en .
 pibe:groupCapacity a owl:DatatypeProperty ; rdfs:label "group capacity — admissible selections of one group"@en .
@@ -477,11 +486,16 @@ pibe:EmptySpaceDriftShape a sh:NodeShape ;
 # shows a fork where no choice exists misleads a reader about the space.
 # ---------------------------------------------------------------------------
 
-pibe:TaxonNode a owl:Class ; rdfs:label "Taxon node — a point in the profile taxonomy"@en ;
+pibe:TaxonNode a owl:Class ;
+    kb:hasClassKind kb:ClassKind_Category ; rdfs:label "Taxon node — a point in the profile taxonomy"@en ;
     skos:definition "A node of the derived taxonomy. Interior nodes are partial commitments (a genus); leaves are complete variants (a species)."@en .
-pibe:ProfileVariant a owl:Class ; rdfs:subClassOf pibe:TaxonNode ;
-    rdfs:label "Profile variant — a leaf of the taxonomy, one admissible profile"@en .
-pibe:differsBy a owl:ObjectProperty ; rdfs:label "differs by — the feature whose decision distinguishes this node from its parent"@en .
+pibe:ProfileVariant a owl:Class ;
+    kb:hasClassKind kb:ClassKind_Category ; rdfs:subClassOf pibe:TaxonNode ;
+    rdfs:label "Profile variant — a leaf of the taxonomy, one admissible profile"@en ;
+    skos:definition "A leaf of the derived taxonomy: a complete, admissible selection over every feature of its group — a species, in the taxonomy's own terms, as against the partial commitments at the interior nodes."@en .
+pibe:differsBy a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Comparative ; rdfs:label "differs by — the feature whose decision distinguishes this node from its parent"@en ;
+    skos:definition "The feature whose decision distinguishes a taxon node from its parent. It is what makes the taxonomy readable as a sequence of decisions rather than only as a tree of sets."@en .
 pibe:branchKind a owl:DatatypeProperty ; rdfs:label "branch kind — whether this node takes or leaves the feature"@en .
 pibe:forcedDecision a owl:DatatypeProperty ; rdfs:label "forced decision — the only surviving option, not a real branch"@en .
 
@@ -544,3 +558,162 @@ pibe:TaxonForcedRuleShape a sh:NodeShape ;
 
 pibe:TaxonomyPhase a pibe:Phase ; pibe:phaseName "taxonomy" ; pibe:phaseOrder 5 ;
     rdfs:label "Taxonomy: express the branch structure the generation phase already built"@en .
+
+# ===========================================================================
+# THE VOCABULARY THE RULES ABOVE READ AND WRITE — declared, not left implicit (v2.4.0)
+#
+# These terms were used by the rules from the first version and declared nowhere: eight classes
+# appearing as rdf:type values and eighteen properties appearing in rule bodies, with GroupSpace
+# naming a parent that did not exist as a declaration. SPARQL reads triples and needs no
+# declaration, so the rules always worked — but a consumer could not read the vocabulary, nothing
+# could carry a kind it had no declaration for, and the connectedness standard could not be
+# measured on terms that were not there. Found while measuring kind coverage for discipline v2.34.0.
+#
+# Additive only: no IRI changes and no rule changes. Every definition states what the rules
+# already do with the term, read off their own bodies, not what it might be useful for.
+# ===========================================================================
+
+pibe:VariationSpace a owl:Class ;
+    kb:hasClassKind kb:ClassKind_SetOrClass ;
+    rdfs:label "Variation space — the configurations a profile's features admit"@en ;
+    skos:definition "The set of all admissible selections over a declared set of features, given the constraints declared in the same space. The partition phase splits a space into independent GroupSpaces; the combine phase multiplies their capacities back into the space's own. A space declaring no feature yields no capacity at all and is marked drift-suspected rather than rejected, on the owner's ruling: an empty component can occur legitimately between processing steps but never in a published profile."@en .
+
+pibe:Candidate a owl:Class ;
+    kb:hasClassKind kb:ClassKind_InformationArtifact ;
+    rdfs:label "Candidate — a selection decided up to some feature index"@en ;
+    skos:definition "A selection under construction: the features decided so far, carried forward from the candidate it was branched from, with the index it has been decided up to. The generation phase branches each candidate twice at the next index, including and excluding that feature, and prunes a branch the moment a constraint can no longer be satisfied."@en .
+
+pibe:CompleteCandidate a owl:Class ;
+    kb:hasClassKind kb:ClassKind_InformationArtifact ;
+    rdfs:subClassOf pibe:Candidate ;
+    rdfs:label "Complete candidate — every feature of its group decided"@en ;
+    skos:definition "A candidate whose decided index has reached the last feature of its group. The check phase re-tests each one against every constraint as a safety net, so that a capacity which matched while admitting the wrong selections cannot pass; the taxonomy phase reads the complete candidates of each group as the taxonomy's leaves."@en .
+
+pibe:Constraint a owl:Class ;
+    kb:hasClassKind kb:ClassKind_Specification ;
+    rdfs:label "Constraint — a condition every admissible selection must satisfy"@en ;
+    skos:definition "A condition declared in a variation space that every admissible selection must satisfy. The five kinds below are the constraint forms PIB declares; each has one rule in the check phase that marks a violating candidate, and most also have a rule in the generation phase that prunes a branch before it completes."@en .
+
+pibe:MandatoryConstraint a owl:Class ;
+    kb:hasClassKind kb:ClassKind_Specification ; rdfs:subClassOf pibe:Constraint ;
+    rdfs:label "Mandatory constraint — the named feature appears in every selection"@en ;
+    skos:definition "Requires the feature named by pibe:requires in every admissible selection. It is a statement about every variant rather than a choice within one, which is why the profile architecture places it at the meta layer and not in a profile."@en .
+
+pibe:ExclusiveConstraint a owl:Class ;
+    kb:hasClassKind kb:ClassKind_Specification ; rdfs:subClassOf pibe:Constraint ;
+    rdfs:label "Exclusive constraint — at most one of its members"@en ;
+    skos:definition "Permits at most one of the features named by pibe:groupMember: selecting two is a violation, selecting none is not. PIB's reading is AT MOST ONE, where the variant algebra's own exclusive operator means EXACTLY ONE; handed to the algebra, this constraint is therefore written as a budget of one, because writing it as the algebra's exclusive would silently drop the selection that takes neither."@en .
+
+pibe:OrConstraint a owl:Class ;
+    kb:hasClassKind kb:ClassKind_Specification ; rdfs:subClassOf pibe:Constraint ;
+    rdfs:label "Or constraint — at least one of its members"@en ;
+    skos:definition "Requires at least one of the features named by pibe:groupMember. Selecting all of them is admissible; selecting none is a violation."@en .
+
+pibe:DependencyConstraint a owl:Class ;
+    kb:hasClassKind kb:ClassKind_Specification ; rdfs:subClassOf pibe:Constraint ;
+    rdfs:label "Dependency constraint — the dependent requires its prerequisite"@en ;
+    skos:definition "Forbids a selection that includes the feature named by pibe:dependent without the feature named by pibe:prerequisite. The prerequisite may carry a later feature index than the dependent, so the generation phase cannot prune on it until both indices are decided; the fixture LaterPrereq exists to hold that case."@en .
+
+pibe:RepetitionConstraint a owl:Class ;
+    kb:hasClassKind kb:ClassKind_Specification ; rdfs:subClassOf pibe:Constraint ;
+    rdfs:label "Repetition constraint — a budget over the features contributing to a group"@en ;
+    skos:definition "Permits at most pibe:maxSelected of the features that pibe:contributesToGroup the group named by pibe:budgetGroup. This is the one place PIB couples features deliberately: without the coupling each contributor would become its own independent group and a budget of two over four contributors would count 16 selections instead of 11."@en .
+
+pibe:hasFeature a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    rdfs:domain pibe:VariationSpace ;
+    rdfs:label "has feature — a feature of this space"@en ;
+    skos:definition "Names a feature that the space's selections decide. The features of a space are the dimensions of its variation; a space with none yields no capacity."@en .
+
+pibe:featureIndex a owl:DatatypeProperty ;
+    rdfs:domain rdfs:Resource ; rdfs:range xsd:integer ;
+    rdfs:label "feature index — the position at which this feature is decided"@en ;
+    skos:definition "The position of a feature in the order the generation phase decides them. The order makes branching deterministic and lets a candidate record how far it has been decided."@en .
+
+pibe:featureCount a owl:DatatypeProperty ;
+    rdfs:domain pibe:VariationSpace ; rdfs:range xsd:integer ;
+    rdfs:label "feature count — how many features the space declares"@en ;
+    skos:definition "The number of features the space declares, stated so that a candidate can be recognised as complete and so that a space declaring none is detectable rather than merely silent."@en .
+
+pibe:inSpace a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    rdfs:label "in space — the space or group this belongs to"@en ;
+    skos:definition "Places a candidate or a constraint in the space or group it belongs to. A candidate's space is always a group space once the partition phase has run, never the parent space, which is why a reader looking for candidates in the parent finds none."@en .
+
+pibe:includes a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    rdfs:domain pibe:Candidate ;
+    rdfs:label "includes — a feature selected in this candidate"@en ;
+    skos:definition "Names a feature the candidate selects. The features a candidate has decided against are absent rather than recorded as excluded, so a candidate's selection is read as the set of its includes."@en .
+
+pibe:decidedUpTo a owl:DatatypeProperty ;
+    rdfs:domain pibe:Candidate ; rdfs:range xsd:integer ;
+    rdfs:label "decided up to — the highest feature index this candidate has decided"@en ;
+    skos:definition "The feature index this candidate has decided up to; zero for a seed. The generation phase branches only at the next index, so this is what keeps the enumeration from revisiting a decision."@en .
+
+pibe:derivedFrom a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Provenance ;
+    rdfs:domain pibe:Candidate ; rdfs:range pibe:Candidate ;
+    rdfs:label "derived from — the candidate this one was branched from"@en ;
+    skos:definition "The candidate this one was branched from, carrying its decisions forward. It makes the enumeration auditable: every candidate's decisions can be traced back to the seed."@en .
+
+pibe:isInadmissible a owl:DatatypeProperty ;
+    rdfs:domain pibe:Candidate ; rdfs:range xsd:boolean ;
+    rdfs:label "is inadmissible — this candidate violates a constraint"@en ;
+    skos:definition "Marks a candidate that violates a constraint. With exact pruning no COMPLETE candidate carries it — a branch is cut before it completes — so a complete candidate carrying this mark means the pruning and the check disagree, which is what the check phase exists to catch."@en .
+
+pibe:violates a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Normative ;
+    rdfs:domain pibe:Candidate ; rdfs:range pibe:Constraint ;
+    rdfs:label "violates — the constraint this candidate breaks"@en ;
+    skos:definition "Names the constraint a candidate breaks, so that a rejection says which condition failed rather than only that one did."@en .
+
+pibe:requires a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Requirement ;
+    rdfs:domain pibe:MandatoryConstraint ;
+    rdfs:label "requires — the feature a mandatory constraint demands"@en ;
+    skos:definition "The feature a mandatory constraint demands in every selection."@en .
+
+pibe:groupMember a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    rdfs:label "group member — a feature named by an exclusive or or constraint"@en ;
+    skos:definition "Names a feature belonging to the member list of an exclusive or an or constraint. The two constraint kinds read the same property and differ in what they require of it: at most one, and at least one."@en .
+
+pibe:dependent a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Requirement ;
+    rdfs:domain pibe:DependencyConstraint ;
+    rdfs:label "dependent — the feature that requires another"@en ;
+    skos:definition "The feature whose selection requires the prerequisite's."@en .
+
+pibe:prerequisite a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Requirement ;
+    rdfs:domain pibe:DependencyConstraint ;
+    rdfs:label "prerequisite — the feature the dependent requires"@en ;
+    skos:definition "The feature that must be selected whenever the dependent is."@en .
+
+pibe:budgetGroup a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Structural ;
+    rdfs:domain pibe:RepetitionConstraint ;
+    rdfs:label "budget group — the group a repetition constraint bounds"@en ;
+    skos:definition "The group whose contributing features a repetition constraint bounds."@en .
+
+pibe:maxSelected a owl:DatatypeProperty ;
+    rdfs:domain pibe:RepetitionConstraint ; rdfs:range xsd:integer ;
+    rdfs:label "max selected — the budget"@en ;
+    skos:definition "The greatest number of contributing features a selection may take from the budget group."@en .
+
+pibe:contributesToGroup a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_ContainmentMembership ;
+    rdfs:label "contributes to group — this feature counts against the group's budget"@en ;
+    skos:definition "Declares that selecting this feature counts against the named group's budget. This is also what couples the contributors: features sharing a budget group cannot be partitioned into separate independent groups."@en .
+
+pibe:isMetaSpace a owl:DatatypeProperty ;
+    rdfs:domain pibe:VariationSpace ; rdfs:range xsd:boolean ;
+    rdfs:label "is meta space — this space carries the domain's own invariants"@en ;
+    skos:definition "Marks a space as the meta layer: the features and constraints every variant of the domain must satisfy, as against a profile's own choices. The profile architecture's enforcement rules read it to tell a misplaced profile-local rule from a domain invariant."@en .
+
+pibe:refinesMetaSpace a owl:ObjectProperty ;
+    kb:hasRelationshipCategory kb:RelationshipCategory_Taxonomic ;
+    rdfs:domain pibe:VariationSpace ; rdfs:range pibe:VariationSpace ;
+    rdfs:label "refines meta space — this profile space specialises that meta space"@en ;
+    skos:definition "Binds a profile's own variation space to the meta space whose invariants it inherits. A profile may add choices and may not lift an invariant, which is what makes the two layers safe to validate separately."@en .
