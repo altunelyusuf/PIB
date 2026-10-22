@@ -29,3 +29,27 @@ externally-verifiable claim, not a summary of how persuasive the proposal read.
 | `HANDOVER_VAF_to_PIB_discovery-processing-synthesis-answers_v1_0_0.md` | variant-algebra session, 2026-09-23 | **accepted** — useful; three of four questions settled, one escalated, one factual slip reported back | PIB v2.17.0 | Each claim re-derived against the algebra's files rather than taken on report. CONFIRMED: two genuinely parallel discovery implementations exist over different vocabularies — the SPARQL calculi read `py:Method`/`py:reads`/`py:writes` from one harvester, the SHACL code-analysis rules read `va:Method`/`va:readsAttribute`/`va:writesAttribute` from a second, separate one; that session could not say which is canonical and escalated it rather than picking, which is the right call. CONFIRMED: no ontology-native expansion exists anywhere in the package — the only enumeration-style rules are PIB's own kit, still pending there — so expansion remains the Python runtime and PIB keeps its own enumeration rules, marked as PIB's own. CONFIRMED: the operator rules are now at a distinct version 1.2.0 with a reminder comment beside it, after PIB's content-hash catch; re-vendored here after checking every algebra term PIB binds to is still covered, nothing dropped, and the operator gate gives identical results. CORRECTED BACK: the synthesis handoff functions `classify_purpose` and `select_target` are in `variant_target_selection_v1_0_0.py`, not `variant_ontology_bridge_v1_0_0.py` as the answer states; the signatures are exactly as described, so the slip is the filename only. Also confirmed: no mandatory rule exists in the shipped rules, so PIB's meta-layer placement and its not-cross-checked reporting stand unchanged. |
 | `REPLY_PIB_to_VAF_answers-verified-one-filename-correction_v1_0_0.md` | PIB (outgoing), 2026-09-23 | **filed with its target** | PIB v2.17.0 | PIB's acceptance of the answers, with one correction sent back: the synthesis handoff functions live in `variant_target_selection_v1_0_0.py`, not the bridge file the answer names — verified by reading both files, signatures otherwise exactly as described. Also notes that the handoff is a Python call taking a graph, so describing it as ontology-native overstates it: the graph is the payload, the call is not. Delivered to the algebra's own inbox and archived here. |
 
+
+---
+
+## 2026-10-22 — seven items received, none delivered by its sender
+
+The session-start read of `pending/` returned **empty**, and that reading was wrong. Checking the
+senders rather than only PIB's own folder (B3 — non-existence is a claim that needs more than one
+source) found **seven items addressed to PIB sitting in the senders' own areas**, the oldest from
+2026-09-10: five from OE governance (three naming the package `pib-hub`, two broadcast to every
+governed repository), one note from the algebra session held in its outbox, and one OE disposition of
+a finding PIB itself had sent and never logged. All seven were copied verbatim into `pending/` with
+provenance and source hashes recorded in `pending/RECEIPT_NOTE_v1_0_0.md`, so that the next
+session-start read finds them instead of an empty folder.
+
+**No disposition is claimed here.** All seven stand `pending`. Each will get its own line below when
+it is reviewed, stating the verification actually performed — and for the three structure handovers
+that means re-deriving their findings against *this* repository's files, since they were measured on
+the retired monorepo directory, which is frozen and is not PIB's governed home.
+
+One consequence is already recorded rather than left implicit: the algebra's note reports that its
+operator rules **2.1.0** supersede the 1.2.0 file PIB vendors and now generate variants in the
+ontology, built on PIB's own reference kit. If that holds on re-derivation it answers the question
+PIB left open at v2.17.0 — whether ontology-native expansion exists on the algebra's side — and bears
+directly on whether PIB's enumeration rules stay PIB's own. It is not treated as settled until run.
