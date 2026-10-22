@@ -499,7 +499,7 @@ pibx:AlternativeGrader a va:Feature,
     rdfs:label "Alternative grader — any grader other than the institutional one"@en .
 
 pibx:CapstoneConstraintApp a va:AdditionOperator,
-        va:OperatorApplication,
+        pibx:OperatorApplication,
         owl:NamedIndividual ;
     rdfs:label "Both the measurement budget and the grading discipline apply together"@en ;
     va:hasInnerOperator pibx:Exclusive,
@@ -513,13 +513,13 @@ pibx:FacetGroup a va:Feature,
     rdfs:label "Measurement facet group — the facets competing for the budget"@en .
 
 pibx:GradingDisciplineApp a va:ExclusiveOperator,
-        va:OperatorApplication,
+        pibx:OperatorApplication,
         owl:NamedIndividual ;
     rdfs:label "Exactly one grader: the institutional grader, or an alternative, never both"@en ;
     va:hasOperator pibx:Exclusive ;
     va:members ( asmt:PAMG_if pibx:AlternativeGrader ) .
 
-pibx:MeasurementBudgetApp a va:OperatorApplication,
+pibx:MeasurementBudgetApp a pibx:OperatorApplication,
         va:RepetitionOperator,
         owl:NamedIndividual ;
     rdfs:label "At most two measurement facets may feed the grader"@en ;

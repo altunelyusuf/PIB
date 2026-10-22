@@ -531,12 +531,18 @@ pibx:governsWiring a owl:ObjectProperty ;
     rdfs:range iif:WiringVariant ;
     skos:definition "Binds an expression to the wiring variant whose admissibility it constrains. A wiring may be governed by more than one expression; all of them must hold."@en .
 
+pibx:OperatorApplication a owl:Class ;
+    rdfs:label "operator application in a wiring expression — a node of the expression tree"@en ;
+    kb:hasClassKind kb:ClassKind_ModelElement ;
+    skos:definition "One node of a wiring-expression tree: an operator applied to operands, where an operand may be a feature or another node. PIB's own term, and deliberately NOT the algebra's va:OperatorApplication, which the algebra's session confirmed on 2026-10-22 means the RECORD OF A CALCULUS RUN -- it carries the dispatch, the operands and the resulting variant set, and its shapes require prov:wasGeneratedBy, va:applicationOperand and va:applicationLevel. PIB had typed its three expression nodes with that class and carried none of the three (measured: 0 of 3 for each), so the assertion was never true. A node here states a constraint; it records no run. The algebra's operator classes and its members, bound and inner-operator properties are still used for what they mean, because the nesting is the algebra's vocabulary and not a parallel PIB one."@en ;
+    prov:wasDerivedFrom va:OperatorApplication .
+
 pibx:hasRootApplication a owl:ObjectProperty ;
     rdfs:label "has root application"@en ;
     kb:hasRelationshipCategory kb:RelationshipCategory_Compositional ;
     rdfs:domain pibx:WiringExpression ;
-    rdfs:range va:OperatorApplication ;
-    skos:definition "The outermost operator application of the expression tree. Inner applications are reached through the algebra's own operand and inner-operator predicates, so nesting is expressed in the algebra's vocabulary rather than a parallel PIB one."@en .
+    rdfs:range pibx:OperatorApplication ;
+    skos:definition "The outermost node of the expression tree. Inner nodes are reached through the algebra's own operand and inner-operator predicates, so nesting is expressed in the algebra's vocabulary rather than a parallel PIB one. The range was va:OperatorApplication until v3.2.0, when the algebra's session confirmed that class records a calculus run rather than stating a constraint; the property keeps its IRI and its name, which read as they always did, and now names PIB's own class."@en .
 
 pibe:MandatoryConstraint a owl:Class ;
     rdfs:label "Mandatory constraint — the named feature appears in every selection"@en ;

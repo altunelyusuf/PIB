@@ -91,3 +91,29 @@ names a term needs no change at all.
 **What does change** is a consumer that loaded a PIB *file* by path: the eleven files are gone from the
 package and recoverable from git history and the release tags. The package IRI `http://purl.org/pib`
 is what the three files declare, each with its own version, and the modules are `dcterms:isPartOf` it.
+
+
+---
+
+## A correction a consumer should know about (PIB v3.2.0, 2026-10-22)
+
+PIB's three wiring-expression nodes were typed `va:OperatorApplication`, the variant algebra's class.
+That session confirmed on 2026-10-22 what its own T-Box says: the class is **the record of a calculus
+run** — it carries the dispatch, the operands and the resulting variant set, and its shapes require
+`prov:wasGeneratedBy`, `va:applicationOperand` and `va:applicationLevel`. PIB's nodes carried none of
+the three. The assertion was never true, and no PIB gate could see it, because PIB validates its own
+invariants and not the algebra's shapes.
+
+PIB now declares **`pibx:OperatorApplication`** — its own term for one node of a wiring-expression
+tree, with `prov:wasDerivedFrom` the algebra's class so the correction reads as a link rather than a
+silent renaming. The algebra's operator classes and its `va:members`, `va:hasMaxRepetitions`,
+`va:appliesTo` and `va:hasInnerOperator` properties are unchanged and still used for what they mean.
+
+**A consumer that read those three individuals as the algebra's applications was reading them
+wrongly**, and nothing else moved: `pibx:hasRootApplication` keeps its IRI and its name, and now names
+PIB's class.
+
+**Still open, stated rather than implied:** the algebra's rules read an operator **typed directly**
+with `va:members`, so PIB's nested expression form is not evaluable by them. That is a consumer's own
+concern by the algebra's answer, not a defect in either package; making PIB's expressions evaluable
+would mean writing them in that form, and it is not done here.
