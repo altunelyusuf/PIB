@@ -136,32 +136,44 @@ forms are `atmost 1 of { … }` outward, and at-most-one plus at-least-one inwar
 operator cases agree as sets, and every shipped space agrees on capacity with the algebra — capstone 9,
 budget 11, five independent groups 243, unsatisfiable 0.
 
-Run it with `python3 03-tooling/algebra_conformance_check_v2_0_0.py` (needs `VAF_SRC`).
+Run the converter's round trip with `VAF_SRC` set to the algebra's runtime; the conformance gate below
+needs nothing outside this package.
 
-### Conformance is checked against the algebra's ONTOLOGY rules (v2.16.0)
+### Conformance is checked against the algebra's LIVE ontology rules (v2.18.0)
 
 The first conformance check used the algebra's **Python enumerator** as its oracle. That was the wrong
-source of truth and has been withdrawn. The calculus is implemented as ontology rules; a second
-implementation — even the algebra's own Python one — is a second source of truth, and agreeing with it
-proves agreement with a program rather than with the calculus other domains will consume.
+source of truth and was withdrawn: the calculus is implemented as ontology rules, and agreeing with a
+second implementation proves agreement with a program rather than with the calculus other domains
+consume. The second check used the algebra's **rules**, but the 1.x generation of them — which the
+algebra quarantined on 2026-09-28. A pinned generation is invisible from inside the consumer, so the
+check kept printing agreement for semantics its owner had withdrawn.
 
-`03-tooling/algebra_conformance_check_v2_0_0.py` now takes every verdict PIB reaches and re-decides it with
-the algebra's **own shipped rules**, which PIB already vendors, run by a SHACL engine. Per candidate, not
-in aggregate: a capacity that matched while admitting different candidates would be a false pass. Result
-across the shipped spaces: **51 candidates, 51 agreements, 0 disagreements**, covering exclusive, or,
-dependency and repetition.
+`03-tooling/algebra_conformance_check_v3_0_0.py` runs the algebra's **current** rules, vendored from its
+live tree together with the algebra's own rule executor, and compares **variant sets element by element**
+rather than per-candidate verdicts. The current rules do the whole job in the ontology: they build the
+variation space, generate the candidates by branching with carry-over, decide every statement in each
+candidate, and mark and count the variants.
 
-Two things this makes visible that the Python oracle hid:
+Result across the shipped spaces: **eight spaces, eight sets identical, zero disagreements** — capstone
+9, ontology-development 1, budget 11, later prerequisite 6, or-spread 12, combined 3, five independent
+groups 243, unsatisfiable 0. Not merely equal counts: the same variants, member by member.
 
-- **The algebra ships no rule for `mandatory`.** There, mandatory is a notation convention — a bare,
-  undecorated name — not a rule. So mandatory verdicts cannot be cross-checked against the algebra, and the
-  tool reports it as not cross-checked rather than counting it as agreement. This is also why mandatory sits
-  at the meta layer in this architecture: it is a statement about every variant, not a choice within one.
-- **At-most-one is expressed by wrapping an exclusive in an optional**, which the algebra's own
-  at-least-one rule tests for. PIB's at-most-one is now expressed that way when handed to the algebra,
-  rather than by a mapping PIB invented.
+What changed in what this makes visible:
 
-The check is proven to discriminate in both directions on real data: an admitted candidate made to violate
-its constraint is caught, and an invented rejection is caught. Exact pruning means no complete candidate is
-ever *marked* inadmissible — they are removed before completion — so the first direction is created by
-corrupting an admitted candidate, which the tool states rather than quietly skipping.
+- **Mandatory is cross-checked at last.** The 1.x rules shipped no mandatory rule, so the previous check
+  had to report mandatory as not cross-checked. The current rules enforce it — measured directly: one
+  mandatory and one optional feature yield 2 variants, not 4. Every operator PIB uses is now decided by
+  the algebra. Mandatory still sits at the meta layer here, for the reason that has not changed: it is a
+  statement about every variant, not a choice within one.
+- **At-most-one stays a budget of one.** PIB's exclusive means at most one and the algebra's exclusive
+  operator means exactly one, so the exclusive is handed over as a budget of one — the same mapping the
+  converter uses, and not a preference: written as the algebra's exclusive it drops the "neither" variant.
+- **One divergence is deliberate on both sides.** The algebra refuses a component with no features; PIB
+  marks an empty profile as possible drift and validates it rather than rejecting it, on the owner's
+  ruling. The gate skips that space by name instead of recording a false disagreement.
+
+The check is proven to discriminate in both directions on real data: one admissible candidate marked
+inadmissible is caught (2 disagreements), and every budget of one loosened to two is caught (4). The first
+draft of that self-test mutated the other way — unmarking an inadmissible candidate — and reported no
+disagreement at all, because exact pruning means no complete candidate is ever marked inadmissible. A
+mutation that cannot fire proves nothing, so the direction that exercises the filter is the one used.

@@ -1,0 +1,1025 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix va:      <http://example.org/variant-algebra#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+# ============================================================
+# Variant Algebra -- operator rules v9.1.0 (VAF-WI-255: the laws of the operators are rules -- a division joins on its own node, a subtraction keeps the sets without the names of its right side, a negation or condition is judged level by level, a removed feature keeps its sets; 9.0.0: VAF-WI-237: a condition on any expression, 'e when c'; 8.0.0: VAF-WI-227, -228, -229, -232: the Cartesian product and division between expressions, repetition counts, a counted name joined to another; 7.0.0 is the differential oracle)
+# was: operator rules v7.1.0 (VAF-WI-135: truth only for nodes something reads); before that v7.0.0 (VAF-WI-100, -111, -113, -117, -112, -118, -119, -121, -122; 2026-09-28)
+#
+# The operator rules of v1.x, stated once per operator over candidates, so that the ontology itself generates a
+# component's candidates, evaluates every statement in each, and counts the variants. A model enters as the triples
+# the parser emits (06-runtime/src/variant_dsl_parser_v1_0_0.py, to_ttl); nothing else is computed outside.
+#
+# Semantics carried over from v1.x (owner, va:Decision_OwnerClarification_2026_09_28):
+#   bare exclusive: exactly one member present; exclusive inside an optional list: at most one;
+#   or: at least one; dependency: every dependent present requires every prerequisite;
+#   intersection: co-selection (both or neither); repetition: a bound on counts, a k-of-n bound on members;
+#   division / partner exclusion / subtraction / inverse: the removed features are purged from every variant.
+# Carried from the recorded decisions where v1.x had no rule:
+#   subtraction inside an expression: a and not b (va:Decision_SubtractionRevisit_2026_09_25);
+#   next / sequence: b never without a, only where the edge's condition holds (va:Decision_DescriptorsAndOccurrences_2026_09_25,
+#   va:Decision_EdgeConditionSyntax_2026_09_25); lists: every item holds, a list on the left of '<' is a set of
+#   dependents, '[a, b]' declares optional items (va:Decision_TerminalsAndLeftLists_2026_09_26,
+#   va:Decision_ListsAndVariables_2026_09_26); a repeated group repeats as a unit (va:Decision_RepetitionNotation_2026_09_25);
+#   addition inside an expression: both operands present (thesis eq. 2.28, co-inclusion).
+# Cartesian product and division between expressions (8.0.0): a * b joins one set of each side as + does and drops a pair whose
+# features are partners that exclude each other (va:excludesPartner); a / b is each set of a with the features of b removed
+# (a / a is the empty variant). An edge with a condition used as an operand still has no candidate reading and is reported as
+# not evaluable, never silently admitted or rejected.
+#
+# EXECUTION. The rules are run by sh:order stratum: every rule of the lowest order to a fixpoint, then the next.
+# Aggregates and negation read only strata already complete (a substitution's model rewrite 1-9, setup 10-16, names, independent groups and weights 17-19.5, generated sets 24-25, candidates and pruning 25.05-25.4, truth 26 and 30,
+# relations over the whole variant 25.5-26.4, admissibility 40, conditional substitution 42-44, variants and counts 45-46).
+# 06-runtime/src/variant_rule_executor_v1_0_0.py runs them as SPARQL updates.
+# 2.1.0 (VAF-WI-111): slot bounds are the declared bounds and a purged slot allows 0 only; the combinatorial upper
+# bound; a conditional substitution's variant rewrite; the variants (va:Variant) and their count; partner exclusion
+# over the ontology's va:SetA / va:SetB as well as the language's statements; the v1.x rules for weak grounding and
+# for the intersection's result members carried over. Rules 1.x left the live tree with this version; its rules with
+# no user and no counterpart here (the Optional marker va:isAdmissible, partition, Cartesian pairing, the
+# candidateMember form of purge) are listed in _quarantine/2026-09-28-enumeration-engines/README.md.
+# 2.2.0 (VAF-WI-113): a substitution's model rewrite (orders 1-9) -- until then Python (apply_substitutions).
+# 3.0.0 (VAF-WI-117, breaking): one meaning for every expression (va:Decision_OneMeaningGenerated_2026_09_28). An
+# expression means the sets it generates; a statement holds in a candidate when the candidate restricted to the
+# statement's names is one of them. Per candidate this is compositional: the part of an expression that is not chosen
+# has its own names absent (|, $, [ ], &); a < b is a with b, a bare name being present
+# (va:Decision_DependencyPresence_2026_09_28); a subtraction or inverse statement is a constraint. The keyword forms keep
+# their meaning over names ('requires' is 'if a then b', the shorthand of [(a < b) | b]); edges keep 'b never without a'
+# ([(b < a) | a]). A feature's truth has its own stage (29); the absence of an expression's names is read from it (29.5).
+# 3.1.0 (VAF-WI-112): a repeated group inside an expression ({a, b}[m..n], name[m..n]) -- the group rule also decides
+# it: its members occur equally often, and all of them may be absent only when its lower bound is 0.
+# Also 3.1.0: a feature's presence (va:presentIn, va:absentIn) is stated apart from its truth, and the absence of an
+# expression's names is read from presence. They differ only for a variable whose definition generates the empty set
+# (va:admitsEmptyVariant, stated by the definition rules): absent, it holds as its definition does -- so a definition
+# evaluated with its variables as units gives, once expanded, the variants of the expression written out in full.
+# Also 3.1.0: classifier bodies left the language (va:Decision_FeatureContentAsDefinitions_2026_09_28): the carrier rules
+# (order 31), the body clauses of the slot bounds and of admissibility, and a substitution's blocks inside the component
+# are removed; a substitution's block is its component, so a classifier is no longer replaced wholesale.
+# 4.0.0 (VAF-WI-118, breaking): the rules generate each expression's sets (va:Decision_OneMeaningGenerated_2026_09_28,
+# va:Decision_AdditionIsAdditive_2026_09_28) instead of judging each operator per candidate; a node holds in a candidate
+# when the candidate's counts on the node's features are one of its sets (one truth rule, va:MembershipRuleShape). The
+# per-candidate reading of 3.x agreed with the generated sets only when no two operands shared a name ((p $ q) + p gave
+# {p}; '+' generates {p} and {p, q}). A variable stands for its definition (va:hasDefinitionRoot), so a model of
+# definitions is generated by the same rules (orders 27-28 count it and view it through each definition); the
+# expansion rules of 3.1.0 and the presence terms (va:presentIn, va:absentIn, va:admitsEmptyVariant) are retired.
+# 5.0.0 (VAF-WI-119, breaking): exclusion and dependency hold for the whole variant (va:Decision_CalculusFirstGlobalRelations_2026_09_28,
+# va:Decision_WholeVariantIteration_2026_09_28). The sets are generated as in 4.0.0 (the joins are the expression's
+# normal form: '+' distributed over the choices); then every X $ Y and X < Y that a statement or a variable's definition
+# states -- not under a negation, not under a conditioned edge -- is checked on the whole variant (a component's
+# candidate, a variable's set). What an operand contributes to a variant is the features of every non-empty set of the
+# operand contained in it; X $ Y fails when both contribute and neither contribution contains the other, X < Y fails
+# when X contributes and no set of Y is contained (orders 25.5-26.4). So (a $ b) + (a $ c) gives {a} {b, c}, as
+# a $ (b + c) does (thesis Table 2.7), and [a] + [b] + [a < b] gives {} {b} {a, b}. A variable's variants are its
+# consistent sets (va:ConsistentSet); a component's candidate that breaks a relation is not admissible.
+# 6.0.0 (VAF-WI-121): the calculus with the optimisations the framework had lost when the runtime moved onto the rules
+# (va:Decision_CalculusOptimised_2026_09_28): a variable's definition is split into independent groups -- items of its
+# '+' chains and lists that share no name -- each generated alone, and its capacity is the product of their counts
+# (the Sprint 3.2 decomposition, the partition rule of 1.x); in a model of definitions a node's sets are generated only
+# where needed, a split variable's own sets (from its definition) only when used or asked for (orders 17.1-19.5); a component's
+# candidates are built after the sets, and a branch that already breaks a statement is not extended (the PIB kit's
+# pruning, 25.05-25.3); a node's first set among equals is found by grouping, not by comparing every pair (24).
+# 7.0.0 (VAF-WI-122, breaking): recursive definitions (va:Decision_RecursionAllowed_2026_09_28). A join's result is raw;
+# one representative per node, fold stage and key stands for all equal results and is what parents join, so the sets
+# are finitely many and generation stops when a step adds none -- a recursive variable gets the least set its
+# definitions close under. Recursion through a negation has no least set and is refused (17). A variable counts as
+# generable where it is used (19); a variable inside a repeated group is refused, not read as a name.
+# ============================================================
+
+<http://example.org/vaf-consolidated/operator-rules-v2>
+    rdfs:label "VAF Operator SHACL-AF Rules v9.1.0"@en ;
+    dcterms:created "2026-09-28"^^xsd:date ;
+    dcterms:identifier "variant_algebra_operator_rules_v8_0_0" ;
+    owl:versionInfo "9.1.0" ;
+    owl:versionIRI <http://example.org/vaf-consolidated/operator-rules/9.1.0> ;
+    owl:priorVersion <http://example.org/vaf-consolidated/operator-rules/9.0.0> ;
+    dcterms:replaces <http://example.org/vaf-consolidated/operator-rules/8.0.0> ;
+    dcterms:source "01-ontologies/variant_algebra_evaluation_vocabulary_v1_0_0.ttl; 02-shacl-safeguards/variant_algebra_operator_rules_v1_0_0.ttl (1.2.0)." ;
+    sh:declare [ sh:prefix "va" ; sh:namespace "http://example.org/variant-algebra#"^^xsd:anyURI ] ,
+               [ sh:prefix "rdf" ; sh:namespace "http://www.w3.org/1999/02/22-rdf-syntax-ns#"^^xsd:anyURI ] ,
+               [ sh:prefix "xsd" ; sh:namespace "http://www.w3.org/2001/XMLSchema#"^^xsd:anyURI ] .
+
+# A rule that uses $this inside a nested group or a negation binds it in that same group, so the rules mean the same
+# when $this is pre-bound (SHACL-AF) and when it is joined from the target (the executor).
+
+# ------------------------------------------------------------ 1-9: a substitution's model rewrite (VAF-WI-113)
+# 'a ~ b' (va:Decision_ReplacementReading_2026_09_25, va:Decision_SubstitutionSemantics_2026_09_25, round 3): every a in
+# the component becomes b (3.1.0: a substitution's block is its component); the substitutions apply one after another
+# in the order written (a ~ b, b ~ c gives c; a ~ b, b ~ a gives a). The result is a component of its own (<model>_Result,
+# va:Decision_StoreSubstitutionResults_2026_09_26): every statement copied with its names resolved. Conditional
+# substitutions ('a ~ b when c') change variants, not statements (va:ConditionalSubstitutionRuleShape). The copy reads
+# the model's nodes as IRIs (blank nodes skolemised when a model is loaded).
+va:SubstitutionContextRuleShape a sh:NodeShape ; sh:targetClass va:ReplacementOperator ;
+    rdfs:comment "Model-first (the substitution's meaning): a result component, and each substitution's block -- its component (3.1.0). Read at variant level (va:VariantLevelReading, the A4 check's comparison), there is no result component."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 1 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        CONSTRUCT { ?R a va:Component ; va:substitutionResultOf ?C ; prov:wasDerivedFrom ?C ; va:derivedBySubstitution $this }
+        WHERE { ?C va:hasOperator $this . FILTER NOT EXISTS { ?C va:substitutionReading va:VariantLevelReading }
+                BIND(IRI(CONCAT(STR(?C), "_Result")) AS ?R) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 1 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:substitutionBlock ?b }
+        WHERE { ?C va:hasOperator $this . BIND(?C AS ?b) }""" ] .
+
+va:SubstitutionChainRuleShape a sh:NodeShape ; sh:targetClass va:ReplacementOperator ;
+    rdfs:comment "A block's substitutions applied one after another as written: from each name, follow the first later substitution of the name reached."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 2 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?st va:chainBlock ?b ; va:chainStart ?n ; va:chainValue ?n ; va:chainPos 0 }
+        WHERE { $this va:substitutionBlock ?b . FILTER NOT EXISTS { $this va:hasConditionExpression ?x }
+                { $this va:hasLeftOperand ?n } UNION { $this va:hasRightOperand ?n }
+                BIND(IRI(CONCAT(STR(?b), "_chain_", ENCODE_FOR_URI(STR(?n)), "_0")) AS ?st) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 2 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?st2 va:chainBlock ?b ; va:chainStart ?n ; va:chainValue ?y2 ; va:chainPos ?p }
+        WHERE { $this va:substitutionBlock ?b ; va:hasLeftOperand ?y ; va:hasRightOperand ?y2 ; va:writtenOrder ?p .
+                FILTER NOT EXISTS { $this va:hasConditionExpression ?x }
+                ?st va:chainBlock ?b ; va:chainStart ?n ; va:chainValue ?y ; va:chainPos ?q . FILTER(?p > ?q)
+                FILTER NOT EXISTS { ?s2 va:substitutionBlock ?b ; va:hasLeftOperand ?y ; va:writtenOrder ?p2 .
+                                    FILTER NOT EXISTS { ?s2 va:hasConditionExpression ?x2 } FILTER(?p2 > ?q && ?p2 < ?p) }
+                BIND(IRI(CONCAT(STR(?b), "_chain_", ENCODE_FOR_URI(STR(?n)), "_", STR(?p))) AS ?st2) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 3 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?m va:mapBlock ?b ; va:mapFrom ?n ; va:mapTo ?y }
+        WHERE { $this va:substitutionBlock ?b .
+                ?st va:chainBlock ?b ; va:chainStart ?n ; va:chainValue ?y ; va:chainPos ?q . FILTER(?y != ?n)
+                FILTER NOT EXISTS { ?s2 va:substitutionBlock ?b ; va:hasLeftOperand ?y ; va:writtenOrder ?p2 .
+                                    FILTER NOT EXISTS { ?s2 va:hasConditionExpression ?x2 } FILTER(?p2 > ?q) }
+                BIND(IRI(CONCAT(STR(?b), "_map_", ENCODE_FOR_URI(STR(?n)))) AS ?m) }""" ] .
+
+va:SubstitutionResolutionRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:hasOperator ;
+    rdfs:comment "Each name a statement uses, passed through the component's mappings (3.1.0: one block, the component)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 5 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?fin va:finOp ?O ; va:finRef ?n ; va:finValue ?v }
+        WHERE { $this va:hasOperator ?O . ?S a va:ReplacementOperator . $this va:hasOperator ?S .
+                FILTER NOT EXISTS { ?O a va:ReplacementOperator }
+                ?O (va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:hasConditionExpression|va:members|va:dependentSet|va:prerequisiteSet|rdf:first|rdf:rest)* ?node .
+                ?node ?p ?n . ?n a va:Feature .
+                OPTIONAL { ?m va:mapBlock $this ; va:mapFrom ?n ; va:mapTo ?z }
+                BIND(COALESCE(?z, ?n) AS ?v)
+                BIND(IRI(CONCAT(STR(?O), "_fin_ref_", ENCODE_FOR_URI(STR(?n)))) AS ?fin) }""" ] .
+
+va:SubstitutionResultRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:hasOperator ;
+    rdfs:comment "The result component: each statement not dropped, copied with its names resolved; removal and partner-exclusion facts renamed with it; the names its statements use as its features."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 7 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?R va:hasOperator ?O2 . ?O2 va:copyOf ?O }
+        WHERE { ?R va:substitutionResultOf $this . $this va:hasOperator ?O .
+                FILTER NOT EXISTS { ?O a va:ReplacementOperator }
+                BIND(IRI(CONCAT(STR(?O), "_r")) AS ?O2) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 8 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n2 ?p ?x2 }
+        WHERE { ?R va:substitutionResultOf $this . ?O2 va:copyOf ?O . ?R va:hasOperator ?O2 .
+                ?O (va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:hasConditionExpression|va:members|va:dependentSet|va:prerequisiteSet|rdf:first|rdf:rest)* ?node .
+                FILTER NOT EXISTS { ?node a va:Feature } FILTER(?node != rdf:nil)
+                ?node ?p ?x . FILTER(?p != va:copyOf)
+                BIND(IRI(CONCAT(STR(?node), "_r")) AS ?n2)
+                OPTIONAL { ?x a va:Feature . ?fin va:finOp ?O ; va:finRef ?x ; va:finValue ?v }
+                BIND(IF(BOUND(?v), ?v, IF(isIRI(?x) && EXISTS { ?O (va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:hasConditionExpression|va:members|va:dependentSet|va:prerequisiteSet|rdf:first|rdf:rest)+ ?x . FILTER NOT EXISTS { ?x a va:Feature } FILTER(?x != rdf:nil) }, IRI(CONCAT(STR(?x), "_r")), ?x)) AS ?x2) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 8 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?vx ?p ?vy }
+        WHERE { ?R va:substitutionResultOf $this . ?O2 va:copyOf ?O . ?R va:hasOperator ?O2 .
+                { ?O a va:DivisionOperator } UNION { ?O a va:CartesianOperator }
+                ?O va:hasOperand ?x , ?y . ?x ?p ?y . FILTER(?p = va:removes || ?p = va:excludesPartner)
+                ?fx va:finOp ?O ; va:finRef ?x ; va:finValue ?vx .
+                ?fy va:finOp ?O ; va:finRef ?y ; va:finValue ?vy . }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 8 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?R va:hasFeature ?v . ?v a va:Feature }
+        WHERE { ?R va:substitutionResultOf $this . ?O2 va:copyOf ?O . ?R va:hasOperator ?O2 .
+                ?fin va:finOp ?O ; va:finValue ?v }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 8 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?O2 va:changedBySubstitution ?S }
+        WHERE { ?R va:substitutionResultOf $this . ?O2 va:copyOf ?O . ?R va:hasOperator ?O2 .
+                FILTER EXISTS { ?f1 va:finOp ?O ; va:finRef ?n1 ; va:finValue ?v1 . FILTER(?n1 != ?v1) }
+                $this va:hasOperator ?S . ?S a va:ReplacementOperator ; va:hasRightOperand ?new . FILTER NOT EXISTS { ?S va:hasConditionExpression ?c }
+                ?f2 va:finOp ?O ; va:finValue ?new . }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 9 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?O2 va:changedBySubstitution ?S }
+        WHERE { ?R va:substitutionResultOf $this . ?O2 va:copyOf ?O . ?R va:hasOperator ?O2 .
+                FILTER EXISTS { ?f1 va:finOp ?O ; va:finRef ?n1 ; va:finValue ?v1 . FILTER(?n1 != ?v1) }
+                FILTER NOT EXISTS { ?O2 va:changedBySubstitution ?any }
+                $this va:hasOperator ?S . ?S a va:ReplacementOperator . FILTER NOT EXISTS { ?S va:hasConditionExpression ?c } }""" ] .
+
+# ------------------------------------------------------------ 10: the model's context
+va:DivisionRuleShape a sh:NodeShape ; sh:targetClass va:DivisionOperator ;
+    rdfs:comment "Carried over from v1.x unchanged: an operand survives division unless another operand removes it."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 10 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:hasResultMember ?a }
+        WHERE { $this va:hasOperand ?a . FILTER NOT EXISTS { $this va:hasOperand ?b . ?b va:removes ?a } }""" ] .
+
+va:VariationSpaceRuleShape a sh:NodeShape ; sh:targetClass va:Component ;
+    rdfs:comment "A component's variation space: one slot per feature it names, in a fixed order, and the number of slots."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 10 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s a va:VariationSlot ; va:slotOfComponent $this ; va:slotFeature ?f ; va:slotIndex ?i . }
+        WHERE { { SELECT $this ?f (COUNT(?g) AS ?i) WHERE { $this va:hasFeature ?f , ?g . FILTER(STR(?g) <= STR(?f)) } GROUP BY $this ?f }
+                BIND(IRI(CONCAT(STR($this), "__slot", STR(?i))) AS ?s) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 10 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:variationSlotCount ?n }
+        WHERE { { SELECT $this (COUNT(?f) AS ?n) WHERE { $this a va:Component . OPTIONAL { $this va:hasFeature ?f } } GROUP BY $this } }""" ] .
+
+va:ConstraintRootRuleShape a sh:NodeShape ; sh:targetClass va:Component ;
+    rdfs:comment "The statements every variant must satisfy: all but declarations (mandatory, optional, a feature's repetition) and static relations (removal, partner exclusion, union). A subtraction or inverse statement is a constraint as well as a purge (3.0.0: a - b is a and not b)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 10 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:hasConstraintRoot ?r }
+        WHERE { $this va:hasOperator ?r .
+                FILTER NOT EXISTS { ?r a va:MandatoryOperator }
+                FILTER NOT EXISTS { ?r a va:OptionalOperator }
+                FILTER NOT EXISTS { ?r a va:ReplacementOperator }
+                FILTER NOT EXISTS { ?r a va:RepetitionOperator ; va:appliesTo ?x . FILTER NOT EXISTS { ?r va:repeatsAsGroup true } }
+                FILTER NOT EXISTS { { ?r a va:AdditionOperator } UNION { ?r a va:DivisionOperator } UNION { ?r a va:CartesianOperator } ?r va:hasOperand ?y }
+}""" ] .
+
+va:ExclusiveMemberRuleShape a sh:NodeShape ; sh:targetClass va:ExclusiveOperator ;
+    rdfs:comment "The members of an exclusive choice; a chain a $ b $ c is one choice among its three members."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 10 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:exclusiveMember ?m }
+        WHERE { { $this va:members/rdf:rest*/rdf:first ?m }
+                UNION { $this va:hasLeftOperand|va:hasRightOperand ?m . FILTER NOT EXISTS { ?m a va:ExclusiveOperator ; va:hasLeftOperand ?z } }
+                UNION { $this va:hasLeftOperand|va:hasRightOperand ?o . ?o a va:ExclusiveOperator ; va:hasLeftOperand ?z2 ; va:exclusiveMember ?m } }""" ] .
+
+va:IntersectionResultRuleShape a sh:NodeShape ; sh:targetClass va:IntersectionOperator ;
+    rdfs:comment "Carried over from v1.x IntersectionRuleShape unchanged (2026-09-22): between a set A and a set B, the members of A that co-occur with a member of B are the intersection's result members. The meaning of '&' in an expression is its generated sets (co-selection: both, or neither; va:JoinRequestRuleShape)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 10 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:hasResultMember ?a }
+        WHERE { $this va:hasOperand ?a . ?a a va:SetA . $this va:hasOperand ?b . ?b a va:SetB . ?a va:coOccursWith ?b . }""" ] .
+
+va:WeaklyGroundedRuleShape a sh:NodeShape ; sh:targetClass va:SemanticCharacteristic ;
+    rdfs:comment "Carried over from v1.x unchanged (discovery taxonomy, 2026-09-22): a semantic characteristic derived only from syntax, with neither behavioural confirmation nor documented agreement, is weakly grounded."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 10 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:isWeaklyGrounded true }
+        WHERE { $this va:derivedFromSyntactic ?syn .
+                FILTER NOT EXISTS { $this va:confirmedByBehavioral ?b }
+                FILTER NOT EXISTS { $this va:agreesWithDocumentation true } }""" ] .
+
+va:AdditionRuleShape a sh:NodeShape ; sh:targetClass va:AdditionOperator ;
+    rdfs:comment "v1.x AdditionRuleShape (co-inclusion) carried over: an operand bound from either direction (va:isCoIncludedBy). Inside an expression, a + b generates each pair of its operands' sets (va:JoinRequestRuleShape)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 10 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:hasOperand ?u }
+        WHERE { ?u va:isCoIncludedBy $this }""" ] .
+
+# ------------------------------------------------------------ 11: removals
+va:PurgeRuleShape a sh:NodeShape ; sh:targetClass va:Component ;
+    rdfs:comment "Features removed from every variant of the component (v1.x PurgeRuleShape, DivisionRuleShape and PropagationRuleShape, scoped to the component): the second operand of a subtraction statement, the operand of an inverse statement, an operand a division removes, and a member of set A whose partner exclusions leave it no partner in set B. The sets are the features partner exclusion names (the excluders and the excluded), and any stated with va:SetA / va:SetB on the component's partner-exclusion operators (v1.x PropagationRuleShape)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 11 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?f va:isPurgedIn $this }
+        WHERE { { $this va:hasOperator ?op . ?op a va:SubtractionOperator ; va:hasRightOperand ?f . ?f a va:Feature }
+                UNION { $this va:hasOperator ?op . ?op a va:InverseOperator ; va:hasOperand ?f . ?f a va:Feature }
+                UNION { $this va:hasOperator ?op . ?op a va:DivisionOperator ; va:hasOperand ?f . FILTER NOT EXISTS { ?op va:hasResultMember ?f } }
+                UNION { $this va:hasOperator ?op . ?op a va:CartesianOperator ; va:hasOperand ?f . FILTER NOT EXISTS { ?op va:hasLeftOperand ?lx } FILTER NOT EXISTS { ?pr a va:CartesianOperator ; va:hasLeftOperand ?pl }
+                        { ?f va:excludesPartner ?y . ?op va:hasOperand ?y } UNION { ?f a va:SetA }
+                        FILTER NOT EXISTS { $this va:hasOperator ?op2 . ?op2 a va:CartesianOperator ; va:hasOperand ?b . FILTER NOT EXISTS { ?op2 va:hasLeftOperand ?ly }
+                                            FILTER (EXISTS { ?op2 va:hasOperand ?x . ?x va:excludesPartner ?b } || EXISTS { ?b a va:SetB })
+                                            FILTER NOT EXISTS { $this va:hasOperator ?op3 . ?op3 a va:CartesianOperator ; va:hasOperand ?f , ?b . ?f va:excludesPartner ?b } } } }""" ] .
+
+# ------------------------------------------------------------ 12-14: the counts each feature may take
+va:SlotBoundsRuleShape a sh:NodeShape ; sh:targetClass va:VariationSlot ;
+    rdfs:comment "Declared bounds of a slot. Least count: 1 for a mandatory or united feature, a repetition's lower bound, else 0. Greatest count: the smallest repetition upper bound ('*' read as the component's enumeration bound), else 1. A purged feature keeps its declared bounds and is allowed the count 0 only (va:AllowedCountRuleShape)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 12 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:minCount ?lo }
+        WHERE { { SELECT $this (MAX(?m) AS ?lo) WHERE {
+                    $this va:slotOfComponent ?c ; va:slotFeature ?f .
+                    { BIND(0 AS ?m) }
+                    UNION { ?c va:hasOperator ?op . ?op a va:MandatoryOperator ; va:appliesTo ?f . BIND(1 AS ?m) }
+                    UNION { ?c va:hasOperator ?op . ?op a va:AdditionOperator ; va:hasOperand ?f . BIND(1 AS ?m) }
+                    UNION { ?c va:hasOperator ?op . ?op a va:RepetitionOperator ; va:appliesTo ?f ; va:cardinalityMin ?r .
+                            BIND(xsd:integer(STR(?r)) AS ?m) } } GROUP BY $this } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 12 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:maxCount ?hi }
+        WHERE { { SELECT $this (MIN(?m) AS ?hi) WHERE {
+                    $this va:slotOfComponent ?c ; va:slotFeature ?f .
+                    OPTIONAL { ?c va:hasOperator ?op . ?op a va:RepetitionOperator ; va:appliesTo ?f ; va:cardinalityMax ?r . }
+                    OPTIONAL { ?c va:enumerationBound ?b }
+                    BIND(IF(!BOUND(?r), 1, IF(STR(?r) = "*", xsd:integer(STR(?b)), xsd:integer(STR(?r)))) AS ?m) } GROUP BY $this } }""" ] .
+
+va:CountCeilingRuleShape a sh:NodeShape ; sh:targetClass va:Component , va:DefinitionModel ;
+    rdfs:comment "The count ceiling: the largest count any slot may take or any enumeration bound names, at least 1. Counts run from 0 to it, and the weights of a node's features are its powers plus one (4.0.0)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 12.5 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { va:CountCeiling va:numericValue ?c }
+        WHERE { { SELECT (MAX(?m) AS ?c) WHERE { { BIND(1 AS ?m) } UNION { ?s va:maxCount ?m } UNION { ?x va:enumerationBound ?b . BIND(xsd:integer(STR(?b)) AS ?m) }
+                    UNION { ?g a va:RepetitionOperator ; va:repeatsAsGroup true ; va:cardinalityMin ?lo ; va:cardinalityMax ?hi . FILTER(STR(?hi) != "*") FILTER(STR(?lo) = STR(?hi) || EXISTS { ?x va:countsRepetitions true }) BIND(xsd:integer(STR(?hi)) AS ?m) } } } }""" ] .
+
+va:CountValueRuleShape a sh:NodeShape ; sh:targetClass va:Component , va:DefinitionModel , va:CountValue ;
+    rdfs:comment "The natural numbers 0 .. the count ceiling, used as counts."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 13 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { <http://example.org/variant-algebra/count#0> a va:CountValue ; va:numericValue 0 }
+        WHERE { { $this a va:Component } UNION { $this a va:DefinitionModel } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 13 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n a va:CountValue ; va:numericValue ?k1 }
+        WHERE { $this a va:CountValue ; va:numericValue ?k . va:CountCeiling va:numericValue ?c . FILTER(?c > ?k)
+                BIND(?k + 1 AS ?k1) BIND(IRI(CONCAT("http://example.org/variant-algebra/count#", STR(?k1))) AS ?n) }""" ] .
+
+va:AllowedCountRuleShape a sh:NodeShape ; sh:targetClass va:VariationSlot ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 14 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:allowedCount ?v }
+        WHERE { $this va:minCount ?lo ; va:maxCount ?hi ; va:slotOfComponent ?c ; va:slotFeature ?f . ?n a va:CountValue ; va:numericValue ?v .
+                BIND(EXISTS { ?f va:isPurgedIn ?c } AS ?purged)
+                FILTER(IF(?purged, ?v = 0, ?v >= ?lo && ?v <= ?hi)) }""" ] .
+
+va:UpperBoundRuleShape a sh:NodeShape ; sh:targetClass va:VariationSlot , va:Component ;
+    rdfs:comment "The combinatorial upper bound of a component: the product over its slots of (greatest declared count + 1), taken slot by slot in index order."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 15 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:partialUpperBound ?p }
+        WHERE { $this a va:VariationSlot .
+                { $this va:slotIndex 1 ; va:maxCount ?m1 . BIND(?m1 + 1 AS ?p) }
+                UNION { $this va:slotOfComponent ?c ; va:slotIndex ?i ; va:maxCount ?m2 . ?prev va:slotOfComponent ?c ; va:slotIndex ?j ; va:partialUpperBound ?q .
+                        FILTER(?j = ?i - 1) BIND(?q * (?m2 + 1) AS ?p) } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 16 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:combinatorialUpperBound ?u }
+        WHERE { $this a va:Component ; va:variationSlotCount ?n .
+                OPTIONAL { ?s va:slotOfComponent $this ; va:slotIndex ?n ; va:partialUpperBound ?q }
+                BIND(IF(?n = 0, 1, ?q) AS ?u) FILTER(BOUND(?u)) }""" ] .
+
+# ------------------------------------------------------------ 20-22: candidates
+va:CandidateDeadEndRuleShape a sh:NodeShape ; sh:targetClass va:CandidateVariant , va:Component ;
+    rdfs:comment "Pruning (the PIB kit's technique, 6.0.0): a statement is decided as soon as every feature it names has its count -- at the slot of its last feature (va:rootLastSlot). A candidate at that slot whose counts on the statement's features are none of the statement's valid sets can hold in no completion; it is a dead end and is not extended. The truth rule still judges every complete candidate."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.05 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?r va:rootLastSlot ?last ; va:rootLastSlotIn $this }
+        WHERE { $this a va:Component ; va:hasConstraintRoot ?r . ?r va:generable true . FILTER NOT EXISTS { ?r va:nestedNegationIn $this }
+                FILTER NOT EXISTS { ?wx va:weightOf ?r ; va:weightFeature ?fx . FILTER NOT EXISTS { ?sx va:slotOfComponent $this ; va:slotFeature ?fx } }
+                { SELECT $this ?r (MAX(?i) AS ?last) WHERE { $this va:hasConstraintRoot ?r . ?w va:weightOf ?r ; va:weightFeature ?f . ?sl va:slotOfComponent $this ; va:slotFeature ?f ; va:slotIndex ?i } GROUP BY $this ?r } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.2 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:deadEnd true }
+        WHERE { { SELECT $this ?r ?comp (SUM(COALESCE(?k, 0) * ?w) AS ?key) WHERE {
+                    $this a va:CandidateVariant ; va:candidateOf ?comp ; va:decidedUpTo ?n . FILTER NOT EXISTS { $this va:deadEnd true }
+                    ?r va:rootLastSlotIn ?comp ; va:rootLastSlot ?n . ?wn va:weightOf ?r ; va:weightFeature ?f ; va:weightValue ?w .
+                    OPTIONAL { $this va:hasAssignment ?a . ?a va:assignedFeature ?f ; va:assignedCount ?k } } GROUP BY $this ?r ?comp }
+                FILTER NOT EXISTS { ?s va:setOf ?r ; va:setFor ?comp ; va:setKey ?key ; a va:ValidSet } }""" ] .
+
+va:CandidateGenerationRuleShape a sh:NodeShape ; sh:targetClass va:Component , va:CandidateVariant ;
+    rdfs:comment "Candidates branch slot by slot: each extends its parent by one allowed count for the next slot and carries the parent's counts with it (the PIB kit's technique). A candidate with a count for every slot is complete. 6.0.0: candidates are built after the sets (orders 25.1-25.3), so that a branch that already breaks a statement is not extended (va:CandidateDeadEndRuleShape)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.1 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?cand a va:CandidateVariant ; va:candidateOf $this ; va:decidedUpTo 0 }
+        WHERE { $this a va:Component ; va:variationSlotCount ?n . BIND(IRI(CONCAT(STR($this), "__cand")) AS ?cand) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.2 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?ch a va:CandidateVariant ; va:candidateOf ?comp ; va:decidedUpTo ?n ; va:branchedFrom $this ;
+                        va:hasAssignment ?a , ?pa .
+                    ?a va:assignedFeature ?f ; va:assignedCount ?v . }
+        WHERE { $this a va:CandidateVariant ; va:candidateOf ?comp ; va:decidedUpTo ?k . ?comp va:variationSlotCount ?max . FILTER(?k < ?max)
+                FILTER NOT EXISTS { ?x va:branchedFrom $this } FILTER NOT EXISTS { $this va:deadEnd true }
+                BIND(?k + 1 AS ?n)
+                ?slot va:slotOfComponent ?comp ; va:slotIndex ?n ; va:slotFeature ?f ; va:allowedCount ?v .
+                BIND(IRI(CONCAT(STR($this), "_", STR(?v))) AS ?ch)
+                BIND(IRI(CONCAT(STR(?slot), "_", STR(?v))) AS ?a)
+                OPTIONAL { $this va:hasAssignment ?pa } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.3 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:CompleteCandidate }
+        WHERE { $this a va:CandidateVariant ; va:candidateOf ?comp ; va:decidedUpTo ?k . ?comp va:variationSlotCount ?k . FILTER NOT EXISTS { $this va:deadEnd true } }""" ] .
+
+# ------------------------------------------------------------ 13: shorthands
+va:ShorthandRuleShape a sh:NodeShape ; sh:targetClass va:ExclusiveOperator , va:OrOperator , va:DependencyOperator , va:NextOperator , va:SequenceOperator ;
+    rdfs:comment "3.0.0: the keyword forms and the order edges are shorthands, built here as expression nodes so that they mean what their expansion generates: exclusive (a | b | c) is a $ (b $ c); or (a, b, c) is a | (b | c); 'a requires b' is [(a < b) | b] ('if a then b'); an edge a -> b (or a >-> b) is [(b < a) | a] ('b never without a'). A shorthand statement generates its expansion's sets (va:JoinRequestRuleShape); a conditioned edge applies its condition (va:OrderEdgeRuleShape). The expansion is evaluation only: the model as written is not changed."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 13 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n a ?cls ; va:hasLeftOperand ?first ; va:hasRightOperand ?right . ?top va:expandsTo ?n0 }
+        WHERE { $this va:members ?list . FILTER NOT EXISTS { $this va:hasLeftOperand ?z }
+                { $this a va:ExclusiveOperator . BIND(va:ExclusiveOperator AS ?cls) } UNION { $this a va:OrOperator . BIND(va:OrOperator AS ?cls) }
+                ?list rdf:rest* ?cell . ?cell rdf:first ?first ; rdf:rest ?rest . FILTER(?rest != rdf:nil)
+                ?rest rdf:first ?rf ; rdf:rest ?rr .
+                BIND(IRI(CONCAT(STR($this), "__sh_", ENCODE_FOR_URI(STR(?cell)))) AS ?n)
+                BIND(IF(?rr = rdf:nil, ?rf, IRI(CONCAT(STR($this), "__sh_", ENCODE_FOR_URI(STR(?rest))))) AS ?right)
+                BIND(IF(?cell = ?list, $this, ?unbound) AS ?top) BIND(IF(?cell = ?list, ?n, ?unbound) AS ?n0) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 13 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?d a va:DependencyOperator ; va:hasLeftOperand ?a ; va:hasRightOperand ?b .
+                    ?o a va:OrOperator ; va:hasLeftOperand ?d ; va:hasRightOperand ?b .
+                    ?x a va:ListExpression ; va:isOptionalList true ; va:hasListItem ?o . $this va:expandsTo ?x }
+        WHERE { $this a va:DependencyOperator ; va:antecedent ?a ; va:consequent ?b . FILTER NOT EXISTS { $this va:hasLeftOperand ?z }
+                BIND(IRI(CONCAT(STR($this), "__sh_dep")) AS ?d) BIND(IRI(CONCAT(STR($this), "__sh_or")) AS ?o)
+                BIND(IRI(CONCAT(STR($this), "__sh_opt")) AS ?x) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 13 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?d a va:DependencyOperator ; va:hasLeftOperand ?r ; va:hasRightOperand ?l .
+                    ?o a va:OrOperator ; va:hasLeftOperand ?d ; va:hasRightOperand ?l .
+                    ?x a va:ListExpression ; va:isOptionalList true ; va:hasListItem ?o . $this va:edgeExpandsTo ?x }
+        WHERE { { $this a va:NextOperator } UNION { $this a va:SequenceOperator }
+                $this va:hasLeftOperand ?l ; va:hasRightOperand ?r .
+                BIND(IRI(CONCAT(STR($this), "__sh_dep")) AS ?d) BIND(IRI(CONCAT(STR($this), "__sh_or")) AS ?o)
+                BIND(IRI(CONCAT(STR($this), "__sh_opt")) AS ?x) }""" ] .
+
+# ------------------------------------------------------------ 17-19: the names under each node, their weights, what can be generated
+va:ExpressionNamesRuleShape a sh:NodeShape ; sh:targetClass va:Component , va:DefinitionModel ;
+    rdfs:comment "The context that decides an expression node (va:nodeOfComponent: a component, the result component's conditional substitutions included, or a model of definitions), the basic features a node covers (va:nameUnder: a variable counts as the features of its definition; a condition is not part of what it conditions), and the features whose sets a context generates (va:leafIn). 4.0.0."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n va:nodeOfComponent $this }
+        WHERE { { $this va:hasOperator ?op } UNION { $this va:derivedBySubstitution ?op } UNION { $this va:definesVariable ?v . ?v va:hasDefinitionRoot ?op }
+                ?op (va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:hasConditionExpression|va:members/rdf:rest*/rdf:first|va:expandsTo|va:edgeExpandsTo|va:appliesTo)* ?n .
+                FILTER(isIRI(?n)) FILTER NOT EXISTS { ?n a va:Feature } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n va:nameUnder ?f }
+        WHERE { { ?n va:nodeOfComponent $this } UNION { $this va:definesVariable ?n }
+                ?n (va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:members/rdf:rest*/rdf:first|va:expandsTo|va:edgeExpandsTo|va:appliesTo|va:hasDefinitionRoot)+ ?f .
+                ?f a va:Feature . FILTER NOT EXISTS { ?f va:hasDefinitionRoot ?r } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?a va:nameUnder ?f . ?a va:atomsOf ?v }
+        WHERE { $this va:definesVariable ?v . ?v va:hasDefinitionRoot ?r .
+                ?r (va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:appliesTo)* ?f . ?f a va:Feature .
+                BIND(IRI(CONCAT(STR(?v), "__atoms")) AS ?a) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.5 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?f va:leafIn $this }
+        WHERE { { ?s va:slotOfComponent $this ; va:slotFeature ?f }
+                UNION { ?n va:nodeOfComponent $this ; va:nameUnder ?f }
+                UNION { ?n va:nodeOfComponent $this ; va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:hasConditionExpression|va:expandsTo|va:edgeExpandsTo ?f . ?f a va:Feature }
+                UNION { $this va:definesVariable ?f }
+                UNION { $this va:definesVariable ?v . ?v va:nameUnder ?f } }""" ] .
+
+# ------------------------------------------------------------ 17.1-19.5: independent groups (6.0.0, VAF-WI-121)
+# The thesis-native decomposition the owner directed in Sprint 3.2 and operator rules 1.x's partition rule, restated for
+# generated sets. A variable's definition is read as a product: its '+' chains and lists are flattened into items (an
+# optional list's items are optional items; an optional item is a unit). Items that share a name, directly or through
+# other items, form one group; groups share no name. A variable with two or more groups is split: each group is a
+# factor, generated on its own, and the variable's capacity is the product of its factors' counts -- its own sets are
+# generated only when they are needed (by an expression that uses it, or when its variants are listed). A relation is
+# checked on a factor's sets, which hold every name it can concern.
+va:ProductItemRuleShape a sh:NodeShape ; sh:targetClass va:DefinitionModel ;
+    rdfs:comment "A variable's definition flattened into the items of a product: '+' operands and a list's items, an optional list's items as optional items; an optional item, and anything that is not '+' or a list, is an item (6.0.0)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.1 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?st va:flatOf ?v ; va:flatNode ?r ; va:flatOptional false }
+        WHERE { $this va:definesVariable ?v . ?v va:hasDefinitionRoot ?r .
+                BIND(IRI(CONCAT(STR(?v), "__flat_", MD5(CONCAT(STR(?r), " false")))) AS ?st) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.1 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?st2 va:flatOf ?v ; va:flatNode ?c ; va:flatOptional ?o2 . ?st va:flatExpanded true }
+        WHERE { $this va:definesVariable ?v . ?st va:flatOf ?v ; va:flatNode ?n ; va:flatOptional false .
+                { ?n a va:AdditionOperator ; va:hasLeftOperand ?z . ?n va:hasLeftOperand|va:hasRightOperand ?c . BIND(false AS ?o2) }
+                UNION { ?n a va:ListExpression ; va:hasListItem ?c . FILTER NOT EXISTS { ?n va:isOptionalList true } BIND(false AS ?o2) }
+                UNION { ?n a va:ListExpression ; va:isOptionalList true ; va:hasListItem ?c . BIND(true AS ?o2) }
+                BIND(IRI(CONCAT(STR(?v), "__flat_", MD5(CONCAT(STR(?c), " ", STR(?o2))))) AS ?st2) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.2 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?st va:flatItem true ; va:itemName ?f }
+        WHERE { $this va:definesVariable ?v . ?st va:flatOf ?v ; va:flatNode ?n . FILTER NOT EXISTS { ?st va:flatExpanded true }
+                OPTIONAL { { ?n a va:Feature . FILTER NOT EXISTS { ?n va:hasDefinitionRoot ?d } BIND(?n AS ?f) } UNION { ?n va:nameUnder ?f } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.25 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s1 va:linkedItem ?s2 }
+        WHERE { $this va:definesVariable ?v . ?s1 va:flatOf ?v ; va:itemName ?f . ?s2 va:flatOf ?v ; va:itemName ?f . FILTER(?s1 != ?s2) }""" ] .
+
+va:IndependentGroupRuleShape a sh:NodeShape ; sh:targetClass va:DefinitionModel ;
+    rdfs:comment "Items linked through shared names form one group; a variable with two or more groups is split, and so is one whose single group is a single mandatory item that is itself a split variable. A split variable's factors are its groups, a group that is a single split variable giving that variable's factors instead (6.0.0)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.3 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?st va:inGroup ?G . ?G va:groupOf ?v }
+        WHERE { { SELECT $this ?v ?st (MIN(STR(?o)) AS ?rep) WHERE { $this va:definesVariable ?v . ?st va:flatOf ?v ; va:flatItem true . ?st va:linkedItem* ?o } GROUP BY $this ?v ?st }
+                BIND(IRI(CONCAT(STR(?v), "__group_", MD5(?rep))) AS ?G) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.35 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?v va:groupCount ?n }
+        WHERE { { SELECT $this ?v (COUNT(DISTINCT ?G) AS ?n) WHERE { $this va:definesVariable ?v . ?G va:groupOf ?v } GROUP BY $this ?v } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.35 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?G va:groupItemCount ?n }
+        WHERE { { SELECT $this ?G (COUNT(DISTINCT ?st) AS ?n) WHERE { $this va:definesVariable ?v . ?G va:groupOf ?v . ?st va:inGroup ?G } GROUP BY $this ?G } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.36 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?v va:productSplit true }
+        WHERE { $this va:definesVariable ?v .
+                { ?v va:groupCount ?n . FILTER(?n >= 2) }
+                UNION { ?v va:groupCount 1 . ?G va:groupOf ?v ; va:groupItemCount 1 . ?st va:inGroup ?G ; va:flatNode ?a ; va:flatOptional false . ?a va:productSplit true } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.4 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?v va:hasFactor ?F }
+        WHERE { $this va:definesVariable ?v . ?v va:productSplit true . ?G va:groupOf ?v .
+                FILTER NOT EXISTS { ?G va:groupItemCount 1 . ?st va:inGroup ?G ; va:flatNode ?a ; va:flatOptional false . ?a va:productSplit true }
+                BIND(?G AS ?F) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.4 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?v va:hasFactor ?F }
+        WHERE { $this va:definesVariable ?v . ?v va:productSplit true . ?G va:groupOf ?v ; va:groupItemCount 1 .
+                ?st va:inGroup ?G ; va:flatNode ?a ; va:flatOptional false . ?a va:productSplit true ; va:hasFactor ?F }""" ] .
+
+va:FactorViewRuleShape a sh:NodeShape ; sh:targetClass va:DefinitionModel ;
+    rdfs:comment "A factor is generated as the list of its group's items (an optional item wrapped as an optional list of one) (6.0.0)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.45 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?G a va:ListExpression ; va:factorView true ; va:hasListItem ?j . ?w a va:ListExpression ; va:factorView true ; va:isOptionalList true ; va:hasListItem ?n }
+        WHERE { $this va:definesVariable ?v . ?v va:hasFactor ?G . ?G va:groupOf ?v2 . ?st va:inGroup ?G ; va:flatNode ?n ; va:flatOptional ?o .
+                BIND(IF(?o, IRI(CONCAT(STR(?G), "__opt_", MD5(STR(?n)))), ?unbound) AS ?w)
+                BIND(COALESCE(?w, ?n) AS ?j) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.46 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?x va:nodeOfComponent $this }
+        WHERE { ?x va:factorView true . $this a va:DefinitionModel }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17.46 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?x va:nameUnder ?f }
+        WHERE { $this a va:DefinitionModel . ?x va:factorView true ; va:hasListItem ?j .
+                { ?j a va:Feature . FILTER NOT EXISTS { ?j va:hasDefinitionRoot ?d } BIND(?j AS ?f) } UNION { ?j va:nameUnder ?f } }""" ] .
+
+va:SetsNeededRuleShape a sh:NodeShape ; sh:targetClass va:DefinitionModel ;
+    rdfs:comment "In a model of definitions a node's sets are generated only where needed: every variable that is not split, every factor, a variable whose variants are asked for (va:listingRequestedFor), and, from a needed node, its operands, items, expansion and definition (6.0.0). In a component every node is needed."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 19.5 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n va:setsNeededIn $this }
+        WHERE { { $this va:definesVariable ?n . FILTER NOT EXISTS { ?n va:productSplit true } }
+                UNION { $this va:definesVariable ?v . ?v va:hasFactor ?n }
+                UNION { $this va:listingRequestedFor ?n } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 19.5 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?c va:setsNeededIn $this }
+        WHERE { ?n va:setsNeededIn $this ; va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:expandsTo|va:edgeExpandsTo|va:hasDefinitionRoot ?c }""" ] .
+
+va:RecursionThroughNegationRuleShape a sh:NodeShape ; sh:targetClass va:DefinitionModel ;
+    rdfs:comment "A variable that reaches itself through the operand of a negation ('!') or the right side of a subtraction has no least set of variants: each step would remove what the last added. It is marked, and the model is reported as not evaluable (7.0.0; the stop condition's safety, va:Decision_RecursionAllowed_2026_09_28)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 17 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?v va:recursesThroughNegation $this }
+        WHERE { $this va:definesVariable ?v . ?v va:hasDefinitionRoot ?r .
+                ?r (va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:expandsTo|va:edgeExpandsTo|va:hasDefinitionRoot)* ?neg .
+                { ?neg a va:InverseOperator ; va:hasOperand ?x } UNION { ?neg a va:SubtractionOperator ; va:hasRightOperand ?x }
+                ?x (va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:expandsTo|va:edgeExpandsTo|va:hasDefinitionRoot)* ?v }""" ] .
+
+va:NameWeightRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:nameUnder , va:leafIn ;
+    rdfs:comment "Each feature a node covers gets a weight, (the count ceiling + 1) to the power of its rank among the node's features by IRI, so that a set of counts over those features has one number (its key) and two sets have the same key only when they are the same set. A basic feature on its own has weight 1. 4.0.0."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 18 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?w va:weightOf $this ; va:weightFeature ?f ; va:weightRank ?r }
+        WHERE { { SELECT $this ?f (COUNT(?g) AS ?r) WHERE { $this va:nameUnder ?f . OPTIONAL { $this va:nameUnder ?g . FILTER(STR(?g) < STR(?f)) } } GROUP BY $this ?f }
+                BIND(IRI(CONCAT(STR($this), "__w_", MD5(STR(?f)))) AS ?w) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 18 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?w va:weightOf $this ; va:weightFeature $this ; va:weightRank 0 }
+        WHERE { $this va:leafIn ?c . FILTER NOT EXISTS { $this va:hasDefinitionRoot ?r } BIND(IRI(CONCAT(STR($this), "__w_", MD5(STR($this)))) AS ?w) }""" ] .
+va:WeightValueRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:weightRank ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 18.5 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:weightValue ?v }
+        WHERE { { $this va:weightRank 0 . BIND(1 AS ?v) }
+                UNION { $this va:weightOf ?n ; va:weightRank ?r . FILTER(?r > 0)
+                        ?p va:weightOf ?n ; va:weightRank ?r0 ; va:weightValue ?pv . FILTER(?r0 = ?r - 1)
+                        va:CountCeiling va:numericValue ?c . BIND(?pv * (?c + 1) AS ?v) } }""" ] .
+
+va:GenerableRuleShape a sh:NodeShape ; sh:targetClass va:Feature ; sh:targetSubjectsOf va:nodeOfComponent ;
+    rdfs:comment "A node whose sets the rules generate: a basic feature; a variable whose definition is generable; +, |, $, <, &, *, /, -, ! and a list with generable operands; a repeated group; a keyword statement or an edge without a condition, through its expansion. An edge with a condition used as an operand is not generable: a statement over it is reported as not evaluable. 8.0.0: * and / are generable. 4.0.0. 7.0.0: a variable counts as generable where it is used; its own definition decides whether it is (so a recursive definition is not blocked by itself). A repeated group with a variable among its members is not generable: the group rule repeats names, and what a variable repeated k times means is not decided (it was silently read as a name)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 19 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:generable true }
+        WHERE { { $this a va:Feature . FILTER NOT EXISTS { $this va:hasDefinitionRoot ?r } }
+                UNION { $this a va:RepetitionOperator ; va:repeatsAsGroup true .
+                        FILTER NOT EXISTS { $this va:appliesTo ?mv . ?mv va:hasDefinitionRoot ?mr } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 19 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:generable true }
+        WHERE { { $this a ?t ; va:hasLeftOperand ?z . VALUES ?t { va:AdditionOperator va:OrOperator va:ExclusiveOperator va:DependencyOperator va:IntersectionOperator va:SubtractionOperator va:CartesianOperator va:DivisionOperator } }
+                UNION { $this a va:InverseOperator } UNION { $this a va:ListExpression } UNION { $this va:expandsTo ?z2 }
+                UNION { $this va:edgeExpandsTo ?z3 . FILTER NOT EXISTS { $this va:hasConditionExpression ?k } }
+                UNION { $this va:hasDefinitionRoot ?z4 }
+                UNION { $this a va:ConditionedExpression ; va:hasOperand ?z5 }
+                FILTER(NOT EXISTS { $this a va:ConditionedExpression ; va:hasConditionExpression ?kc . FILTER NOT EXISTS { ?kc va:generable true } })
+                { SELECT $this (COUNT(DISTINCT ?ch) AS ?T) WHERE { $this va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:expandsTo|va:edgeExpandsTo|va:hasDefinitionRoot ?ch } GROUP BY $this }
+                { SELECT $this (COUNT(DISTINCT ?g) AS ?G) WHERE { $this va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:expandsTo|va:edgeExpandsTo|va:hasDefinitionRoot ?g .
+                    { ?g va:generable true } UNION { ?g va:hasDefinitionRoot ?gr } } GROUP BY $this }
+                FILTER(?T = ?G) }""" ] .
+
+# ------------------------------------------------------------ 24: the sets each node generates (va:Decision_OneMeaningGenerated_2026_09_28, va:Decision_AdditionIsAdditive_2026_09_28)
+# A set is a node with its members (feature, count) and its key. The operators ask for joins (va:SetJoin); one rule
+# carries out every join: the members of the two sides together, a feature on both sides once with the larger count.
+va:FeatureSetRuleShape a sh:NodeShape ; sh:targetClass va:Feature ;
+    rdfs:comment "A basic feature generates one set per count its slot declares, at least 1 (1 where the context has no slot for it, as in a model of definitions). A feature that a statement removes from every variant (va:isPurgedIn) keeps its sets: an expression that mentions it, such as (a / a) when (!a), still reads them (VAF-WI-255)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s va:setOf $this ; va:setFor ?C ; va:setKey ?k ; va:setMember ?m . ?m va:memberFeature $this ; va:memberTimes ?k }
+        WHERE { $this va:leafIn ?C . FILTER NOT EXISTS { $this va:hasDefinitionRoot ?r }
+                { ?sl va:slotOfComponent ?C ; va:slotFeature $this ; va:minCount ?lo ; va:maxCount ?hi . ?cv0 a va:CountValue ; va:numericValue ?k . FILTER(?k >= 1 && ?k >= ?lo && ?k <= ?hi) }
+                UNION { FILTER NOT EXISTS { ?sl2 va:slotOfComponent ?C ; va:slotFeature $this } BIND(1 AS ?k) }
+                BIND(IRI(CONCAT(STR($this), "__set_", MD5(STR(?C)), "_", STR(?k))) AS ?s)
+                BIND(IRI(CONCAT(STR($this), "__n", STR(?k))) AS ?m) }""" ] .
+
+va:JoinRequestRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:nodeOfComponent , va:hasDefinitionRoot ;
+    rdfs:comment "What each operator generates, as joins of its operands' sets: a + b each pair (one variant of each side, joined: additive); a $ b each side's sets (their union); a | b each side's sets and each pair; a < b each pair whose left set has a name, and the empty left set alone ('{} < b' is {}); a & b each pair and the empty set; a - b the left's sets (va:SubtractionRequirementRuleShape removes those whose part on the right's names is one of the right's); a keyword statement, an edge without a condition and a variable, the sets of their expansion or definition."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?j a va:SetJoin ; va:joinFor $this ; va:joinIn ?C ; va:joinLeft ?sa ; va:joinRight ?sb }
+        WHERE { $this va:nodeOfComponent ?C ; va:hasLeftOperand ?l ; va:hasRightOperand ?r .
+                VALUES ?t { va:AdditionOperator va:OrOperator va:DependencyOperator va:IntersectionOperator va:CartesianOperator } $this a ?t .
+                ?sa va:setOf ?l ; va:setFor ?C ; a va:CanonicalSet . ?sb va:setOf ?r ; va:setFor ?C ; a va:CanonicalSet .
+                FILTER(?t != va:DependencyOperator || EXISTS { ?sa va:setMember ?m })
+                FILTER(?t != va:CartesianOperator || NOT EXISTS { ?sa va:setMember ?pm1 . ?pm1 va:memberFeature ?px . ?sb va:setMember ?pm2 . ?pm2 va:memberFeature ?py . { ?px va:excludesPartner ?py } UNION { ?py va:excludesPartner ?px } })
+                FILTER (NOT EXISTS { ?C a va:DefinitionModel } || EXISTS { $this va:setsNeededIn ?C })
+                BIND(IRI(CONCAT("urn:vaf:join:", MD5(CONCAT(STR($this), " ", STR(?C), " ", STR(?sa), " ", STR(?sb))))) AS ?j) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?j a va:SetJoin ; va:joinFor $this ; va:joinIn ?C ; va:joinLeft ?sa }
+        WHERE { $this va:nodeOfComponent ?C .
+                { $this a va:ExclusiveOperator ; va:hasLeftOperand|va:hasRightOperand ?x }
+                UNION { $this a va:OrOperator ; va:hasLeftOperand|va:hasRightOperand ?x }
+                UNION { $this a va:SubtractionOperator ; va:hasLeftOperand ?x }
+                UNION { $this a va:ConditionedExpression ; va:hasOperand ?x }
+                UNION { $this a va:DivisionOperator ; va:hasLeftOperand ?x }
+                UNION { $this a va:DependencyOperator ; va:hasLeftOperand ?x . BIND(true AS ?emptyOnly) }
+                UNION { $this va:expandsTo ?x }
+                UNION { $this va:edgeExpandsTo ?x . FILTER NOT EXISTS { $this va:hasConditionExpression ?k } }
+                ?sa va:setOf ?x ; va:setFor ?C ; a va:CanonicalSet .
+                FILTER(!BOUND(?emptyOnly) || NOT EXISTS { ?sa va:setMember ?m })
+                FILTER NOT EXISTS { $this a va:SubtractionOperator ; va:hasRightOperand ?R . ?sa va:setMember ?sm . ?sm va:memberFeature ?sdf . FILTER(?R = ?sdf || EXISTS { ?R va:nameUnder ?sdf }) } FILTER (NOT EXISTS { ?C a va:DefinitionModel } || EXISTS { $this va:setsNeededIn ?C })
+                BIND(IRI(CONCAT("urn:vaf:join:", MD5(CONCAT(STR($this), " ", STR(?C), " ", STR(?sa))))) AS ?j) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?j a va:SetJoin ; va:joinFor $this ; va:joinIn ?C ; va:joinLeft ?sa }
+        WHERE { $this va:leafIn ?C . FILTER (NOT EXISTS { ?C a va:DefinitionModel } || EXISTS { $this va:setsNeededIn ?C })
+                $this va:hasDefinitionRoot ?x .
+                ?sa va:setOf ?x ; va:setFor ?C ; a va:CanonicalSet .
+                BIND(IRI(CONCAT("urn:vaf:join:", MD5(CONCAT(STR($this), " ", STR(?C), " ", STR(?sa))))) AS ?j) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?j a va:SetJoin ; va:joinFor $this ; va:joinIn ?C }
+        WHERE { $this a va:IntersectionOperator ; va:nodeOfComponent ?C ; va:hasLeftOperand ?l . FILTER (NOT EXISTS { ?C a va:DefinitionModel } || EXISTS { $this va:setsNeededIn ?C })
+                BIND(IRI(CONCAT("urn:vaf:join:", MD5(CONCAT(STR($this), " ", STR(?C), " empty")))) AS ?j) }""" ] .
+
+va:ListFoldRuleShape a sh:NodeShape ; sh:targetClass va:ListExpression ;
+    rdfs:comment "(e1, e2, ...) joins one set of each item (every item holds); [e1, e2, ...] joins, for each item, one of its sets or nothing (each item holds or has all its names absent). The items are taken in IRI order, one stage per item; the last stage's sets are the list's."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 23 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:itemCount ?T . ?it va:itemRankIn ?rk . ?rk va:rankList $this ; va:rankValue ?r ; va:rankItem ?it }
+        WHERE { { SELECT $this (COUNT(DISTINCT ?o) AS ?T) WHERE { $this va:hasListItem ?o } GROUP BY $this }
+                { SELECT $this ?it (COUNT(DISTINCT ?o2) AS ?r) WHERE { $this va:hasListItem ?it . OPTIONAL { $this va:hasListItem ?o2 . FILTER(STR(?o2) < STR(?it)) } } GROUP BY $this ?it }
+                BIND(IRI(CONCAT(STR($this), "__rank_", MD5(STR(?it)))) AS ?rk) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?j a va:SetJoin ; va:joinFor $this ; va:joinIn ?C ; va:joinLeft ?p ; va:joinRight ?sb ; va:joinStage ?r ; va:joinFinal ?fin }
+        WHERE { $this va:nodeOfComponent ?C ; va:itemCount ?T . ?rk va:rankList $this ; va:rankValue ?r ; va:rankItem ?it . FILTER (NOT EXISTS { ?C a va:DefinitionModel } || EXISTS { $this va:setsNeededIn ?C })
+                { ?sb va:setOf ?it ; va:setFor ?C ; a va:CanonicalSet } UNION { $this va:isOptionalList true . BIND(va:NoSet AS ?sb) }
+                OPTIONAL { ?p va:partialOf $this ; va:setFor ?C ; va:foldStage ?q ; a va:CanonicalSet . FILTER(?q = ?r - 1) }
+                FILTER(?r = 0 || BOUND(?p))
+                BIND(IF(?r = ?T - 1, true, ?unbound) AS ?fin)
+                BIND(IRI(CONCAT("urn:vaf:join:", MD5(CONCAT(STR($this), " ", STR(?C), " ", COALESCE(STR(?p), "-"), " ", STR(?sb), " ", STR(?r))))) AS ?j) }""" ] .
+
+va:GroupSetRuleShape a sh:NodeShape ; sh:targetClass va:RepetitionOperator ;
+    rdfs:comment "{a, b}[m..n] generates, for each count k from m to n (at most the count ceiling), the set with every member k times; k = 0 is the empty set."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s va:setOf $this ; va:setFor ?C ; va:setKey ?key ; va:setMember ?mm . ?mm va:memberFeature ?f ; va:memberTimes ?k }
+        WHERE { $this va:repeatsAsGroup true ; va:nodeOfComponent ?C ; va:cardinalityMin ?lo ; va:cardinalityMax ?hi . FILTER (NOT EXISTS { ?C a va:DefinitionModel } || EXISTS { $this va:setsNeededIn ?C })
+                va:CountCeiling va:numericValue ?ceil . ?cv a va:CountValue ; va:numericValue ?k .
+                FILTER(?k >= xsd:integer(STR(?lo)) && ?k <= IF(STR(?hi) = "*", ?ceil, IF(xsd:integer(STR(?hi)) < ?ceil, xsd:integer(STR(?hi)), ?ceil)))
+                { SELECT $this (SUM(?w) AS ?W) WHERE { ?wn va:weightOf $this ; va:weightValue ?w } GROUP BY $this }
+                BIND(?k * ?W AS ?key)
+                BIND(IRI(CONCAT(STR($this), "__g_", MD5(STR(?C)), "_", STR(?k))) AS ?s)
+                OPTIONAL { $this va:appliesTo ?f . FILTER(?k > 0) }
+                BIND(IRI(CONCAT(STR(?f), "__n", STR(?k))) AS ?mm) }""" ] .
+
+va:InverseSetRuleShape a sh:NodeShape ; sh:targetClass va:InverseOperator ;
+    rdfs:comment "!e generates every assignment of counts (0 up to the count ceiling) to e's features that is not one of e's sets: the assignments are built one feature at a time (in weight order), and each final one carries the requirement that it is not e's (va:ValidSetRuleShape)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?u va:setOf ?un ; va:setFor ?C ; va:setMember ?mm . ?mm va:memberFeature ?f ; va:memberTimes ?k . ?un va:universeOf $this ; va:universeRank ?r }
+        WHERE { $this va:nodeOfComponent ?C . ?wn va:weightOf $this ; va:weightFeature ?f ; va:weightRank ?r . FILTER (NOT EXISTS { ?C a va:DefinitionModel } || EXISTS { $this va:setsNeededIn ?C })
+                ?cv a va:CountValue ; va:numericValue ?k .
+                BIND(IRI(CONCAT(STR($this), "__u_", MD5(STR(?f)))) AS ?un)
+                BIND(IRI(CONCAT(STR($this), "__u_", MD5(STR(?f)), "_", MD5(STR(?C)), "_", STR(?k))) AS ?u)
+                BIND(IF(?k > 0, IRI(CONCAT(STR(?f), "__n", STR(?k))), ?unbound) AS ?mm) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?j a va:SetJoin ; va:joinFor $this ; va:joinIn ?C ; va:joinLeft ?p ; va:joinRight ?u ; va:joinStage ?r ; va:joinFinal ?fin }
+        WHERE { $this va:nodeOfComponent ?C ; va:hasOperand ?e .
+                { SELECT $this (COUNT(?w0) AS ?T) WHERE { ?w0 va:weightOf $this } GROUP BY $this }
+                ?un va:universeOf $this ; va:universeRank ?r . ?u va:setOf ?un ; va:setFor ?C .
+                OPTIONAL { ?p va:partialOf $this ; va:setFor ?C ; va:foldStage ?q ; a va:CanonicalSet . FILTER(?q = ?r - 1) }
+                FILTER(?r = 0 || BOUND(?p))
+                BIND(IF(?r = ?T - 1, true, ?unbound) AS ?fin)
+                BIND(IRI(CONCAT("urn:vaf:join:", MD5(CONCAT(STR($this), " ", STR(?C), " ", COALESCE(STR(?p), "-"), " ", STR(?u), " ", STR(?r))))) AS ?j) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s va:requires ?q . ?q va:requirementOn ?e ; va:requirementKey ?k ; va:requirementIn ?C }
+        WHERE { ?s va:setOf $this ; va:setFor ?C ; va:setKey ?k . $this va:hasOperand ?e .
+                BIND(IRI(CONCAT("urn:vaf:req:", MD5(CONCAT(STR(?e), " ", STR(?C), " ", STR(?k))))) AS ?q) }""" ] .
+
+va:ConditionedExpressionRuleShape a sh:NodeShape ; sh:targetClass va:ConditionedExpression ;
+    rdfs:comment "9.0.0 (VAF-WI-237): (e when c) is each of e's sets, with the requirement that its part on c's features is one of c's sets -- the converse of a subtraction, which requires that it is not (owner, 2026-10-15). A condition is read on the names of the expression it follows; one that carries a negation of its own is not decided (a requirement on a node whose sets carry requirements), the nodes above it are reported as not evaluable."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s va:requiresMember ?q . ?q va:requirementOn ?b ; va:requirementKey ?k ; va:requirementIn ?C }
+        WHERE { $this va:hasConditionExpression ?b . ?s va:setOf $this ; va:setFor ?C .
+                { SELECT ?s ?b (SUM(?c * ?w) AS ?k) WHERE {
+                    { SELECT ?s ?b ?f (MAX(COALESCE(?c0, 0)) AS ?c) WHERE {
+                        ?s va:setOf ?P . ?P a va:ConditionedExpression ; va:hasConditionExpression ?b . ?wn va:weightOf ?b ; va:weightFeature ?f .
+                        OPTIONAL { ?s va:setMember ?m . ?m va:memberFeature ?f ; va:memberTimes ?c0 } } GROUP BY ?s ?b ?f }
+                    ?wn2 va:weightOf ?b ; va:weightFeature ?f ; va:weightValue ?w } GROUP BY ?s ?b }
+                BIND(IRI(CONCAT("urn:vaf:reqm:", MD5(CONCAT(STR(?b), " ", STR(?C), " ", STR(?k))))) AS ?q) }""" ] .
+
+va:SetJoinRuleShape a sh:NodeShape ; sh:targetClass va:SetJoin ;
+    rdfs:comment "The one join (7.0.0: its result is raw; one representative per key stands for all equal results, va:SetRepresentativeRuleShape): the set whose members are the members of both sides (va:Decision_AdditionIsAdditive_2026_09_28: a name on both sides is one feature; with two counts, the larger counts -- va:SetKeyRuleShape); a fold stage's set is partial until the last stage. A set carries the requirements of the sets it was joined from. Each join is carried out once."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s ?rel ?P ; va:setFor ?C ; va:joinResultOf $this ; va:joinedFrom ?sa , ?sb ; va:foldStage ?i ; va:setMember ?m }
+        WHERE { $this va:joinFor ?P ; va:joinIn ?C . FILTER NOT EXISTS { ?done va:joinResultOf $this }
+                OPTIONAL { $this va:joinLeft ?sa } OPTIONAL { $this va:joinRight ?sb } OPTIONAL { $this va:joinStage ?i }
+                BIND(IF(EXISTS { $this va:joinStage ?x } && NOT EXISTS { $this va:joinFinal true }, va:rawPartialOf, va:rawSetOf) AS ?rel)
+                BIND(IRI(CONCAT("urn:vaf:set:", MD5(STR($this)))) AS ?s)
+                { $this va:joinFor ?P0 ; va:joinLeft ?a1 . ?a1 va:setMember ?m
+                  FILTER NOT EXISTS { ?P0 a va:DivisionOperator ; va:hasRightOperand ?R . ?m va:memberFeature ?df . FILTER(?R = ?df || EXISTS { ?R va:nameUnder ?df }) } }
+                UNION { $this va:joinRight ?b2 . ?b2 va:setMember ?m } UNION { BIND(true AS ?header) } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s va:requires ?q }
+        WHERE { ?s va:joinedFrom ?t . ?t va:requires ?q . FILTER(?s != ?t) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s va:requiresMember ?q }
+        WHERE { ?s va:joinedFrom ?t . ?t va:requiresMember ?q . FILTER(?s != ?t) }""" ] .
+
+va:CanonicalSetRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:setKey ;
+    rdfs:comment "The sets a node's parents join: every set with a key -- a feature's or a repeated group's own sets, and the representatives of join results (7.0.0: one per key, so choosing among equal sets is no longer needed; it was not monotone, which recursion cannot allow)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:CanonicalSet }
+        WHERE { $this va:setKey ?k ; va:setFor ?C . { $this va:setOf ?n } UNION { $this va:partialOf ?n } }""" ] .
+va:UnderNegationRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:nodeOfComponent , va:hasDefinitionRoot ;
+    rdfs:comment "A node with a negation below it (through variables' definitions too, 7.0.0): its sets carry requirements, so equal sets are kept apart."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 19 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:underNegation true }
+        WHERE { $this (va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:expandsTo|va:edgeExpandsTo|va:hasDefinitionRoot)* ?x .
+                { ?x a va:InverseOperator } UNION { ?x a va:SubtractionOperator } UNION { ?x a va:ConditionedExpression } }""" ] .
+
+va:SetKeyRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:joinResultOf ;
+    rdfs:comment "A joined set's key: the sum, over the node's features, of the set's count of the feature times the feature's weight. Two sets of one node have the same key only when they are the same set."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s va:rawKey ?key }
+        WHERE { { SELECT ?s (SUM(?c * ?w) AS ?key) WHERE {
+                    { SELECT ?s ?f (MAX(COALESCE(?c0, 0)) AS ?c) WHERE {
+                        ?s va:joinResultOf ?j . FILTER NOT EXISTS { ?s va:rawKey ?k0 }
+                        { ?s va:rawSetOf ?P } UNION { ?s va:rawPartialOf ?P }
+                        ?wn va:weightOf ?P ; va:weightFeature ?f .
+                        OPTIONAL { ?s va:setMember ?m . ?m va:memberFeature ?f ; va:memberTimes ?c0 } } GROUP BY ?s ?f }
+                    { ?s va:rawSetOf ?P2 } UNION { ?s va:rawPartialOf ?P2 } ?wn2 va:weightOf ?P2 ; va:weightFeature ?f ; va:weightValue ?w } GROUP BY ?s } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s va:rawKey 0 }
+        WHERE { ?s va:joinResultOf ?j . { ?s va:rawSetOf ?P } UNION { ?s va:rawPartialOf ?P }
+                FILTER NOT EXISTS { ?wn va:weightOf ?P } FILTER NOT EXISTS { ?s va:rawKey ?k0 } }""" ] .
+
+va:SetRepresentativeRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:rawKey ;
+    rdfs:comment "One set per node, fold stage and key (7.0.0): every raw join result is stood for by the representative of its key, which carries its members; parents join representatives only. So a set reached twice -- by two joins, or again around a recursive definition -- is the same set, the sets are finitely many, and generation stops when a step adds none (va:Decision_RecursionAllowed_2026_09_28). Under a negation each raw set is its own representative, since its requirements tell equal sets apart."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 24 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?R ?rel ?n ; va:setFor ?C ; va:setKey ?k ; va:foldStage ?st ; va:setMember ?m . $this va:representedBy ?R }
+        WHERE { $this va:rawKey ?k ; va:setFor ?C .
+                { $this va:rawSetOf ?n . BIND(va:setOf AS ?rel) } UNION { $this va:rawPartialOf ?n ; va:foldStage ?st . BIND(va:partialOf AS ?rel) }
+                BIND(IF(EXISTS { ?n va:underNegation true }, $this,
+                        IRI(CONCAT("urn:vaf:rep:", MD5(CONCAT(STR(?n), " ", STR(?C), " ", COALESCE(STR(?st), "final"), " ", STR(?k)))))) AS ?R)
+                OPTIONAL { $this va:setMember ?m } }""" ] .
+
+# ------------------------------------------------------------ 25-26: the valid sets, and truth in a candidate
+va:NegationLevelRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:nodeOfComponent , va:hasDefinitionRoot ;
+    rdfs:comment "How deeply the requirements of a node's sets are nested (VAF-WI-255, retiring the operator laws module): a negation or a condition is at level 1 above plain names, and one level above the deepest requirement it reads -- so !(!a) is at level 2, and !(a when !b) at level 3. A node has the deepest level of anything below it. A set is judged valid in the order of its node's level (25.001 for level 1, and so on), so a requirement always reads sets whose validity is already decided."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 20 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:negLevelAtLeast 1 }
+        WHERE { { $this a va:InverseOperator } UNION { $this a va:ConditionedExpression } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 20 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:negLevelAtLeast ?k }
+        WHERE { $this va:hasLeftOperand|va:hasRightOperand|va:hasOperand|va:hasListItem|va:expandsTo|va:edgeExpandsTo|va:hasDefinitionRoot|va:hasConditionExpression ?c . ?c va:negLevelAtLeast ?k }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 20 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:negLevelAtLeast ?k1 }
+        WHERE { { $this a va:InverseOperator ; va:hasOperand ?e } UNION { $this a va:ConditionedExpression ; va:hasOperand|va:hasConditionExpression ?e }
+                ?e va:negLevelAtLeast ?k . FILTER(?k <= 6) BIND(?k + 1 AS ?k1) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 20.5 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:negLevel ?m }
+        WHERE { { SELECT $this (MAX(?k) AS ?m) WHERE { $this va:negLevelAtLeast ?k } GROUP BY $this } }""" ] .
+
+va:ValidSetRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:setOf ;
+    rdfs:comment "A set is valid unless one of its requirements fails: a negation's set fails when the node it negates has a VALID set of the same key; a condition's set fails unless the condition has a valid set of the part. Sets of a node with no negation or condition below it are valid at once; the others are judged level by level (va:NegationLevelRuleShape), so a negation inside a negation, a condition inside a negation and the like are decided (VAF-WI-255). Nesting deeper than six levels is not decided: the nodes above it are reported as not evaluable, never guessed."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:ValidSet }
+        WHERE { $this va:setOf ?n ; va:setFor ?C . FILTER NOT EXISTS { ?n va:negLevel ?any } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.001 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:ValidSet }
+        WHERE { $this va:setOf ?n ; va:setFor ?C . ?n va:negLevel 1 .
+                FILTER NOT EXISTS { $this va:requires ?q . ?q va:requirementOn ?e ; va:requirementKey ?k . ?t va:setOf ?e ; va:setFor ?C ; va:setKey ?k ; a va:ValidSet }
+                FILTER NOT EXISTS { $this va:requiresMember ?qm . ?qm va:requirementOn ?em ; va:requirementKey ?km . FILTER NOT EXISTS { ?tm va:setOf ?em ; va:setFor ?C ; va:setKey ?km ; a va:ValidSet } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.002 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:ValidSet }
+        WHERE { $this va:setOf ?n ; va:setFor ?C . ?n va:negLevel 2 .
+                FILTER NOT EXISTS { $this va:requires ?q . ?q va:requirementOn ?e ; va:requirementKey ?k . ?t va:setOf ?e ; va:setFor ?C ; va:setKey ?k ; a va:ValidSet }
+                FILTER NOT EXISTS { $this va:requiresMember ?qm . ?qm va:requirementOn ?em ; va:requirementKey ?km . FILTER NOT EXISTS { ?tm va:setOf ?em ; va:setFor ?C ; va:setKey ?km ; a va:ValidSet } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.003 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:ValidSet }
+        WHERE { $this va:setOf ?n ; va:setFor ?C . ?n va:negLevel 3 .
+                FILTER NOT EXISTS { $this va:requires ?q . ?q va:requirementOn ?e ; va:requirementKey ?k . ?t va:setOf ?e ; va:setFor ?C ; va:setKey ?k ; a va:ValidSet }
+                FILTER NOT EXISTS { $this va:requiresMember ?qm . ?qm va:requirementOn ?em ; va:requirementKey ?km . FILTER NOT EXISTS { ?tm va:setOf ?em ; va:setFor ?C ; va:setKey ?km ; a va:ValidSet } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.004 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:ValidSet }
+        WHERE { $this va:setOf ?n ; va:setFor ?C . ?n va:negLevel 4 .
+                FILTER NOT EXISTS { $this va:requires ?q . ?q va:requirementOn ?e ; va:requirementKey ?k . ?t va:setOf ?e ; va:setFor ?C ; va:setKey ?k ; a va:ValidSet }
+                FILTER NOT EXISTS { $this va:requiresMember ?qm . ?qm va:requirementOn ?em ; va:requirementKey ?km . FILTER NOT EXISTS { ?tm va:setOf ?em ; va:setFor ?C ; va:setKey ?km ; a va:ValidSet } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.005 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:ValidSet }
+        WHERE { $this va:setOf ?n ; va:setFor ?C . ?n va:negLevel 5 .
+                FILTER NOT EXISTS { $this va:requires ?q . ?q va:requirementOn ?e ; va:requirementKey ?k . ?t va:setOf ?e ; va:setFor ?C ; va:setKey ?k ; a va:ValidSet }
+                FILTER NOT EXISTS { $this va:requiresMember ?qm . ?qm va:requirementOn ?em ; va:requirementKey ?km . FILTER NOT EXISTS { ?tm va:setOf ?em ; va:setFor ?C ; va:setKey ?km ; a va:ValidSet } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.006 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:ValidSet }
+        WHERE { $this va:setOf ?n ; va:setFor ?C . ?n va:negLevel 6 .
+                FILTER NOT EXISTS { $this va:requires ?q . ?q va:requirementOn ?e ; va:requirementKey ?k . ?t va:setOf ?e ; va:setFor ?C ; va:setKey ?k ; a va:ValidSet }
+                FILTER NOT EXISTS { $this va:requiresMember ?qm . ?qm va:requirementOn ?em ; va:requirementKey ?km . FILTER NOT EXISTS { ?tm va:setOf ?em ; va:setFor ?C ; va:setKey ?km ; a va:ValidSet } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n va:nestedNegationIn ?C }
+        WHERE { $this va:setOf ?n ; va:setFor ?C . ?n va:negLevel ?l . FILTER(?l > 6) }""" ] .
+
+va:NeedsTruthRuleShape a sh:NodeShape ; sh:targetClass va:Component ;
+    rdfs:comment "7.1.0 (VAF-WI-135): which nodes need a truth verdict. A statement the pruning decided (va:rootLastSlot) holds in every complete candidate by construction (va:PrunedRootTruthRuleShape), so only the nodes something reads are judged: a root the pruning did not decide, the operands an order edge, a repetition and a substitution condition read. A model with a replacement operator is judged as before (every node)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.9 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?r va:needsTruth true }
+        WHERE { $this va:hasConstraintRoot ?r . FILTER NOT EXISTS { ?r va:rootLastSlotIn $this } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.9 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n va:needsTruth true }
+        WHERE { { ?p va:hasConditionExpression ?n } UNION { ?p va:edgeExpandsTo ?n . ?p va:hasConditionExpression ?k }
+                UNION { ?p va:hasMaxRepetitions ?mx . { ?p va:members/rdf:rest*/rdf:first ?n } UNION { ?n va:contributesTo ?p } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.9 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n va:needsTruth true }
+        WHERE { FILTER EXISTS { ?rep a va:ReplacementOperator } { ?n va:nodeOfComponent $this } UNION { ?n va:leafIn $this } }""" ] .
+
+va:PrunedRootTruthRuleShape a sh:NodeShape ; sh:targetClass va:CompleteCandidate ;
+    rdfs:comment "7.1.0: a statement decided by pruning holds in every complete candidate (a candidate that broke it was a dead end and was never completed), so its truth is asserted without the key sum the truth rule computes. Not used when a replacement operator is present."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 26 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?r va:holdsIn $this }
+        WHERE { $this a va:CompleteCandidate . { $this va:candidateOf ?C } UNION { $this va:renamedFrom ?o . ?o va:candidateOf ?C }
+                ?r va:rootLastSlotIn ?C . FILTER NOT EXISTS { ?rep a va:ReplacementOperator } }""" ] .
+
+va:MembershipRuleShape a sh:NodeShape ; sh:targetClass va:CompleteCandidate ;
+    rdfs:comment "One truth rule for every expression node something reads (4.0.0; 7.1.0 limits it to va:needsTruth nodes): a generable node holds in a complete candidate when the candidate's counts on the node's features are one of its valid sets (the candidate's key is a valid set's key), and fails otherwise. A renamed candidate is read in the context of the candidate it copies."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 26 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?n ?verdict $this }
+        WHERE { { SELECT ?n $this ?C (SUM(COALESCE(?k, 0) * ?w) AS ?key) WHERE {
+                    $this a va:CompleteCandidate . { $this va:candidateOf ?C } UNION { $this va:renamedFrom ?o . ?o va:candidateOf ?C }
+                    { ?n va:nodeOfComponent ?C } UNION { ?n va:leafIn ?C }
+                    ?n va:generable true ; va:needsTruth true .
+                    ?wn va:weightOf ?n ; va:weightFeature ?f ; va:weightValue ?w .
+                    OPTIONAL { $this va:hasAssignment ?a . ?a va:assignedFeature ?f ; va:assignedCount ?k } } GROUP BY ?n $this ?C }
+                FILTER NOT EXISTS { ?n va:nestedNegationIn ?C }
+                BIND(IF(EXISTS { ?s va:setOf ?n ; va:setFor ?C ; va:setKey ?key ; a va:ValidSet }, va:holdsIn, va:failsIn) AS ?verdict) }""" ] .
+
+# ------------------------------------------------------------ 25.5-26.4: exclusion and dependency hold for the whole variant (5.0.0, VAF-WI-119)
+va:AssertedNodeRuleShape a sh:NodeShape ; sh:targetClass va:Component , va:DefinitionModel ;
+    rdfs:comment "The nodes a statement or a variable's definition asserts (va:assertedUnder its constraint root or its variable): the root and, from an asserted node, its operands, list items, expansion and a variable's definition -- not the operand of a negation, not the right side of a subtraction, not the expansion of a conditioned edge, not a condition. 5.0.0."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.5 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?r va:assertedUnder ?r }
+        WHERE { { $this va:hasConstraintRoot ?r } UNION { $this va:definesVariable ?r } UNION { $this va:definesVariable ?v . ?v va:hasFactor ?r } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.5 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?c va:assertedUnder ?root }
+        WHERE { { $this va:hasConstraintRoot ?root } UNION { $this va:definesVariable ?root } UNION { $this va:definesVariable ?v . ?v va:hasFactor ?root }
+                ?p va:assertedUnder ?root .
+                { ?p va:hasLeftOperand|va:hasListItem|va:expandsTo|va:hasDefinitionRoot ?c FILTER NOT EXISTS { ?p a va:DivisionOperator } }
+                UNION { ?p a va:ConditionedExpression ; va:hasOperand ?c }
+                UNION { ?p va:hasRightOperand ?c . FILTER NOT EXISTS { ?p a va:SubtractionOperator } FILTER NOT EXISTS { ?p a va:DivisionOperator } }
+                UNION { ?p va:edgeExpandsTo ?c . FILTER NOT EXISTS { ?p va:hasConditionExpression ?k } }
+                FILTER(NOT EXISTS { ?c a va:Feature } || EXISTS { ?c va:hasDefinitionRoot ?d }) }""" ] .
+
+va:WholeVariantScopeRuleShape a sh:NodeShape ; sh:targetClass va:Component , va:DefinitionModel ;
+    rdfs:comment "Each relation (a generable X $ Y or X < Y) asserted for a whole variant (va:relationFor): every complete candidate of the component whose statement asserts it; every valid set of the variable whose definition asserts it. 5.0.0."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.7 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?R va:relationFor ?T }
+        WHERE { ?R va:assertedUnder ?root ; va:hasLeftOperand ?x ; va:hasRightOperand ?y ; va:generable true .
+                { ?R a va:ExclusiveOperator } UNION { ?R a va:DependencyOperator }
+                { $this va:hasConstraintRoot ?root . ?T a va:CompleteCandidate ; va:candidateOf $this }
+                UNION { { $this va:definesVariable ?root } UNION { $this va:definesVariable ?v . ?v va:hasFactor ?root }
+                        ?T va:setOf ?root ; va:setFor $this ; a va:ValidSet } }""" ] .
+
+va:ContainedSetRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:relationFor ;
+    rdfs:comment "A set of a relation's operand is contained in a whole variant when every feature it counts is present there (counted at least once). The empty set is contained in every variant. 5.0.0."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 26.1 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?x va:containedIn ?T }
+        WHERE { $this va:relationFor ?T ; va:hasLeftOperand|va:hasRightOperand ?o .
+                { ?T va:candidateOf ?C } UNION { ?T va:setFor ?C }
+                ?x va:setOf ?o ; va:setFor ?C ; a va:ValidSet .
+                FILTER NOT EXISTS { ?x va:setMember ?m . ?m va:memberFeature ?f ; va:memberTimes ?k . FILTER(?k > 0)
+                                    FILTER NOT EXISTS { { ?T va:hasAssignment ?a . ?a va:assignedFeature ?f ; va:assignedCount ?n }
+                                                        UNION { ?T va:setMember ?m2 . ?m2 va:memberFeature ?f ; va:memberTimes ?n } FILTER(?n > 0) } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 26.2 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?cn va:contributionOf $this ; va:contributionIn ?T ; va:contributionSide ?side ; va:contributesFeature ?f }
+        WHERE { $this va:relationFor ?T .
+                { $this va:hasLeftOperand ?o . BIND("left" AS ?side) } UNION { $this va:hasRightOperand ?o . BIND("right" AS ?side) }
+                ?x va:setOf ?o ; va:containedIn ?T ; va:setMember ?m . ?m va:memberFeature ?f ; va:memberTimes ?k . FILTER(?k > 0)
+                BIND(IRI(CONCAT("urn:vaf:contribution:", MD5(CONCAT(STR($this), " ", STR(?T), " ", ?side)))) AS ?cn) }""" ] .
+
+va:WholeVariantRelationRuleShape a sh:NodeShape ; sh:targetSubjectsOf va:relationFor ;
+    rdfs:comment "X $ Y fails in a whole variant when both sides contribute and neither contribution contains the other (a name part of both sides is not excluded on its own); X < Y fails when X contributes and no set of Y is contained. 5.0.0."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 26.3 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?T va:violatesRelation $this }
+        WHERE { $this a va:ExclusiveOperator ; va:relationFor ?T .
+                ?l va:contributionOf $this ; va:contributionIn ?T ; va:contributionSide "left" .
+                ?r va:contributionOf $this ; va:contributionIn ?T ; va:contributionSide "right" .
+                FILTER EXISTS { ?l va:contributesFeature ?f . FILTER NOT EXISTS { ?r va:contributesFeature ?f } }
+                FILTER EXISTS { ?r va:contributesFeature ?g . FILTER NOT EXISTS { ?l va:contributesFeature ?g } } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 26.3 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?T va:violatesRelation $this }
+        WHERE { $this a va:DependencyOperator ; va:relationFor ?T ; va:hasRightOperand ?y .
+                ?l va:contributionOf $this ; va:contributionIn ?T ; va:contributionSide "left" .
+                FILTER NOT EXISTS { ?s va:setOf ?y ; va:containedIn ?T } }""" ] .
+
+va:ConsistentSetRuleShape a sh:NodeShape ; sh:targetClass va:DefinitionModel ;
+    rdfs:comment "A variable's consistent sets: its valid sets that break no relation its definition asserts. They are its variants. 5.0.0."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 26.4 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s a va:ConsistentSet }
+        WHERE { { $this va:definesVariable ?v } UNION { $this va:definesVariable ?v0 . ?v0 va:hasFactor ?v }
+                ?s va:setOf ?v ; va:setFor $this ; a va:ValidSet .
+                FILTER NOT EXISTS { ?s va:violatesRelation ?R } }""" ] .
+
+# ------------------------------------------------------------ 27-28: a model of definitions: capacity and local variants
+va:DefinitionCountRuleShape a sh:NodeShape ; sh:targetClass va:DefinitionModel ;
+    rdfs:comment "A variable's local variants (the thesis's Tables 3.1-3.6): its consistent sets (5.0.0) seen through the names its own definition writes -- a basic feature present when counted, a variable present when one of its features is -- each distinct view once."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 27 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?s va:projectsTo ?lv . ?lv va:localVariantOf ?v ; va:localKey ?key }
+        WHERE { { SELECT ?v ?s (SUM(?p * ?w) AS ?key) WHERE {
+                    $this va:definesVariable ?v . ?s va:setOf ?v ; va:setFor $this ; a va:ConsistentSet .
+                    ?at va:atomsOf ?v . ?wn va:weightOf ?at ; va:weightFeature ?a ; va:weightValue ?w .
+                    BIND(IF(EXISTS { ?s va:setMember ?m . ?m va:memberFeature ?a } || EXISTS { ?a va:nameUnder ?g . ?s va:setMember ?m2 . ?m2 va:memberFeature ?g }, 1, 0) AS ?p) }
+                  GROUP BY ?v ?s }
+                BIND(IRI(CONCAT(STR(?v), "__local_", STR(?key))) AS ?lv) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 28 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?lv va:hasMember ?a }
+        WHERE { $this va:definesVariable ?v . ?s va:projectsTo ?lv . ?lv va:localVariantOf ?v . ?at va:atomsOf ?v ; va:nameUnder ?a .
+                FILTER (EXISTS { ?s va:setMember ?m . ?m va:memberFeature ?a } || EXISTS { ?a va:nameUnder ?g . ?s va:setMember ?m2 . ?m2 va:memberFeature ?g }) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 28 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?v va:localVariantCount ?n }
+        WHERE { { SELECT ?v (COUNT(DISTINCT ?lv) AS ?n) WHERE { $this va:definesVariable ?v .
+                    FILTER (NOT EXISTS { ?v va:productSplit true } || EXISTS { $this va:listingRequestedFor ?v })
+                    OPTIONAL { ?lv va:localVariantOf ?v } } GROUP BY ?v } }""" ] .
+
+# ------------------------------------------------------------ 30: statements that are not expressions
+
+va:OrderEdgeRuleShape a sh:NodeShape ; sh:targetClass va:NextOperator , va:SequenceOperator ;
+    rdfs:comment "a -> b when c (va:Decision_EdgeConditionSyntax_2026_09_25): the edge's expansion [(b < a) | a] ('b never without a', va:Decision_DescriptorsAndOccurrences_2026_09_25) holds where c holds. An edge without a condition is an expression like any other (va:MembershipRuleShape); the condition is not part of what it conditions, so a conditioned edge is decided here, as a statement."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 30 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this ?verdict ?c }
+        WHERE { $this va:edgeExpandsTo ?x ; va:hasConditionExpression ?k .
+                { ?x va:holdsIn ?c . BIND(1 AS ?vx) } UNION { ?x va:failsIn ?c . BIND(0 AS ?vx) }
+                { ?k va:holdsIn ?c . BIND(1 AS ?vk) } UNION { ?k va:failsIn ?c . BIND(0 AS ?vk) }
+                BIND(IF(?vk = 0 || ?vx = 1, va:holdsIn, va:failsIn) AS ?verdict) }""" ] .
+
+va:RepetitionBoundRuleShape a sh:NodeShape ; sh:targetClass va:RepetitionOperator ;
+    rdfs:comment "v1.x RepetitionRuleShape: at most k of the members hold ('atmost k of {...}', contributesTo / hasMaxRepetitions)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 30 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this ?verdict ?c }
+        WHERE { $this va:hasMaxRepetitions ?max .
+                { SELECT $this (COUNT(DISTINCT ?o) AS ?T) WHERE { { $this va:members/rdf:rest*/rdf:first ?o } UNION { ?o va:contributesTo $this } } GROUP BY $this }
+                { SELECT $this ?c (COUNT(DISTINCT ?h) AS ?H) (COUNT(DISTINCT ?x) AS ?F) WHERE {
+                    { $this va:members/rdf:rest*/rdf:first ?m } UNION { ?m va:contributesTo $this }
+                    { ?m va:holdsIn ?c . BIND(?m AS ?h) } UNION { ?m va:failsIn ?c . BIND(?m AS ?x) } } GROUP BY $this ?c }
+                FILTER(?H + ?F = ?T)
+                BIND(IF(?H <= xsd:integer(STR(?max)), va:holdsIn, va:failsIn) AS ?verdict) }""" ] .
+
+# ------------------------------------------------------------ 40-46: admissibility, conditional substitution, variants and their number
+va:AdmissibilityRuleShape a sh:NodeShape ; sh:targetClass va:CompleteCandidate ;
+    rdfs:comment "A complete candidate is a variant when every constraint root holds in it and it breaks no relation they assert (5.0.0)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 40 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:AdmissibleCandidate }
+        WHERE { $this a va:CompleteCandidate ; va:candidateOf ?comp .
+                FILTER NOT EXISTS { ?comp va:hasConstraintRoot ?r . FILTER NOT EXISTS { ?r va:holdsIn $this } }
+                FILTER NOT EXISTS { $this va:violatesRelation ?R } }""" ] .
+
+va:VariantLevelSubstitutionRuleShape a sh:NodeShape ; sh:targetClass va:CompleteCandidate ;
+    rdfs:comment "The variant-level reading, used only by the A4 check to compare with the model-first result: each complete candidate of the model without its substitutions gets a renamed copy (va:renamedFrom), every name renamed by the component's unconditional substitutions as written (in order), counts merged by the larger, a name renamed away counted 0. The copy is complete, so the truth rules decide the conditions on it -- a conditional substitution's condition is read after the unconditional renaming, as in the result component (va:ConditionalSubstitutionRuleShape). The copy of an admissible candidate is the renamed candidate (va:RenamedCandidate)."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.4 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?d a va:CompleteCandidate ; va:renamedFrom $this ; va:hasAssignment ?an . ?an va:assignedFeature ?t ; va:assignedCount ?v }
+        WHERE { $this a va:CompleteCandidate ; va:candidateOf ?comp . ?comp va:substitutionReading va:VariantLevelReading .
+                { SELECT $this ?t (MAX(?n) AS ?v) WHERE {
+                    $this va:hasAssignment ?a ; va:candidateOf ?comp0 . ?a va:assignedFeature ?f ; va:assignedCount ?n .
+                    OPTIONAL { ?m va:mapBlock ?comp0 ; va:mapFrom ?f ; va:mapTo ?z }
+                    BIND(COALESCE(?z, ?f) AS ?t) } GROUP BY $this ?t }
+                BIND(IRI(CONCAT(STR($this), "__vr")) AS ?d) BIND(IRI(CONCAT(STR(?t), "__count_", STR(?v))) AS ?an) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 25.4 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?d va:hasAssignment ?z0 . ?z0 va:assignedFeature ?f ; va:assignedCount 0 }
+        WHERE { $this a va:CompleteCandidate ; va:candidateOf ?comp . ?comp va:substitutionReading va:VariantLevelReading .
+                ?m va:mapBlock ?comp ; va:mapFrom ?f .
+                FILTER NOT EXISTS { ?m2 va:mapBlock ?comp ; va:mapTo ?f }
+                BIND(IRI(CONCAT(STR($this), "__vr")) AS ?d) BIND(IRI(CONCAT(STR(?f), "__count_0")) AS ?z0) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 42 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?d a va:CandidateVariant , va:RenamedCandidate ; va:candidateOf ?comp }
+        WHERE { $this a va:AdmissibleCandidate ; va:candidateOf ?comp . ?d va:renamedFrom $this }""" ] .
+
+va:ConditionalSubstitutionRuleShape a sh:NodeShape ; sh:targetClass va:CandidateVariant ;
+    rdfs:comment "'a ~ b when c' (va:Decision_SubstitutionSemantics_2026_09_25, va:Decision_ReplacementReading_2026_09_25): in an admissible candidate of the substitution's result where c holds and a is present, a is taken out and b put in its place (b's count the larger of its own and a's). The substitutions whose conditions hold apply at once, each condition read on the candidate before any of them. In the variant-level reading the same applies to the renamed candidates, the condition read on the renamed candidate, as on a candidate of the result. Scope: the component's names."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 43 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:rewrittenBy ?sub }
+        WHERE { { $this a va:AdmissibleCandidate ; va:candidateOf ?comp . ?comp va:derivedBySubstitution ?sub . BIND($this AS ?c) }
+                UNION { $this a va:RenamedCandidate ; va:candidateOf ?comp . ?comp va:hasOperator ?sub . ?sub a va:ReplacementOperator . BIND($this AS ?c) }
+                ?sub va:hasConditionExpression ?k ; va:hasLeftOperand ?old . ?k va:holdsIn ?c .
+                $this va:hasAssignment ?a . ?a va:assignedFeature ?old ; va:assignedCount ?n . FILTER(?n > 0) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 44 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?d a va:CandidateVariant , va:SubstitutedCandidate ; va:candidateOf ?comp ; va:substitutedFrom $this ; va:hasAssignment ?a }
+        WHERE { $this va:rewrittenBy ?s0 ; va:candidateOf ?comp ; va:hasAssignment ?a . ?a va:assignedFeature ?f .
+                FILTER NOT EXISTS { $this va:rewrittenBy ?s . { ?s va:hasLeftOperand ?f } UNION { ?s va:hasRightOperand ?f } }
+                BIND(IRI(CONCAT(STR($this), "__sub")) AS ?d) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 44 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?d a va:CandidateVariant , va:SubstitutedCandidate ; va:candidateOf ?comp ; va:substitutedFrom $this ; va:hasAssignment ?z .
+                    ?z va:assignedFeature ?old ; va:assignedCount 0 }
+        WHERE { $this va:rewrittenBy ?sub ; va:candidateOf ?comp . ?sub va:hasLeftOperand ?old .
+                FILTER NOT EXISTS { $this va:rewrittenBy ?s2 . ?s2 va:hasRightOperand ?old }
+                BIND(IRI(CONCAT(STR($this), "__sub")) AS ?d) BIND(IRI(CONCAT(STR(?old), "__count_0")) AS ?z) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 44 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?d a va:CandidateVariant , va:SubstitutedCandidate ; va:candidateOf ?comp ; va:substitutedFrom $this ; va:hasAssignment ?an .
+                    ?an va:assignedFeature ?new ; va:assignedCount ?v }
+        WHERE { { SELECT $this ?new (MAX(?x) AS ?v) WHERE {
+                    $this va:rewrittenBy ?sub . ?sub va:hasRightOperand ?new .
+                    { $this va:rewrittenBy ?sub1 ; va:hasAssignment ?a . ?sub1 va:hasLeftOperand ?old ; va:hasRightOperand ?new . ?a va:assignedFeature ?old ; va:assignedCount ?x }
+                    UNION { $this va:hasAssignment ?b . ?b va:assignedFeature ?new ; va:assignedCount ?x } } GROUP BY $this ?new }
+                $this va:candidateOf ?comp .
+                BIND(IRI(CONCAT(STR($this), "__sub")) AS ?d) BIND(IRI(CONCAT(STR(?new), "__count_", STR(?v))) AS ?an) }""" ] .
+
+va:VariantRuleShape a sh:NodeShape ; sh:targetClass va:CandidateVariant ;
+    rdfs:comment "The component's variants (va:Variant): its admissible candidates no conditional substitution rewrote (in the variant-level reading, the renamed ones), and the rewritten ones, each counted once -- a rewritten or renamed candidate equal (same features, same counts) to a variant already listed adds none."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 45 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:Variant ; va:variantOf ?comp }
+        WHERE { $this a va:AdmissibleCandidate ; va:candidateOf ?comp . FILTER NOT EXISTS { $this va:rewrittenBy ?s }
+                FILTER NOT EXISTS { ?comp va:substitutionReading va:VariantLevelReading } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 45 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this a va:Variant ; va:variantOf ?comp }
+        WHERE { { $this a va:SubstitutedCandidate } UNION { $this a va:RenamedCandidate . FILTER NOT EXISTS { $this va:rewrittenBy ?s0 } }
+                $this va:candidateOf ?comp .
+                FILTER NOT EXISTS {
+                    ?w va:candidateOf ?comp .
+                    { ?w a va:AdmissibleCandidate . FILTER NOT EXISTS { ?w va:rewrittenBy ?s3 } FILTER NOT EXISTS { ?comp va:substitutionReading va:VariantLevelReading } }
+                    UNION { ?w a va:SubstitutedCandidate . FILTER(STR(?w) < STR($this)) }
+                    UNION { ?w a va:RenamedCandidate . FILTER NOT EXISTS { ?w va:rewrittenBy ?s4 } FILTER(STR(?w) < STR($this)) }
+                    FILTER NOT EXISTS { $this va:hasAssignment ?x . ?x va:assignedCount ?nx ; va:assignedFeature ?fx . FILTER(?nx > 0)
+                                        FILTER NOT EXISTS { ?w va:hasAssignment ?y . ?y va:assignedFeature ?fx ; va:assignedCount ?nx } }
+                    FILTER NOT EXISTS { ?w va:hasAssignment ?x2 . ?x2 va:assignedCount ?nx2 ; va:assignedFeature ?fx2 . FILTER(?nx2 > 0)
+                                        FILTER NOT EXISTS { $this va:hasAssignment ?y2 . ?y2 va:assignedFeature ?fx2 ; va:assignedCount ?nx2 } } } }""" ] .
+
+va:VariantCountRuleShape a sh:NodeShape ; sh:targetClass va:Component , va:DefinitionModel ;
+    rdfs:comment "The number of variants (the variation capacity, the thesis's VP, Figure 3.2): of a component, its variants; of a variable of a model of definitions, its consistent sets, each distinct set once. 4.0.0: both counted here; 5.0.0: consistent sets."@en ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 46 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { $this va:admissibleVariantCount ?n }
+        WHERE { { SELECT $this (COUNT(?v) AS ?n) WHERE { $this a va:Component . OPTIONAL { ?v va:variantOf $this ; a va:Variant } } GROUP BY $this } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 46 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?v va:variationCapacity ?n }
+        WHERE { { SELECT ?v (COUNT(DISTINCT ?k) AS ?n) WHERE { $this va:definesVariable ?v . FILTER NOT EXISTS { ?v va:productSplit true }
+                    OPTIONAL { ?s va:setOf ?v ; va:setFor $this ; va:setKey ?k ; a va:ConsistentSet } } GROUP BY ?v } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 45 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?F va:factorCount ?n }
+        WHERE { { SELECT ?F (COUNT(DISTINCT ?k) AS ?n) WHERE { $this va:definesVariable ?v . ?v va:hasFactor ?F .
+                    OPTIONAL { ?s va:setOf ?F ; va:setFor $this ; va:setKey ?k ; a va:ConsistentSet } } GROUP BY ?F } }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 45.2 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?p va:partialProductOf ?v ; va:partialRank 0 ; va:partialValue ?c }
+        WHERE { $this va:definesVariable ?v . ?rk va:rankedIn ?v ; va:factorRank 0 ; va:rankedFactor ?F . ?F va:factorCount ?c .
+                BIND(IRI(CONCAT(STR(?v), "__product_0")) AS ?p) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 45.1 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?p va:factorRank ?r . ?p va:rankedFactor ?F ; va:rankedIn ?v }
+        WHERE { { SELECT ?v ?F (COUNT(?G) AS ?r) WHERE { $this va:definesVariable ?v . ?v va:hasFactor ?F . OPTIONAL { ?v va:hasFactor ?G . FILTER(STR(?G) < STR(?F)) } } GROUP BY ?v ?F }
+                BIND(IRI(CONCAT(STR(?v), "__rank_", MD5(STR(?F)))) AS ?p) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 45.2 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?p2 va:partialProductOf ?v ; va:partialRank ?r ; va:partialValue ?c }
+        WHERE { $this va:definesVariable ?v . ?p va:partialProductOf ?v ; va:partialRank ?q ; va:partialValue ?c0 .
+                ?rk va:rankedIn ?v ; va:factorRank ?r ; va:rankedFactor ?F . FILTER(?r = ?q + 1) ?F va:factorCount ?n .
+                BIND(?c0 * ?n AS ?c) BIND(IRI(CONCAT(STR(?v), "__product_", STR(?r))) AS ?p2) }""" ] ;
+    sh:rule [ a sh:SPARQLRule ; sh:order 46 ; sh:prefixes <http://example.org/vaf-consolidated/operator-rules-v2> ; sh:construct """
+        CONSTRUCT { ?v va:variationCapacity ?c }
+        WHERE { $this va:definesVariable ?v . ?v va:productSplit true .
+                { SELECT ?v (COUNT(?F) AS ?k) WHERE { ?v va:hasFactor ?F } GROUP BY ?v }
+                ?p va:partialProductOf ?v ; va:partialRank ?r ; va:partialValue ?c . FILTER(?r = ?k - 1) }""" ] .
+

@@ -25,7 +25,7 @@ PIB's answer has three parts:
 |---|---|
 | `01-ontologies/` | `profile` and `integration-interface` TBoxes, the four canonical **assessment profiles**, the wiring-composition record, and a worked capstone example |
 | `02-shacl-safeguards/` | `pib_invariants` — G1 one-wiring-per-profile, G2 profile scoping, G3 self-coverage required before wiring, G4 contract closure, G5 well-formed edges |
-| `03-tooling/` | `variation_capacity` and `operator_rule_runner` (harnesses that drive the ontology's rules) and `self_coverage_checker` (parse + SHACL + HermiT) |
+| `03-tooling/` | `variation_capacity` and `algebra_conformance_check` (harnesses that drive the ontology's rules — PIB's own, and the algebra's vendored ones) and `self_coverage_checker` (parse + SHACL + HermiT) |
 | `04-documentation/` | Blueprint, published vocabulary, composition and materialization records |
 | `05-prov-records/` | PROV-O provenance |
 | `06-vaf-engine-pin/` | SHA-256 pin of the external Variant Algebra Framework engine |
@@ -50,8 +50,8 @@ at most *one*, or means at least *one* — but is expressible by composing repet
 contributes-to grouping.
 
 ```bash
-python3 03-tooling/operator_rule_runner_v1_0_0.py              # self-test: proves the rules reject
-python3 03-tooling/operator_rule_runner_v1_0_0.py <expr.ttl> <candidate.ttl>
+python3 03-tooling/algebra_conformance_check_v3_0_0.py --self-test   # proves the check can fail
+python3 03-tooling/algebra_conformance_check_v3_0_0.py <spaces.ttl>
 ```
 
 The rules are evaluated inside PIB's own gate run, from vendored copies, so the gate needs nothing

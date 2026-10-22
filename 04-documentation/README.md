@@ -13,7 +13,7 @@ loose **produces/consumes** integration contract, validated by the pinned **Vari
 01-ontologies/         profile_tbox + integration_interface_tbox + worked-example ABox
 02-shacl-safeguards/   pib_invariants (G1 one-wiring-per-profile, G2 profile-scoped, G3 self-coverage
                        required, G4 contract-closure, G5 edge well-formed)
-03-tooling/            variation_capacity + operator_rule_runner (ontology-rule harnesses)
+03-tooling/            variation_capacity + algebra_conformance_check (ontology-rule harnesses)
                        + self_coverage_checker
 04-documentation/      BLUEPRINT_v1_0_0.md (the design), this README, BOOTSTRAP_PROMPT
 05-prov-records/       PROV-O lineage
