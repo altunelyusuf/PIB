@@ -1,6 +1,6 @@
-# PIB/HUB session prompt v1.0.0
+# PIB/HUB session prompt v1.1.0
 
-Written 2026-10-22 at PIB v3.3.0, to start a fresh session on this package. **Paste the block below.**
+Written 2026-10-22 at PIB v3.3.0, state section refreshed 2026-10-23 at PIB v3.4.0, to start a fresh session on this package. **Paste the block below.**
 
 Everything after it is context for whoever maintains this prompt. Nothing in this file is evidence:
 every figure it mentions is re-derivable from the repository, and the prompt's own first instruction is
@@ -34,7 +34,7 @@ to trust the files over any summary — including this one.
 >    the structural work, with its execution records and what went wrong on the way.
 > 4. `04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md` — the two layers, the enforcement rules, how a
 >    taxonomy entry arises from each operator, and how conformance is checked.
-> 5. `11-vendored-operator-rules/VENDORED_PINS_v1_1_0.md` and
+> 5. `11-vendored-operator-rules/VENDORED_PINS_v1_2_0.md` and
 >    `14-vendored-oe-tooling/VENDORED_PINS_v1_1_0.md` — what PIB vendors from other packages, pinned by
 >    hash, and why each one is there rather than rebuilt.
 >
@@ -57,7 +57,7 @@ to trust the files over any summary — including this one.
 
 ---
 
-## What is waiting, and on whom (2026-10-22)
+## What is waiting, and on whom (2026-10-23)
 
 Nothing is in flight. Everything open is waiting on another session or on the owner.
 
@@ -66,7 +66,7 @@ Nothing is in flight. Everything open is waiting on another session or on the ow
 | Recall proposal addressed to PAMG | PIB's `09-handover-inbox/outgoing/` since 2026-09-27 | that package having a reachable inbox or repository; searched again on 2026-10-22 in the monorepo and the account's repository list, and there is still none |
 | PIB's reference kit (ontology-native enumeration) | the algebra's inbox, `pending/` | that session's disposition |
 | PIB's reply on the application class | the algebra's inbox, `pending/` | nothing; delivered, no answer needed |
-| The algebra's consumers' note on the rules file | its 2.247.0 | nothing; PIB sees it when it re-vendors |
+| The algebra's consumers' note on the rules file | released in its 2.252.0 | nothing; **done in PIB v3.4.0** — dispositioned, measured, re-vendored to its 2.258.0 |
 | **Two untagged versions: v2.18.0 and v3.1.0** | — | **the owner**: one manual "OE tags" run each from the repository's Actions tab, with the version number. v3.1.0 is untagged because its push carried two versions and the workflow tags only the later one |
 
 ## The next pieces of work, in no particular order

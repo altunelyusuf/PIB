@@ -31,6 +31,16 @@
 # (a / a is the empty variant). An edge with a condition used as an operand still has no candidate reading and is reported as
 # not evaluable, never silently admitted or rejected.
 #
+# CONSUMERS (VAF-WI-260). Run these rules with the executor named below, on Oxigraph, not with pySHACL. Measured on 2026-10-22 on one
+# parsed component (three optional features, an exclusive, a dependency, an at-most bound): the native evaluator and the executor give
+# 3 variants; pySHACL (advanced, in place, no inference, the prescribed configuration) ends without an error, with one variant node and
+# no count, a wrong answer that is silent. The PIB package reports, on its own models, an AttributeError ('NotBoundError' has no
+# 'datatype') raised by rdflib inside the counting rules. The PIB package also reports that the blank nodes of a model must be
+# skolemised first (variant_native_evaluator does it, to urn:vaf:node:), because the generation rules build the IRI of a candidate by
+# joining strings on the node they branch from, so that an RDF list of operator members left as blank nodes yields no candidate and
+# no error; that point is not re-measured here. The input of the rules is what the parser emits (an operator typed directly, carrying
+# va:members); a va:OperatorApplication is the record of a calculus run and is not read as input.
+#
 # EXECUTION. The rules are run by sh:order stratum: every rule of the lowest order to a fixpoint, then the next.
 # Aggregates and negation read only strata already complete (a substitution's model rewrite 1-9, setup 10-16, names, independent groups and weights 17-19.5, generated sets 24-25, candidates and pruning 25.05-25.4, truth 26 and 30,
 # relations over the whole variant 25.5-26.4, admissibility 40, conditional substitution 42-44, variants and counts 45-46).
