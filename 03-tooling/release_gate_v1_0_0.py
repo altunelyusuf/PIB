@@ -28,6 +28,7 @@ GATES = [
     ("profile taxonomy", ["profile_taxonomy_v1_0_0.py", "--self-test"]),
     ("variation capacity", ["variation_capacity_v1_2_0.py", "--self-test"]),
     ("algebra conformance (the algebra's live ontology rules)", ["algebra_conformance_check_v3_0_0.py", "--self-test"]),
+    ("expression conformance (wiring expressions evaluated by the algebra's rules)", ["expression_conformance_check_v1_0_0.py", "--self-test"]),
 ]
 NEEDS_EXTERNAL = ["consumer registration check (needs a token)",
                   "profile approval (needs a token and the algebra's parser)"]

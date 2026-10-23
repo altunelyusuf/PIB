@@ -542,7 +542,7 @@ pibx:hasRootApplication a owl:ObjectProperty ;
     kb:hasRelationshipCategory kb:RelationshipCategory_Compositional ;
     rdfs:domain pibx:WiringExpression ;
     rdfs:range pibx:OperatorApplication ;
-    skos:definition "The outermost node of the expression tree. Inner nodes are reached through the algebra's own operand and inner-operator predicates, so nesting is expressed in the algebra's vocabulary rather than a parallel PIB one. The range was va:OperatorApplication until v3.2.0, when the algebra's session confirmed that class records a calculus run rather than stating a constraint; the property keeps its IRI and its name, which read as they always did, and now names PIB's own class."@en .
+    skos:definition "The outermost node of the expression tree. Inner nodes are reached through the algebra's own left-operand and right-operand predicates, the form its parser emits and its rules read, so nesting is expressed in the algebra's vocabulary rather than a parallel PIB one; an operator that takes a list of members (an exclusive, an or, a repetition) names them with the algebra's members predicate. The range was va:OperatorApplication until v3.2.0, when the algebra's session confirmed that class records a calculus run rather than stating a constraint; the property keeps its IRI and its name, which read as they always did, and now names PIB's own class."@en .
 
 pibe:MandatoryConstraint a owl:Class ;
     rdfs:label "Mandatory constraint — the named feature appears in every selection"@en ;

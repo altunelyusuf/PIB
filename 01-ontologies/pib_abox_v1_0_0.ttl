@@ -196,12 +196,19 @@ pib:General a pib:RuleScope,
     prov:wasAttributedTo <http://purl.org/pib/prov#Agent_YusufAltunel> ;
     prov:wasGeneratedBy <http://purl.org/pib/prov#authoring> .
 
-pibx:CapstoneWiringExpression a pibx:WiringExpression,
+pibx:CapstoneBudgetExpression a pibx:WiringExpression,
         owl:NamedIndividual ;
-    rdfs:label "Capstone wiring constraint"@en ;
-    pibx:expressionIntent "At most two measurement facets may feed the grader, and exactly one grader may be selected — both conditions together." ;
+    rdfs:label "Capstone measurement budget"@en ;
+    pibx:expressionIntent "At most two of the three measurement facets may feed the grader." ;
     pibx:governsWiring asmt:Wiring_CoreSoftwareDevelopment ;
-    pibx:hasRootApplication pibx:CapstoneConstraintApp .
+    pibx:hasRootApplication pibx:MeasurementBudgetApp .
+
+pibx:CapstoneGraderExpression a pibx:WiringExpression,
+        owl:NamedIndividual ;
+    rdfs:label "Capstone grading discipline"@en ;
+    pibx:expressionIntent "Exactly one grader may be selected: the institutional grader or an alternative, never both." ;
+    pibx:governsWiring asmt:Wiring_CoreSoftwareDevelopment ;
+    pibx:hasRootApplication pibx:GradingDisciplineApp .
 
 pibx:Cartesian a va:CartesianOperator,
         owl:NamedIndividual ;
@@ -498,16 +505,6 @@ pibx:AlternativeGrader a va:Feature,
         owl:NamedIndividual ;
     rdfs:label "Alternative grader — any grader other than the institutional one"@en .
 
-pibx:CapstoneConstraintApp a va:AdditionOperator,
-        pibx:OperatorApplication,
-        owl:NamedIndividual ;
-    rdfs:label "Both the measurement budget and the grading discipline apply together"@en ;
-    va:hasInnerOperator pibx:Exclusive,
-        pibx:Repetition ;
-    va:hasOperand pibx:GradingDisciplineApp,
-        pibx:MeasurementBudgetApp ;
-    va:hasOperator pibx:Addition .
-
 pibx:FacetGroup a va:Feature,
         owl:NamedIndividual ;
     rdfs:label "Measurement facet group — the facets competing for the budget"@en .
@@ -516,16 +513,14 @@ pibx:GradingDisciplineApp a va:ExclusiveOperator,
         pibx:OperatorApplication,
         owl:NamedIndividual ;
     rdfs:label "Exactly one grader: the institutional grader, or an alternative, never both"@en ;
-    va:hasOperator pibx:Exclusive ;
     va:members ( asmt:PAMG_if pibx:AlternativeGrader ) .
 
 pibx:MeasurementBudgetApp a pibx:OperatorApplication,
         va:RepetitionOperator,
         owl:NamedIndividual ;
-    rdfs:label "At most two measurement facets may feed the grader"@en ;
-    va:appliesTo pibx:FacetGroup ;
+    rdfs:label "At most two of the three measurement facets may feed the grader"@en ;
     va:hasMaxRepetitions 2 ;
-    va:hasOperator pibx:Repetition .
+    va:members ( asmt:RADAR_if asmt:OEE_if asmt:GamOnt_if ) .
 
 asmt:HasOntologyQuality a pib:SharedCriterion,
         owl:NamedIndividual ;

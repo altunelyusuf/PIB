@@ -4,6 +4,10 @@
 @prefix pib: <http://purl.org/pib/profile#> .
 @prefix pibcr: <http://purl.org/pib/consumer-registry#> .
 @prefix pibe: <http://purl.org/pib/enumeration#> .
+@prefix pibx: <http://purl.org/pib/wiring-expression#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix va: <http://example.org/variant-algebra#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -597,3 +601,67 @@ pib:ProfileShape a sh:NodeShape ;
     owl:versionIRI <http://purl.org/pib/shacl/1.0.0> ;
     owl:versionInfo "1.0.0" .
 
+# ============================================================================================================
+# Wiring expressions read by the algebra's rules (PIB v3.5.0)
+#
+# A wiring expression is written in the form the algebra's rules read: an operator TYPED DIRECTLY, carrying
+# its members (va:members) or the feature it bounds, and nested operators through va:hasOperand. What the
+# rules need besides that is the thing the expression is a statement ABOUT: a va:Component that lists the
+# features and carries the roots. These two rules derive it, once per wiring, in the ontology; the algebra's
+# own executor runs them at order 0.5, before its own strata, and the algebra's rules do the rest.
+#
+# All the expressions that govern one wiring land in one component, so they hold together (the conjunction
+# the vocabulary promises: "all of them must hold"). A feature is any operand or member that is not itself
+# a node of an expression. The component is a node of its own, derived from the wiring, not the wiring
+# typed twice.
+# ============================================================================================================
+
+pibx:ExpressionComponentRuleShape a sh:NodeShape ;
+    rdfs:label "Expression component: the wiring's expressions, gathered into the component the algebra's rules evaluate"@en ;
+    pibe:phase "expression" ;
+    sh:targetClass pibx:WiringExpression ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:order 0.5 ;
+            sh:construct """
+        PREFIX pibx: <http://purl.org/pib/wiring-expression#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        PREFIX va: <http://example.org/variant-algebra#>
+        CONSTRUCT { ?c a va:Component . ?c prov:wasDerivedFrom ?w . ?c va:hasOperator ?root }
+        WHERE { $this pibx:governsWiring ?w ; pibx:hasRootApplication ?root .
+                BIND(IRI(CONCAT(STR(?w), "_component")) AS ?c) }
+    """ ] .
+
+pibx:ExpressionFeatureRuleShape a sh:NodeShape ;
+    rdfs:label "Expression features: every operand or member that is not itself an expression node is a feature of the component"@en ;
+    pibe:phase "expression" ;
+    sh:targetClass pibx:WiringExpression ;
+    sh:rule [ a sh:SPARQLRule ;
+            sh:order 0.5 ;
+            sh:construct """
+        PREFIX pibx: <http://purl.org/pib/wiring-expression#>
+        PREFIX va: <http://example.org/variant-algebra#>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        CONSTRUCT { ?c va:hasFeature ?f . ?f a va:Feature . ?f a va:TerminalFeature }
+        WHERE { $this pibx:governsWiring ?w ; pibx:hasRootApplication ?root .
+                BIND(IRI(CONCAT(STR(?w), "_component")) AS ?c)
+                ?root (va:hasOperand|va:hasLeftOperand|va:hasRightOperand)* ?n .
+                ?n (va:hasOperand|va:hasLeftOperand|va:hasRightOperand|va:appliesTo|(va:members/rdf:rest*/rdf:first)) ?f .
+                FILTER NOT EXISTS { ?f a pibx:OperatorApplication } }
+    """ ] .
+
+# A node whose operands the algebra's rules would not read is refused, not passed over. The rules read an
+# operator in an expression through its LEFT and RIGHT operand (the form the algebra's parser emits); an
+# unordered va:hasOperand on such a node measured as half-read (the exclusive was read, an addition above
+# it was not), so it is refused rather than allowed to answer wrongly.
+pibx:OperandFormShape a sh:NodeShape ;
+    rdfs:label "Operand form: an expression node names its left and right operand, as the algebra's rules read them"@en ;
+    sh:targetClass pibx:OperatorApplication ;
+    sh:sparql [ a sh:SPARQLConstraint ;
+            sh:message "An expression node gives its operands with va:hasOperand only; the algebra's rules read them as va:hasLeftOperand and va:hasRightOperand." ;
+            sh:select """
+        PREFIX va: <http://example.org/variant-algebra#>
+        SELECT $this WHERE {
+            $this va:hasOperand ?o .
+            FILTER NOT EXISTS { $this va:hasLeftOperand ?l }
+        }
+    """ ] .

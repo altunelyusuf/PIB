@@ -113,7 +113,10 @@ silent renaming. The algebra's operator classes and its `va:members`, `va:hasMax
 wrongly**, and nothing else moved: `pibx:hasRootApplication` keeps its IRI and its name, and now names
 PIB's class.
 
-**Still open, stated rather than implied:** the algebra's rules read an operator **typed directly**
-with `va:members`, so PIB's nested expression form is not evaluable by them. That is a consumer's own
-concern by the algebra's answer, not a defect in either package; making PIB's expressions evaluable
-would mean writing them in that form, and it is not done here.
+**Done in v3.5.0.** The algebra's rules read an operator typed directly, with its members or its left and
+right operand, so PIB's expressions are written that way and two rules in PIB's SHACL gather the
+expressions that govern one wiring into the component the rules evaluate
+(`03-tooling/expression_conformance_check_v1_0_0.py`). The capstone example was also corrected: it combined
+its two conditions with the algebra's addition operator, which means *both operands present*: read as the algebra
+reads it, that admits 2 or 4 variants where the two conditions together admit 14; it is now two expressions on the same wiring, which
+all hold together.

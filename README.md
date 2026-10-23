@@ -47,8 +47,20 @@ depth, and PIB applies the algebra's **complete set of twelve operators** rather
 This matters because the operators are constructors, not a fixed menu: composing them expresses
 constraints none of them expresses alone. "At most two of four measurement facets may feed the
 grader" is not expressible with mandatory, optional, exclusive, or, or dependency — exclusive means
-at most *one*, or means at least *one* — but is expressible by composing repetition with a
-contributes-to grouping.
+at most *one*, or means at least *one* — but is expressible with the algebra's repetition operator
+over the facets as its members.
+
+Expressions are written in the form the algebra's rules read, so the algebra itself says what a
+wiring admits: two rules in `02-shacl-safeguards/pib_shacl_v1_0_0.ttl` gather the expressions that
+govern one wiring into one component, and the vendored rules and runner do the rest. Several
+expressions on one wiring all hold together, which is how "exactly one grader" and "at most two of
+three facets" are combined; the algebra's addition operator means *both operands present*, not *both
+constraints hold*. A nested expression names the left and right operand of each operator; a node
+that gives only an unordered operand is refused by a shape rather than half-read.
+
+```bash
+python3 03-tooling/expression_conformance_check_v1_0_0.py --self-test   # the capstone wiring admits 14 variants
+```
 
 ```bash
 python3 03-tooling/algebra_conformance_check_v3_0_0.py --self-test   # proves the check can fail

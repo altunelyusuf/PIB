@@ -1,4 +1,8 @@
-# PIB v3.4.1 — SHA-256 Manifest
+# PIB v3.5.0 — SHA-256 Manifest
+# MINOR from v3.4.1 (2026-10-23): wiring expressions are evaluable by the algebra's rules. Two rules in PIB's SHACL gather the expressions that govern one wiring into the
+#   component the rules read; a new gate (expression_conformance_check) has the algebra's rules produce the capstone wiring's variants (14) and checks that the positive candidate
+#   is one and the negative is not, with a self-test that fails in both directions. The capstone example is corrected: it combined its two conditions with the algebra's addition
+#   (both operands present) and is now two expressions that hold together. A node that gives only unordered operands is refused by a shape instead of half-read.
 # PATCH from v3.4.0 (2026-10-23): the v3.4.0 tag sits on a commit that still carried the superseded T-Box vaf_domain_tbox_v1_0_11.ttl beside the new one (a stowaway the
 #   conformance check would have loaded twice); the tag is left as the record and this version removes the file. Nothing else changed.
 # MINOR from v3.3.0 (2026-10-23): the algebra's consumers' note is dispositioned and the vendored algebra files are re-vendored from its
@@ -14,26 +18,27 @@
 # Verify:  grep -v '^#' MANIFEST_SHA256.txt | grep . | sha256sum -c -
 
 f8f05310801874c400fb6ea3dc1b54a84b79484c325c807d26915424319f5ddf  .github/workflows/oe-tags.yml  (3920b)
-4555eb2e4eb4fac1707e119438717154d88744dc437e085b4ef8aa15c1ae1a72  01-ontologies/pib_abox_v1_0_0.ttl  (32328b)
-981fef6c659c86dc22a9861e5ac270583b2abdc0f5d9cae6ffcf7732f02debf6  01-ontologies/pib_tbox_v1_0_0.ttl  (49852b)
-4c0e326f24f54a26f6e03df1fa3d2f39b566f81d6d4d3773d1190b1825e36fbd  02-shacl-safeguards/pib_shacl_v1_0_0.ttl  (30177b)
+4c1a0b4724175632bb565477836f83116f814aeccde30a921f161edf3cd7ae2e  01-ontologies/pib_abox_v1_0_0.ttl  (32225b)
+6e26404c5063559fb56f7bc8ae05184cc22e9ce98651bcda5ed38feeab4a411d  01-ontologies/pib_tbox_v1_0_0.ttl  (50028b)
+94c06e68a76681ff867dbd078190dc219f676428fd92a6cf7a4e5d2a2bfde44a  02-shacl-safeguards/pib_shacl_v1_0_0.ttl  (34375b)
 be2534e7c8bc805ffedd76c8bfed98ff88c2331b51f3fe4fc9fa194fbc030ea6  03-tooling/RETIRED_algebra_conformance_check_v2_0_0.md  (1565b)
 f82ed81aa1439553faca9ab5f83d72926c4c424be16dde184b511056ee53d71b  03-tooling/RETIRED_operator_rule_runner_v1_0_0.md  (2579b)
 266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
 a2a441de26a5f4fcead15877ff303b658841def7ce56e55ea33d7aa56cad968b  03-tooling/algebra_conformance_check_v3_0_0.py  (16404b)
 a997d3f4f000de1ceb45d1b9c26d1600f60f2bcba0b03ee30742a2287d58ce38  03-tooling/consumer_registration_check_v1_0_0.py  (8854b)
+bbdbeb8b3628a34b4ec83756588dcc0c450789f411285cc3ab49bad091f55e0c  03-tooling/expression_conformance_check_v1_0_0.py  (9559b)
 9134c817c4a04d0f0015601fd9a5e22d02700d8bc88c920e5f32c992ee9ecbb9  03-tooling/handover_inbox_check_v1_0_0.py  (6411b)
 960f132599cbbfad440dd9a2f9ecddfae9e5540aa2c15a0c99aada4538cb36a9  03-tooling/profile_approval_v1_0_0.py  (12952b)
 2873514120e60ad757c415e2914f000738e9930b05eb28c7d788061cfb543de1  03-tooling/profile_architecture_check_v1_0_0.py  (8146b)
 6f1a4960851eda325459781ac854f2528be3029477ea7bd133e575b5e00f2bed  03-tooling/profile_scoped_validate_v1_0_0.py  (7989b)
 64ee96b67e7ba04820deef2ddbe85081e9465891898c0296f325439d665d16df  03-tooling/profile_taxonomy_v1_0_0.py  (7695b)
 eba6f68539fddfb205722e31047fa9dd1149967e1eb4c355aeca4c3a7b9ee5ce  03-tooling/reference_check_v1_1_0.py  (5992b)
-5b949bdfa37afe3daf743aa431db79f5c88534622196cd929addf46238a6ef59  03-tooling/release_gate_v1_0_0.py  (2611b)
+ae9966e0d3f99eeab1778be5e2dffe151742bba775bf9473918bf06aac90eef8  03-tooling/release_gate_v1_0_0.py  (2756b)
 b03bf8fdcd66409eb1ffd9d49a2c878d714ad8f4948dab71596d6a2415bfcade  03-tooling/rule_scope_check_v1_0_0.py  (5652b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
 004865a4cc69d512057a207fe576cc84e9165af583133f2751d2d775daf2bd5c  03-tooling/structure_debt_check_v1_1_0.py  (7630b)
 12b2432d4bef55280b14e3a3f367ddf1f49c8880f3c13b1a0681487feaf402a1  03-tooling/taxonomy_vaf_converter_v1_0_0.py  (10755b)
-f32cae3fdb83427e6b5afdf1f1db5fdaae68fbe299745a6bf93084cdd64a96fd  03-tooling/variation_capacity_v1_2_0.py  (11825b)
+bbf83c2bd894833000e03ae6f92d154cba87df2fedf1420afe4ab5cc347b5b55  03-tooling/variation_capacity_v1_2_0.py  (11982b)
 bd7e876397715a904936f01a27289d3ed15c16871db40ffd471caa9471ddae73  04-documentation/ADAPTATION_PLAN_VAF_v1_0_0.md  (10662b)
 399a115dcf75ec88ecf6432901f822e9ddb0a471ecc58d18ae3bff8e9d1a62b7  04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md  (3736b)
 9732a43c78c305f1d98d9af3fc26dfcfe0f1a630e03b49b091c317b644612d1c  04-documentation/BLUEPRINT_v1_0_0.md  (8101b)
@@ -42,7 +47,7 @@ b104fb1d638f2cfd3663d3b9fa61347bcde43f928231f9136f1e6cc20be70ed3  04-documentati
 46fa7f5262078bed29d9268a721403d3ac8dc2dd21f67079acbb9346382ccebc  04-documentation/PHASE3_COMPOSITION_RECORD_v1_0_0.md  (4984b)
 d3e93de82a3b826cc56075a8fc41441cce93584eedb55a116c9fc2091233478f  04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md  (11751b)
 10b39ee97f897b5f46116bbc86e3fdd743429409069189ff493476d6741d4614  04-documentation/PROPOSAL_DISPOSITION_v1_0_0.md  (1814b)
-e75b32df94a1896239f77feee76a24a8dd0baf10d22cd192b305124b1274fdb5  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (7459b)
+0263039a61e691a6b48adae1482d5b61d31e76a7a5259c720c1e18914f443bbb  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (7744b)
 ec91ed94cfa51d63599650a0868064fde647013c09fc727378b0b2fe85cd0d7c  04-documentation/README.md  (4428b)
 5e0b0f6e304b7ae7a8248cee8f1f2ce0f653b2bb300ab0d0b663c72542b0850e  04-documentation/SESSION_PROMPT_v1_1_0.md  (8058b)
 067223f2008b3bdfbcb998bfb111a3e1c36171ef33af15c038d042c5d205c943  04-documentation/STRUCTURE_PLAN_v1_0_0.md  (11635b)
@@ -145,5 +150,5 @@ b3a8cda70d8660dc29eed04888ce0334ef0d0f76accb2dcac937ef9ca9107303  14-vendored-oe
 3d834db15fd6499713ce94d35f4f4a4f8e2548287c1e526c0b46cb7f71e68dac  LICENSE  (19202b)
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
-caee14e475337679de8bf53d9cc67fce71b69452ee394012f3c4c2586a6529f6  README.md  (8588b)
-cc714f5e0224a78311f4835e9fbb88e69ba35f65e7dd5cb7d86cabb4a84bbd72  VERSION.txt  (6b)
+77aa9060f87425d776dee8e98e9a03edf848f3fe81cfde7668ac31061f34777f  README.md  (9397b)
+76120c1f2c4311c2154c22a6b58e00e411e0ebe76afae0daf608d9196c61f114  VERSION.txt  (6b)

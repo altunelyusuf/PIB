@@ -80,6 +80,8 @@ def phased_shapes():
     # dropped from every phase would never run, and the capacity would simply come out wrong.
     for shape in rules.subjects(rdflib.RDF.type, SH.NodeShape):
         phase = str(rules.value(shape, P.phase) or "")
+        if phase == "expression":
+            continue          # the wiring-expression derivation: another calculation, run by expression_conformance_check
         if phase not in graphs:
             if (shape, SH.rule, None) in rules:
                 raise ValueError(f"rule shape {shape} declares no known phase")
