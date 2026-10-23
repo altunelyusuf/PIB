@@ -1,4 +1,6 @@
-# PIB v3.4.0 — SHA-256 Manifest
+# PIB v3.4.1 — SHA-256 Manifest
+# PATCH from v3.4.0 (2026-10-23): the v3.4.0 tag sits on a commit that still carried the superseded T-Box vaf_domain_tbox_v1_0_11.ttl beside the new one (a stowaway the
+#   conformance check would have loaded twice); the tag is left as the record and this version removes the file. Nothing else changed.
 # MINOR from v3.3.0 (2026-10-23): the algebra's consumers' note is dispositioned and the vendored algebra files are re-vendored from its
 #   repository (altunelyusuf/VAF, package 2.258.0): T-Box v1_0_11 -> v1_0_30 (same terms declared), rules module with the consumers' paragraph (no rule changed),
 #   executor unchanged; eight of eight variation spaces still give variant sets identical to PIB's. The pySHACL statement on the pins page is repointed to what was
@@ -144,4 +146,4 @@ b3a8cda70d8660dc29eed04888ce0334ef0d0f76accb2dcac937ef9ca9107303  14-vendored-oe
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 caee14e475337679de8bf53d9cc67fce71b69452ee394012f3c4c2586a6529f6  README.md  (8588b)
-f5e3e93e58ffc2a20a3ca53e8025bc50d7c1dccbef4b34e2388aa9bbf8678466  VERSION.txt  (6b)
+cc714f5e0224a78311f4835e9fbb88e69ba35f65e7dd5cb7d86cabb4a84bbd72  VERSION.txt  (6b)
