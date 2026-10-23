@@ -34,7 +34,7 @@ to trust the files over any summary — including this one.
 >    the structural work, with its execution records and what went wrong on the way.
 > 4. `04-documentation/PROFILE_ARCHITECTURE_v1_0_0.md` — the two layers, the enforcement rules, how a
 >    taxonomy entry arises from each operator, and how conformance is checked.
-> 5. `11-vendored-operator-rules/VENDORED_PINS_v1_2_0.md` and
+> 5. `11-vendored-operator-rules/VENDORED_PINS_v1_3_0.md` and
 >    `14-vendored-oe-tooling/VENDORED_PINS_v1_1_0.md` — what PIB vendors from other packages, pinned by
 >    hash, and why each one is there rather than rebuilt.
 >

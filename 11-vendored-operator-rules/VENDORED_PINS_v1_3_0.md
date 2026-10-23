@@ -1,6 +1,6 @@
 # Vendored algebra files — pinned, read-only (NOT PIB-owned)
 
-The three files here are **verbatim, SHA-256-pinned, read-only copies** of the variant algebra's own
+The three files here (and the shapes file in `vendored-shapes/`, below) are **verbatim, SHA-256-pinned, read-only copies** of the variant algebra's own
 calculus and its runner, vendored so PIB's conformance gate re-runs **from this package alone** — the
 same reason the spoke interface declarations are vendored under `07-spoke-contributions/`.
 
@@ -61,3 +61,13 @@ for consumers that the algebra's note (released in its 2.252.0) put into its hea
 
 Measured before this pin was written, not assumed: PIB's conformance check, run against the new files, gives **sets identical
 to PIB's own on all eight variation spaces**, element by element, and its self-test still fails in both directions.
+
+## Added in PIB v3.6.0 — the algebra's own shapes, so PIB's content can be checked against them
+
+| File | SHA-256 | Role |
+|---|---|---|
+| `vendored-shapes/variant_algebra_shapes_v1_3_4.ttl` | `2fc2883fdeb84c34…` | the algebra's one SHACL file, verbatim, from the same commit as the files above (`0fd5539f…`, package 2.258.0) |
+
+It is used for its constraints only (`03-tooling/borrowed_shapes_check_v1_0_0.py`): the check fails on any
+violation whose focus node is one of PIB's, and no rule in it is run. It sits in its own folder because the
+conformance check loads every `.ttl` in `vendored/` as rules.

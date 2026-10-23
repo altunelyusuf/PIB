@@ -1,4 +1,7 @@
-# PIB v3.5.0 — SHA-256 Manifest
+# PIB v3.6.0 — SHA-256 Manifest
+# MINOR from v3.5.0 (2026-10-23): PIB's content is checked against the shapes of the algebra it borrows from. The algebra's one SHACL file is vendored and pinned
+#   (vendored-shapes/), and a new gate (borrowed_shapes_check) fails on any violation of those shapes on a PIB node; it reports 0 today and reports violations on the form that
+#   carried the class misuse before v3.2.0, so it can fail.
 # MINOR from v3.4.1 (2026-10-23): wiring expressions are evaluable by the algebra's rules. Two rules in PIB's SHACL gather the expressions that govern one wiring into the
 #   component the rules read; a new gate (expression_conformance_check) has the algebra's rules produce the capstone wiring's variants (14) and checks that the positive candidate
 #   is one and the negative is not, with a self-test that fails in both directions. The capstone example is corrected: it combined its two conditions with the algebra's addition
@@ -25,6 +28,7 @@ be2534e7c8bc805ffedd76c8bfed98ff88c2331b51f3fe4fc9fa194fbc030ea6  03-tooling/RET
 f82ed81aa1439553faca9ab5f83d72926c4c424be16dde184b511056ee53d71b  03-tooling/RETIRED_operator_rule_runner_v1_0_0.md  (2579b)
 266d6c3e0979d704244d2e7c36fb8488eeb81202bb03426b2ae426e55d597d44  03-tooling/RETIRED_wiring_validator_v1_0_0.md  (2713b)
 a2a441de26a5f4fcead15877ff303b658841def7ce56e55ea33d7aa56cad968b  03-tooling/algebra_conformance_check_v3_0_0.py  (16404b)
+5cd86b0bcf8b6a88b0cbb10500d28800467f000ae3cb75c1bc0e923eabbbab0c  03-tooling/borrowed_shapes_check_v1_0_0.py  (3562b)
 a997d3f4f000de1ceb45d1b9c26d1600f60f2bcba0b03ee30742a2287d58ce38  03-tooling/consumer_registration_check_v1_0_0.py  (8854b)
 bbdbeb8b3628a34b4ec83756588dcc0c450789f411285cc3ab49bad091f55e0c  03-tooling/expression_conformance_check_v1_0_0.py  (9559b)
 9134c817c4a04d0f0015601fd9a5e22d02700d8bc88c920e5f32c992ee9ecbb9  03-tooling/handover_inbox_check_v1_0_0.py  (6411b)
@@ -33,7 +37,7 @@ bbdbeb8b3628a34b4ec83756588dcc0c450789f411285cc3ab49bad091f55e0c  03-tooling/exp
 6f1a4960851eda325459781ac854f2528be3029477ea7bd133e575b5e00f2bed  03-tooling/profile_scoped_validate_v1_0_0.py  (7989b)
 64ee96b67e7ba04820deef2ddbe85081e9465891898c0296f325439d665d16df  03-tooling/profile_taxonomy_v1_0_0.py  (7695b)
 eba6f68539fddfb205722e31047fa9dd1149967e1eb4c355aeca4c3a7b9ee5ce  03-tooling/reference_check_v1_1_0.py  (5992b)
-ae9966e0d3f99eeab1778be5e2dffe151742bba775bf9473918bf06aac90eef8  03-tooling/release_gate_v1_0_0.py  (2756b)
+981ea9d3bd839176eda41c162cf3fbcc434bbcf8be6f9242d72f87e08233781c  03-tooling/release_gate_v1_0_0.py  (2880b)
 b03bf8fdcd66409eb1ffd9d49a2c878d714ad8f4948dab71596d6a2415bfcade  03-tooling/rule_scope_check_v1_0_0.py  (5652b)
 9970c69843bda21e8c246e8accafcddd4e0c5dfd73ceba89625e5b04e38c1f36  03-tooling/self_coverage_checker_v1_1_0_1.py  (5994b)
 004865a4cc69d512057a207fe576cc84e9165af583133f2751d2d775daf2bd5c  03-tooling/structure_debt_check_v1_1_0.py  (7630b)
@@ -49,7 +53,7 @@ d3e93de82a3b826cc56075a8fc41441cce93584eedb55a116c9fc2091233478f  04-documentati
 10b39ee97f897b5f46116bbc86e3fdd743429409069189ff493476d6741d4614  04-documentation/PROPOSAL_DISPOSITION_v1_0_0.md  (1814b)
 0263039a61e691a6b48adae1482d5b61d31e76a7a5259c720c1e18914f443bbb  04-documentation/PUBLISHED_VOCABULARY_v1_0_0.md  (7744b)
 ec91ed94cfa51d63599650a0868064fde647013c09fc727378b0b2fe85cd0d7c  04-documentation/README.md  (4428b)
-5e0b0f6e304b7ae7a8248cee8f1f2ce0f653b2bb300ab0d0b663c72542b0850e  04-documentation/SESSION_PROMPT_v1_1_0.md  (8058b)
+526e28384bd1635a189bc5869b54c6e9d065aeeae6b4a651e5d8bf712f1d5471  04-documentation/SESSION_PROMPT_v1_1_0.md  (8058b)
 067223f2008b3bdfbcb998bfb111a3e1c36171ef33af15c038d042c5d205c943  04-documentation/STRUCTURE_PLAN_v1_0_0.md  (11635b)
 d84722040e1b3483a9e5cda60b144f8395aff641ca2578a83c771e756596c546  04-documentation/structure-debt/KIND_COVERAGE_BASELINE_v1_1_0.tsv  (43b)
 5861f1baf88517964008d3a902e9fad024e049e7f982fea9f64cd9ca4303700b  04-documentation/structure-debt/KIND_COVERAGE_DECISIONS_v1_0_0.tsv  (406b)
@@ -124,7 +128,8 @@ a4db3905385b5bcd9f13ad056c1b99aa58a5eac483e335505b1d19d0856f17cb  10-experiments
 741222119fba9999cc1a483b2499c4e5e6408903a4c0b6b1ce155534779d366d  10-experiments/probe_round3_shipped_operator_rules_v1_0_0.py  (5863b)
 7a12178a5910491f3db8c8200b00785b600c9f1a665e4aa56dc9b279b82530ac  10-experiments/probe_taxonomy_vs_vaf_oracle_v1_0_0.py  (4711b)
 558d63a0a7098acaf7189671e690628afb2fc0a40c57948e8483148e996cb757  10-experiments/probe_vaf_profile_families_differential_v1_0_0.py  (4647b)
-89791644664323542e775c4b66e6a007467d8512c5c5f0d2633de473343998f1  11-vendored-operator-rules/VENDORED_PINS_v1_2_0.md  (4919b)
+74f80d03d23279f06c459d2592b8e88bb94978bfd855e99de8f015281096bd44  11-vendored-operator-rules/VENDORED_PINS_v1_3_0.md  (5583b)
+2fc2883fdeb84c346361239b0100ad8edd38c5e9291545e3c6958dee83a5c40f  11-vendored-operator-rules/vendored-shapes/variant_algebra_shapes_v1_3_4.ttl  (652176b)
 71073e7fee66358fcd015aa0b072ed7ba385da13d1ec8bc5a6bb5ffdb9052922  11-vendored-operator-rules/vendored/vaf_domain_tbox_v1_0_30.ttl  (1292297b)
 2b4888ba317b8ff474ecebc3a0de861909e114c85583f196661d6488abf5f6de  11-vendored-operator-rules/vendored/variant_algebra_operator_rules_v8_0_0.ttl  (114025b)
 0035b795c21f530f2b2cb2282130ddfe8ede50843f509e7bc0f497d61227831c  11-vendored-operator-rules/vendored/variant_rule_executor_v1_0_0.py  (3091b)
@@ -151,4 +156,4 @@ b3a8cda70d8660dc29eed04888ce0334ef0d0f76accb2dcac937ef9ca9107303  14-vendored-oe
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 77aa9060f87425d776dee8e98e9a03edf848f3fe81cfde7668ac31061f34777f  README.md  (9397b)
-76120c1f2c4311c2154c22a6b58e00e411e0ebe76afae0daf608d9196c61f114  VERSION.txt  (6b)
+138203e3f604a08fad0c4d0a297efe2c486219820dcdd053e72b7d843504c7a1  VERSION.txt  (6b)
