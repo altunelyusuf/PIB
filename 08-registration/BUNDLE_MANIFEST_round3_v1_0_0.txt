@@ -1,0 +1,5 @@
+# Bundle manifest — ORCP round three (registration maintenance), PIB v3.7.0
+# Verify:  grep -v '^#' BUNDLE_MANIFEST_round3_v1_0_0.txt | sha256sum -c -  (from this folder)
+
+301714de0cbb83f55a6b183a98c40a36c283fa31f82487d4e03116f3f5440518  build_pib_orcp_submission_v3_0_0.py
+77b4848edd1b94a7b2ce81210c97b57ca424573a889f5290b0a79bd3dddc8750  pib_orcp_submission_v3_0_0.ttl

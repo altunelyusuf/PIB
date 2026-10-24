@@ -6,6 +6,11 @@ returned contract in `09-handover-inbox/accepted/OEE_to_PIB_round2_contract_v1_0
 registration-maintenance registry now baselines PIB at v2.3.0; it next flags PIB on a major version
 change or five accumulated minor bumps.**
 
+**Round three (registration maintenance) submitted 2026-10-24 at PIB v3.7.0**, raised by that registry's
+major-version flag (2.3.0 → 3.x) and by the five registered ontology files having been merged into three.
+Criticality stays high. The bundle is `pib_orcp_submission_v3_0_0.ttl` with its builder, pinned by
+`BUNDLE_MANIFEST_round3_v1_0_0.txt`; it awaits OE's phases C–F.
+
 The table and notes below describe round one, and are kept as its record.
 
 PIB/HUB completed a full Ontology Registration & Conformance Protocol (ORCP) round with OEE governance.

@@ -1,4 +1,8 @@
-# PIB v3.6.0 — SHA-256 Manifest
+# PIB v3.7.0 — SHA-256 Manifest
+# MINOR from v3.6.0 (2026-10-24): registration maintenance, round three. The registry flags PIB on a MAJOR change (2.3.0 -> 3.x), and the five ontology files round two registered by hash
+#   no longer exist (merged into one T-Box, one A-Box, one SHACL file). A fresh submission is built from the current files (08-registration/), criticality stays high; 26 of 32 releases since
+#   the baseline carry a recorded gate result and are registered, six do not and are disclosed rather than claimed. Validated against OE's method shapes: 0 violations on PIB's nodes, and
+#   removing a test result or a mitigation makes the high-criticality gates fail.
 # MINOR from v3.5.0 (2026-10-23): PIB's content is checked against the shapes of the algebra it borrows from. The algebra's one SHACL file is vendored and pinned
 #   (vendored-shapes/), and a new gate (borrowed_shapes_check) fails on any violation of those shapes on a PIB node; it reports 0 today and reports violations on the form that
 #   carried the class misuse before v3.2.0, so it can fail.
@@ -65,16 +69,19 @@ c2d4ce934d8691fa017002d278c647c3f0e143bc259ea916273d37e12e2f84d1  07-spoke-contr
 8f1e2bc1302c8b4115218cac017d2dcb742d47af6f757178e235ea8a812cfeba  07-spoke-contributions/vendored/pamg_interface_contribution_v1_0_0.ttl  (5539b)
 c226b671eb8570dbe6c45f00e4d763f9efa01c04befd94cd60689fb25ce8d950  07-spoke-contributions/vendored/radar_interface_contribution_v1_0_0.ttl  (7403b)
 85927c09d075f5359a5efa8d494321625e2a3f419e7ffc71681f125b761a5397  08-registration/BUNDLE_MANIFEST_round2_v1_0_0.txt  (696b)
+bd0cef4a146c3b3daa2d3b87731199036f18f7420ce19e331dca465a93d80740  08-registration/BUNDLE_MANIFEST_round3_v1_0_0.txt  (373b)
 574c199f2ece3851e4e7d1a7ed267b2fe03f5ea75a7bdf47942dee01479cd413  08-registration/OEE_to_PIB_registration_contract_v1_0_0.md  (4830b)
 587c1d4db6ce30ef210cf08e19d6962d71213df511fa7611526a48308836b441  08-registration/PIB_ORCP_Phase_G_closure_note_v1_0_0.md  (2177b)
 610e8f000fa62a389078e69d8d7c5145c0668a4c377918476a142f58999b9a89  08-registration/PIB_ORCP_fit_gap_note_v1_0_0.md  (4587b)
 461efa7cecd66e7ccdeecfb83bf4b21bb05c101456489963d8d76aac41156d00  08-registration/PIB_ORCP_round2_fit_gap_note_v1_0_0.md  (6001b)
-0f7249435f527ef8ecc13001eee52376fc143b4d0c6804d89306a4ac7cfcbb52  08-registration/REGISTRATION_STATUS_v1_0_0.md  (2572b)
-59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03  08-registration/VERSION.txt  (6b)
+3961d88f406bcc35c31156db84063704757bfa5b197c86dca9b9f4b0b41dd068  08-registration/REGISTRATION_STATUS_v1_0_0.md  (2951b)
+1575e1af4a95f12f70b4ee6a6adce8160953d93ea17dc2611b90883ccc3ad3b8  08-registration/VERSION.txt  (6b)
 f970dc114d77fcb914029965d015e31c18c347c841193d8a7e11720432897dd2  08-registration/archive/pib_orcp_submission_v1_0_0.ttl  (2579b)
 65dc16c3ee8dad23cc09cb671e66ccbdbf5c742e45c989ff3a570e7c6dec1442  08-registration/build_pib_orcp_submission_v1_0_0.py  (4660b)
 771cdc2321de0c0806d60f9187e72c886a0fb99d2965f0c156f34b5eb432c0e4  08-registration/build_pib_orcp_submission_v2_0_0.py  (11413b)
+301714de0cbb83f55a6b183a98c40a36c283fa31f82487d4e03116f3f5440518  08-registration/build_pib_orcp_submission_v3_0_0.py  (12294b)
 291b21ffcc1a4ff9f94a1b1dcf73efb09f684a54764b39909a538bc1137d03e4  08-registration/pib_orcp_submission_v2_0_0.ttl  (12517b)
+77b4848edd1b94a7b2ce81210c97b57ca424573a889f5290b0a79bd3dddc8750  08-registration/pib_orcp_submission_v3_0_0.ttl  (15562b)
 859324d83a5fa19619bec705d34f731ee830fa4fd965309b6f89504349944749  09-academic-paper/PROPOSAL_pib-vaf-paper_to_VAF_operator-classification-and-count.md  (6151b)
 429cb8533e02c7e7a65f27f3e9bf35c98cc924b83f177330ee8f0c421317e9ca  09-academic-paper/PROPOSAL_pib-vaf-paper_to_VAF_taxonomy-based-configuration.md  (5375b)
 0c78895d129c0b27fc9af0e67d8c02c5e7abf74b55108c567d777b2e602c1a27  09-academic-paper/README.md  (3363b)
@@ -156,4 +163,4 @@ b3a8cda70d8660dc29eed04888ce0334ef0d0f76accb2dcac937ef9ca9107303  14-vendored-oe
 9c76c1e83e0cd1c1f2ab93892926e12f623aed174d23da8eafd0c134f3afaa24  PROVENANCE.md  (4059b)
 cbb973494b8d87c77f293cea182222f955fedefd88752c22a14388671fa148e3  PUBLISH_RECORD.ttl  (1464b)
 77aa9060f87425d776dee8e98e9a03edf848f3fe81cfde7668ac31061f34777f  README.md  (9397b)
-138203e3f604a08fad0c4d0a297efe2c486219820dcdd053e72b7d843504c7a1  VERSION.txt  (6b)
+84746b20a3a72f6ff85a629706e50507c1bd200907456b76dd808a2a5ca0efba  VERSION.txt  (6b)

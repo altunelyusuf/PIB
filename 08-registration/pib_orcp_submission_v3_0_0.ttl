@@ -1,0 +1,295 @@
+@prefix configuration: <http://example.org/configuration#> .
+@prefix core: <http://example.org/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix orh: <http://example.org/oepack-release-history#> .
+@prefix performance: <http://example.org/performance#> .
+@prefix pibreg: <http://purl.org/pib/registration#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix risk: <http://example.org/risk#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix testing: <http://example.org/testing#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+pibreg:Change_v2_10_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.10.0 (commit 6c68ebb888c9)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_11_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.11.0 (commit 722964b7e4a5)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_12_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.12.0 (commit 2ae9ac365408)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_13_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.13.0 (commit f46fd289e196)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_14_1 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.14.1 (commit ec8620b7730b)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_15_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.15.0 (commit 4cffa6827b83)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_16_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.16.0 (commit 259ca2d2c07a)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_16_1 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.16.1 (commit d828e02b62a9)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_17_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.17.0 (commit 89767a418365)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_18_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.18.0 (commit dc29c294d94a)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_20_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.20.0 (commit b2f5b0131531)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_3_1 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.3.1 (commit 10c8600ae52c)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_4_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.4.0 (commit 16a84e3a1d13)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_4_1 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.4.1 (commit 594d9f66d3f3)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_5_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.5.0 (commit 707e10a6bc71)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_6_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.6.0 (commit 6916e221e181)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_6_1 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.6.1 (commit 1d5144f2f932)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_7_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.7.0 (commit b1c98111fa6e)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_8_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.8.0 (commit 3564b551d38e)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_8_1 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.8.1 (commit 04e0ae7f53f1)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v2_9_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v2.9.0 (commit 6e8c4494e11c)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v3_3_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v3.3.0 (commit 64984409229d)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v3_4_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v3.4.0 (commit b789a7ea23f7)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v3_4_1 a configuration:ChangeOperation ;
+    rdfs:label "Release v3.4.1 (commit 06b24a549fa3)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v3_5_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v3.5.0 (commit 1461a75190f4)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:Change_v3_6_0 a configuration:ChangeOperation ;
+    rdfs:label "Release v3.6.0 (commit f374f1a959b8)"@en ;
+    configuration:appliesToArtifact pibreg:Artifact_PIB ;
+    configuration:satisfiesAcceptanceCriterion pibreg:Criterion_GatesPass .
+
+pibreg:File_pib_abox_v1_0_0 a orh:OntologyFile ;
+    rdfs:label "Ontology file: pib_abox_v1_0_0.ttl"@en ;
+    orh:belongsToSubject pibreg:Subject_PIB ;
+    orh:hasFileSHA256 "4c1a0b4724175632bb565477836f83116f814aeccde30a921f161edf3cd7ae2e" ;
+    orh:hasVersionInfo "3.6.0" .
+
+pibreg:File_pib_shacl_v1_0_0 a orh:OntologyFile ;
+    rdfs:label "Ontology file: ../02-shacl-safeguards/pib_shacl_v1_0_0.ttl"@en ;
+    orh:belongsToSubject pibreg:Subject_PIB ;
+    orh:hasFileSHA256 "94c06e68a76681ff867dbd078190dc219f676428fd92a6cf7a4e5d2a2bfde44a" ;
+    orh:hasVersionInfo "3.6.0" .
+
+pibreg:File_pib_tbox_v1_0_0 a orh:OntologyFile ;
+    rdfs:label "Ontology file: pib_tbox_v1_0_0.ttl"@en ;
+    orh:belongsToSubject pibreg:Subject_PIB ;
+    orh:hasFileSHA256 "6e26404c5063559fb56f7bc8ae05184cc22e9ce98651bcda5ed38feeab4a411d" ;
+    orh:hasVersionInfo "3.6.0" .
+
+pibreg:Perf_Capacity a performance:PerformanceTest ;
+    rdfs:label "Capacity computation over PIB's profile variation spaces"@en ;
+    performance:hasLastMeasuredMedianMs 6905.0 ;
+    performance:hasLastMeasuredStatus "measured" ;
+    performance:measuresArtifact pibreg:Artifact_PIB ;
+    skos:definition "Wall-clock time to partition, enumerate, check and combine every admissible wiring of PIB's consolidated profile spaces, computed entirely by rules in the ontology; median of three timed runs."@en .
+
+pibreg:RiskAssessment_Round3 a risk:RiskAssessment ;
+    rdfs:label "PIB risk assessment, ORCP round three"@en ;
+    risk:assessesArtifact pibreg:Artifact_PIB ;
+    prov:generatedAtTime "2026-10-24"^^xsd:date .
+
+pibreg:Test_T1 a testing:Test ;
+    rdfs:label "Capacity self-test: eight spaces reproduce their known capacities and a planted inadmissible candidate is rejected"@en ;
+    testing:hasTestResult pibreg:Result_T1 ;
+    testing:testsArtifact pibreg:Artifact_PIB ;
+    dcterms:source "03-tooling/variation_capacity_v1_2_0.py --self-test" .
+
+pibreg:Test_T2 a testing:Test ;
+    rdfs:label "Algebra conformance: all eight variation spaces give variant sets identical to the algebra's own rules, and the check fails in both directions"@en ;
+    testing:hasTestResult pibreg:Result_T2 ;
+    testing:testsArtifact pibreg:Artifact_PIB ;
+    dcterms:source "03-tooling/algebra_conformance_check_v3_0_0.py --self-test" .
+
+pibreg:Test_T3 a testing:Test ;
+    rdfs:label "Expression conformance: the capstone wiring admits 14 variants, the satisfying candidate is one and the violating one is not; five mutations are caught"@en ;
+    testing:hasTestResult pibreg:Result_T3 ;
+    testing:testsArtifact pibreg:Artifact_PIB ;
+    dcterms:source "03-tooling/expression_conformance_check_v1_0_0.py --self-test" .
+
+pibreg:Test_T4 a testing:Test ;
+    rdfs:label "Borrowed shapes: PIB's A-Box violates none of the algebra's own shapes, and a planted node is caught"@en ;
+    testing:hasTestResult pibreg:Result_T4 ;
+    testing:testsArtifact pibreg:Artifact_PIB ;
+    dcterms:source "03-tooling/borrowed_shapes_check_v1_0_0.py --self-test" .
+
+pibreg:Test_T5 a testing:Test ;
+    rdfs:label "Manifest self-verification: every file matches its recorded hash"@en ;
+    testing:hasTestResult pibreg:Result_T5 ;
+    testing:testsArtifact pibreg:Artifact_PIB ;
+    dcterms:source "sha256sum -c over MANIFEST_SHA256.txt" .
+
+pibreg:Test_T6 a testing:Test ;
+    rdfs:label "Release gate: every self-contained gate passes"@en ;
+    testing:hasTestResult pibreg:Result_T6 ;
+    testing:testsArtifact pibreg:Artifact_PIB ;
+    dcterms:source "03-tooling/release_gate_v1_0_0.py" .
+
+pibreg:Mitigation_R2 a risk:Mitigation ;
+    rdfs:label "Hash-pinned read-only copies with a verified re-vendor procedure (11-vendored-operator-rules/VENDORED_PINS_v1_3_0.md), exercised in v2.0.3, v2.18.0 and v3.4.0; after the last, all eight variation spaces still give variant sets identical to PIB's own."@en .
+
+pibreg:Mitigation_R5 a risk:Mitigation ;
+    rdfs:label "Pruning and frontier targeting (v2.1.0) and partitioning into independent groups (v2.2.0), all in the ontology. Median on the profile spaces fell from 20.5 s to 6.9 s; forty features computed in 58 s. Residual growth is roughly quadratic in the number of independent groups."@en .
+
+pibreg:Mitigation_R6 a risk:Mitigation ;
+    rdfs:label "Capacity self-test over eight spaces with independently known answers plus a planted inadmissible candidate, run before every release; it fails on any silent change in answers."@en .
+
+pibreg:Mitigation_R7 a risk:Mitigation ;
+    rdfs:label "The algebra's own runner is vendored with the rules and is the only thing that runs them; the conformance gates compare its variant sets with PIB's own, element by element, and their self-tests fail in both directions."@en .
+
+pibreg:Result_T1 a testing:TestResult ;
+    rdfs:label "Passed, re-run on 2026-10-24"@en .
+
+pibreg:Result_T2 a testing:TestResult ;
+    rdfs:label "Passed, re-run on 2026-10-24"@en .
+
+pibreg:Result_T3 a testing:TestResult ;
+    rdfs:label "Passed, re-run on 2026-10-24"@en .
+
+pibreg:Result_T4 a testing:TestResult ;
+    rdfs:label "Passed, re-run on 2026-10-24"@en .
+
+pibreg:Result_T5 a testing:TestResult ;
+    rdfs:label "Passed, re-run on 2026-10-24"@en .
+
+pibreg:Result_T6 a testing:TestResult ;
+    rdfs:label "Passed, re-run on 2026-10-24"@en .
+
+pibreg:Risk_R1 a risk:Risk ;
+    rdfs:label "The ZeroTime profile is blocked because its upstream component library is logically inconsistent as shipped"@en ;
+    risk:hasRiskTreatment pibreg:Treatment_R1 .
+
+pibreg:Risk_R2 a risk:Risk ;
+    rdfs:label "Vendored operator rules can drift from the variant algebra's own current files"@en ;
+    risk:hasMitigation pibreg:Mitigation_R2 .
+
+pibreg:Risk_R3 a risk:Risk ;
+    rdfs:label "The fixpoint iteration lives in the harness rather than in the ontology, because the rule engine exposes no rule iteration"@en ;
+    risk:hasRiskTreatment pibreg:Treatment_R3 .
+
+pibreg:Risk_R4 a risk:Risk ;
+    rdfs:label "The registration record no longer matched the files PIB ships (the five registered ontology files were merged into three)"@en ;
+    risk:hasRiskTreatment pibreg:Treatment_R4 .
+
+pibreg:Risk_R5 a risk:Risk ;
+    rdfs:label "Capacity computation cost grows with the size of the variation space"@en ;
+    risk:hasMitigation pibreg:Mitigation_R5 .
+
+pibreg:Risk_R6 a risk:Risk ;
+    rdfs:label "The rules depend on evaluation behaviour specific to the SHACL engine — subquery binding, SPARQL targets, the absence of rule iteration — and one such dependency produced a silent zero during development"@en ;
+    risk:hasMitigation pibreg:Mitigation_R6 .
+
+pibreg:Risk_R7 a risk:Risk ;
+    rdfs:label "A different SHACL engine run over the algebra's rules answers wrongly and silently: measured on all eight of PIB's variation spaces it ends without an error and with one variant node where the algebra's runner gives 0 to 243 variants"@en ;
+    risk:hasMitigation pibreg:Mitigation_R7 .
+
+pibreg:Treatment_R1 a risk:RiskTreatment ;
+    rdfs:label "Deferred by owner decision; recorded in 04-documentation/ASSESSMENT_PROFILES_MATERIALIZATION_v1_0_0.md. Resumes when the upstream library is made consistent."@en .
+
+pibreg:Treatment_R3 a risk:RiskTreatment ;
+    rdfs:label "Accepted by the owner on 2026-09-17 ('I think we can live with this'); recorded here and in the round-two fit-gap note. The loop carries no algebra and stops when the rules stop producing triples."@en .
+
+pibreg:Treatment_R4 a risk:RiskTreatment ;
+    rdfs:label "This registration maintenance round, raised by the registry's MAJOR-version flag."@en .
+
+pibreg:Subject_PIB a orh:SubjectOntology ;
+    rdfs:label "Subject: PIB integration blueprint"@en ;
+    orh:lifecycleStatus "active" .
+
+pibreg:Criterion_GatesPass a configuration:AcceptanceCriterion ;
+    rdfs:label "Release gates re-run and passing, recorded in the release's own manifest"@en .
+
+pibreg:Artifact_PIB a core:Artifact ;
+    rdfs:label "PIB — Profile + Integration-Interface Blueprint (github.com/altunelyusuf/PIB)"@en ;
+    core:hasCriticalityProfile core:Profile_High ;
+    risk:hasIdentifiedRisk pibreg:Risk_R1,
+        pibreg:Risk_R2,
+        pibreg:Risk_R3,
+        pibreg:Risk_R4,
+        pibreg:Risk_R5,
+        pibreg:Risk_R6,
+        pibreg:Risk_R7 ;
+    dcterms:source "ORCP round three (registration maintenance). Criticality stays high, as ratified in round two (owner, 2026-09-21): PIB computes variation capacity in the ontology and is public for external academic and industrial use." .
+
