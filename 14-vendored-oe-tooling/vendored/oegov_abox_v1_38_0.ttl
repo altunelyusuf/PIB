@@ -1183,6 +1183,18 @@ kb:Lesson_L_153_ADeliveryTargetThatGitCannotHoldDoesNotExistForTheSender a kb:Le
     skos:definition "A convention that says where something is delivered needs a place that exists in the repository: a folder that is empty is not there, so it holds a placeholder file (a README). When several independent senders make the same mistake on the same day, look first for what the receiver's side lacks, before assuming each sender erred. Preventive action in force: oe_inbox_layout (repo-tooling 1.49.0), run in CI as a warning, names a file at an inbox root and an inbox with no pending/ folder holding a file; it warns and does not fail, because one session's misfiling must not turn another session's release red (L-152). Second preventive action in force (repo-tooling 1.53.0): CI Gate 0 runs as a tested tool, oe_manifest_gate, and when the receiver's append-only HANDOVER_LOG.md is the only listed file whose hash differs it is a warning, not a failure; any other mismatch still fails. This second action was added because the first only names the misfiling, while the log is written by the sender and turns the receiver's manifest red on every delivery, filed correctly or not (five deliveries, eight red OEE releases). The receiving package adds pending/README.md (a note was written to its session). Detection signal: a manifest that fails by an unlisted file in an inbox, or a handover file at an inbox root."@en ;
     rdfs:seeAlso kb:Lesson_L_152_ADerivedFileThatCiDemandsEqualToItsRegenerationTurnsEverySourceShrinkRed .
 
+kb:Lesson_L_154_AHandoverWithoutValueIsRetiredWithItsEvidenceNotDelivered a kb:LessonsLearned,
+        owl:NamedIndividual ;
+    rdfs:label "L-154: A handover that no longer has value is retired with its measured evidence, not delivered, and a retirement is a recorded decision, never a deletion"@en ;
+    kb:hasLessonId "L-154"^^xsd:string ;
+    dcterms:isPartOf <http://example.org/knowledge-base> ;
+    dcterms:source "Measured 2026-10-23. The delivery check (L-115) held 55 outgoing handovers undelivered by a baseline that could only fall. Each was assessed against the files of the day: 27 state a rule or a ruling that an enforced artifact carries (the structure class table, a register line with its ruling text) while the recipient's own ceremony prints the state at every session, 10 asked for something measured done, 9 asked nothing, 8 were superseded by a later handover of the same recipient, and 1 stated a count that was no longer true (one line where two stand). None had an open ask that nothing else carried. The owner had instructed on 2026-10-23 that those of value be delivered and the others retired, by a systematic assessment."@en ;
+    rdfs:isDefinedBy <http://example.org/knowledge-base> ;
+    rdfs:seeAlso kb:Lesson_L_115_CrossSessionHandoverInbox ;
+    skos:definition "A rule that forces delivery without a way to withdraw makes a stale handover cost the recipient a stopped ceremony for a change of nothing. Whether a handover has value is decided by measured facts, never by how it reads: its ask is done, a later handover supersedes it, what it rules is carried by an enforced artifact that the recipient is told about at every session, or it asks nothing. A handover that asks something but states what is no longer true is retired and a current one is written. A retirement moves the file to a retired folder and writes a ledger row with a code and the evidence; the delivery check fails a file without a row, a row without a file, a file in both places, an unknown code or an empty evidence. Preventive action in force: oe_handover_assess (the four tests), oe_delivery_check v1.1.0 (the ledger both ways), discipline v2.37.0."@en ;
+    prov:generatedAtTime "2026-10-23T00:00:00"^^xsd:dateTime ;
+    prov:wasAttributedTo oe-prov:Agent_MethodAuthor .
+
 kb:Lesson_L_26_NoCommonAncestorBlocksDomainAssertion a kb:LessonsLearned,
         owl:NamedIndividual ;
     rdfs:label "L-26: When property usage spans classes with no common ancestor, no single rdfs:domain assignment exists without OWL 2 DL inconsistency"@en ;
@@ -4569,7 +4581,8 @@ oe-prov:Activity_OEPackRelease_v18_0_1 a owl:NamedIndividual,
         "2026-10-11T00:00:00"^^xsd:dateTime,
         "2026-10-12T00:00:00"^^xsd:dateTime,
         "2026-10-19T00:00:00"^^xsd:dateTime,
-        "2026-10-20T00:00:00"^^xsd:dateTime ;
+        "2026-10-20T00:00:00"^^xsd:dateTime,
+        "2026-10-23T00:00:00"^^xsd:dateTime ;
     dcterms:publisher oe-prov:Org_IKU_Department_of_ComputerEngineering ;
     dcterms:rights "Copyright (c) 2025-2026 a university & the method author. Licensed under CC BY 4.0." ;
     dcterms:rightsHolder oe-prov:Org_IKU_Department_of_ComputerEngineering ;
@@ -4611,9 +4624,10 @@ oe-prov:Activity_OEPackRelease_v18_0_1 a owl:NamedIndividual,
         <http://example.org/oemethod-governance/1.33.0>,
         <http://example.org/oemethod-governance/1.34.0>,
         <http://example.org/oemethod-governance/1.35.0>,
-        <http://example.org/oemethod-governance/1.36.0> ;
-    owl:versionIRI <http://example.org/oemethod-governance/1.37.0> ;
-    owl:versionInfo "1.37.0" ;
+        <http://example.org/oemethod-governance/1.36.0>,
+        <http://example.org/oemethod-governance/1.37.0> ;
+    owl:versionIRI <http://example.org/oemethod-governance/1.38.0> ;
+    owl:versionInfo "1.38.0" ;
     skos:changeNote "v1.1.0 (2026-10-06): the knowledge-base module is now 2.37.0 (five lessons, L-128 to L-132). Nothing else changed."@en,
         "v1.10.0 (2026-10-07): re-derived after the governing pack added L-144 (tools that each keep their own list of what not to read drift apart); the knowledge-base module is 2.46.0. Nothing else changed."@en,
         "v1.11.0 (2026-10-07): re-derived after the governing pack added L-145 (a serializer can rewrite a literal's written form, so a proof of no loss must compare values and count the rewrites); the knowledge-base module is 2.47.0. Nothing else changed."@en,

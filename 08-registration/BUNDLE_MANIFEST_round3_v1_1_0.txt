@@ -1,0 +1,5 @@
+# Bundle manifest — ORCP round three, re-emitted at PIB v3.8.0 (answers the four findings of OE's round-three contract)
+# Verify:  grep -v '^#' BUNDLE_MANIFEST_round3_v1_1_0.txt | sha256sum -c -  (from this folder)
+
+4c96dd3fb45c0df3598ef4d6c08a36934ada0e1a2e9c7c6ab18bc9b90d79dd12  build_pib_orcp_submission_v3_1_0.py
+9b5bea3a244bb5024ef5df71b5badabd8768abb94e0e54211415a79409f0b84e  pib_orcp_submission_v3_1_0.ttl

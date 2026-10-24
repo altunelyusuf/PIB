@@ -33,10 +33,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 TOOLS = os.path.join(ROOT, "14-vendored-oe-tooling")
 DEBT = os.path.join(ROOT, "04-documentation", "structure-debt")
-STRUCTURE = os.path.join(TOOLS, "oe_structure_check_v1_7_1.py")
-COVERAGE = os.path.join(TOOLS, "oe_kind_coverage_v1_1_0.py")
+STRUCTURE = os.path.join(TOOLS, "oe_structure_check_v1_9_0.py")
+COVERAGE = os.path.join(TOOLS, "oe_kind_coverage_v1_2_0.py")
 CONSISTENCY = os.path.join(TOOLS, "oe_kind_consistency_v1_1_0.py")
-GOV_ABOX = os.path.join(TOOLS, "vendored", "oegov_abox_v1_37_0.ttl")
+GOV_ABOX = os.path.join(TOOLS, "vendored", "oegov_abox_v1_38_0.ttl")
 AS_PACKAGE = "pib-hub"      # the slug the publisher stages this repository under
 
 

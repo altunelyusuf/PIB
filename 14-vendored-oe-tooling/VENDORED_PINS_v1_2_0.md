@@ -10,15 +10,17 @@ not edit them in place. When that session re-issues them, PIB re-vendors the new
 
 | File | SHA-256 | Role |
 |---|---|---|
-| `oe_structure_check_v1_7_1.py` | `b3a8cda70d8660d6…` | names, mixed roles, versions side by side, one file per role |
+| `oe_structure_check_v1_9_0.py` | `7dda3eb7e8c48dd7…` | names, mixed roles, versions side by side, one file per role |
 | `oe_structure_classes_v1_3_0.py` | `8cd0d299ba24dcb6…` | the class table the structure checker reads; it refuses to run without it |
-| `oe_kind_coverage_v1_1_0.py` | `b2bb2498a90bcb80…` | every named class carries a kind, every object property a category |
+| `oe_kind_coverage_v1_2_0.py` | `5b1f092182edbda8…` | every named class carries a kind, every object property a category |
 | `oe_kind_consistency_v1_1_0.py` | `06c09a2690bfcf58…` | a class's kind agrees with its named parents' |
-| `vendored/oegov_abox_v1_37_0.ttl` | `53f3c2d1025afcdf…` | the governance A-Box, read by the consistency check for the taxonomy of kinds |
+| `vendored/oegov_abox_v1_38_0.ttl` | `ab91c660f8a18a34…` | the governance A-Box, read by the consistency check for the taxonomy of kinds |
 
-The first three files were vendored from the governance tree at commit
-`645c7906f8c7e949a6b4e6ac512c524ec57ba4a7` (2026-10-22, discipline v2.34.0); the consistency check and
-the A-Box copy at commit `54a4ea4d` the same day (discipline v2.36.0).
+**Sources, as last re-vendored (2026-10-24, discipline v2.37.0), each verified byte-equal to the governance tree.**
+Structure checker v1_9_0: `oe-method/03-tooling/`, commit `3c8cd36f`. Kind coverage v1_2_0:
+`repo-tooling/`, commit `ff398ec3`. A-Box v1_38_0: `oe-method/09-governance/`, commit `13252de8`. The class
+table (v1_3_0, commit `da2ebf8a`) and the consistency check (v1_1_0, commit `ff398ec3`) are unchanged and
+were re-confirmed byte-equal. Earlier pins (v1_7_1, v1_1_0, v1_37_0) are in git history under the release tags.
 
 ## The consistency check, and why it is here now
 

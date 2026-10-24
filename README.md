@@ -121,6 +121,10 @@ exponentially with the number of features. The previously required enumeration e
 refusals — a known standalone-vs-merged measurement artifact, not a defect: the attestation links
 live in `07-spoke-contributions/`, which is precisely why they are vendored.
 
+## Dependencies
+
+The gates need four Python packages, pinned in `requirements.txt` (`pip install -r requirements.txt`): rdflib, pySHACL, owlrl and pyoxigraph. Without pyoxigraph the algebra's runner cannot start and the gates fail with `ModuleNotFoundError`.
+
 ## Integrity
 
 Every file is SHA-256 pinned in `MANIFEST_SHA256.txt`, which self-verifies:

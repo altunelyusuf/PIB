@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""oe_structure_check_v1_7_1 - one T-Box, one A-Box and one SHACL file per package, and the file naming/version conventions, enforced (BP-D54, BP-D53, BP-D6, BP-D7).
+"""oe_structure_check_v1_9_0 - one T-Box, one A-Box and one SHACL file per package, and the file naming/version conventions, enforced (BP-D54, BP-D53, BP-D6, BP-D7).
 
 v1.6.0 (plan v1.10.0 item 38(b)): the folders and files the check does not read come from ONE class table, OE_STRUCTURE_CLASSES_v*.tsv, through oe_structure_classes_v1_0_0.py, the same reader the release check and the publisher use; the lists that were written in this file are gone (a built-in copy of them is used, and announced, only when no table is found). New rule X1: a nested folder with its own VERSION.txt that no `unit=` row of the table names is reported, because a path that matches no class must be reported, not skipped. `--classes FILE` names the table. The run also prints, per class, how many Turtle files it did not read.
+
+v1.9.0 (2026-10-23): A LINE FOR A FILE THAT IS GONE FROM A PACKAGE THAT IS HERE IS CLEARED. A package whose last Turtle file was removed or renamed has no file in the scan, so its register lines were reported NOT MEASURED ("measure it where it lives") although the folder is in this tree and the file is plainly absent: the register kept lines nobody could remove. A line is NOT MEASURED only when its package folder is not in the tree being scanned (or the package is outside a --package filter); when the folder is here and the file named by the line does not exist, the violation is gone and the line is CLEARED. A line whose file still exists but whose package was not scanned stays NOT MEASURED (nothing was read).
 
 v1.7.1 (the O4DE session, 2026-10-13): the notice for a tree with no class table names the folders it is looked for in (oe-pack, oe-method, the tree's own 04-documentation), says what the built-in copy holds, and the header names this file's version.
 v1.7.0: a rule the aggregate records as `enforce` with a recorded ruling is in force before the package's own register carries the line (see merge_registers).
@@ -85,7 +87,7 @@ CLEARED (remove it). An entry may be marked `exception` only with the owner's ru
 
 A package is the nearest folder holding a VERSION.txt (else the top-level folder).
 
-Usage: oe_structure_check_v1_7_1.py [ROOT] [--package NAME ...] [--register FILE] [--list] [--write-register FILE] [--as-package NAME]
+Usage: oe_structure_check_v1_9_0.py [ROOT] [--package NAME ...] [--register FILE] [--list] [--write-register FILE] [--as-package NAME]
        [--no-local]   ignore the packages' own registers and read only the file given with --register (what v1.3.0 did)
 Exit: 0 no violation outside the register; 1 a violation outside it; 2 REFUSED (nothing examined, unreadable register).
 A scan that examined zero files is refused, never reported as a pass."""
@@ -113,9 +115,14 @@ META_NS = (OWL, RDFS, SH, "http://www.w3.org/1999/02/22-rdf-syntax-ns#")
 META = T_TYPES | S_TYPES | {OWL + "Ontology", OWL + "NamedIndividual", OWL + "Restriction", OWL + "AllDisjointClasses"}
 
 
+def retired(p):
+    # a package directory that holds RETIRED_v*.md is retired history: frozen, not living, not processed (owner ruling 2026-10-22: living repositories are enough)
+    try: return any(re.match(r"RETIRED_v\d", f) for f in os.listdir(p))
+    except OSError: return False
+
 def files(root, packages):
     out = []
-    tops = sorted(d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and not d.startswith("."))
+    tops = sorted(d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and not d.startswith(".") and not retired(os.path.join(root, d)))
     for top in tops:
         if packages and top not in packages:
             continue
@@ -203,7 +210,7 @@ def pkg_of(root, rel):
 def archive_files(root, packages):
     """Turtle files that sit under a folder named archive (read only for rule A1)."""
     out = []
-    tops = sorted(d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and not d.startswith("."))
+    tops = sorted(d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and not d.startswith(".") and not retired(os.path.join(root, d)))
     for top in tops:
         if packages and top not in packages: continue
         for r, d, f in os.walk(os.path.join(root, top)):
@@ -281,7 +288,7 @@ def scan(root, packages=None, m1pkgs=(), d1pkgs=()):
 def skipped_counts(root, packages):
     """Turtle files this run did not read, per class of the folder or file that took them out (never silent)"""
     out = defaultdict(int)
-    tops = sorted(d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and not d.startswith("."))
+    tops = sorted(d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d)) and not d.startswith(".") and not retired(os.path.join(root, d)))
     for top in tops:
         if packages and top not in packages: continue
         def walk(path, cls):
@@ -470,7 +477,10 @@ def main(argv):
         # A line whose package root is not in this scan was not measured: no violation matched it because nothing was
         # read, which is not the same as the violation being gone. Reported separately, never as CLEARED.
         scanned_pkgs = {p.split(os.sep)[0] for p in fs}
-        unmeasured = sorted(k for k in reg if k[1].split(os.sep)[0] not in scanned_pkgs)
+        def _gone(k):
+            top = k[1].split(os.sep)[0]
+            return os.path.isdir(os.path.join(root, top)) and not os.path.exists(os.path.join(root, k[1]))
+        unmeasured = sorted(k for k in reg if k[1].split(os.sep)[0] not in scanned_pkgs and not _gone(k))
         cleared = sorted(k for k in reg if k not in viol and k not in unmeasured
                          and not (k[0] in ("M1", "D1") and reg[k][0] == "enforce"))
         for k in sorted(k for k in viol if k in reg and k[0] in ("M1", "D1")):

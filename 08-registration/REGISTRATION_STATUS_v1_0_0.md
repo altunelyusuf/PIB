@@ -6,10 +6,14 @@ returned contract in `09-handover-inbox/accepted/OEE_to_PIB_round2_contract_v1_0
 registration-maintenance registry now baselines PIB at v2.3.0; it next flags PIB on a major version
 change or five accumulated minor bumps.**
 
-**Round three (registration maintenance) submitted 2026-10-24 at PIB v3.7.0**, raised by that registry's
-major-version flag (2.3.0 → 3.x) and by the five registered ontology files having been merged into three.
-Criticality stays high. The bundle is `pib_orcp_submission_v3_0_0.ttl` with its builder, pinned by
-`BUNDLE_MANIFEST_round3_v1_0_0.txt`; it awaits OE's phases C–F.
+**Round three (registration maintenance) RATIFIED at high criticality, 2026-10-24** (OE Pack v21.104.0, protocol
+v1.2.0), after the major-version flag (2.3.0 → 3.x) and the merge of the five registered ontology files into three.
+Confirmed in OE's repository: the registry baselines PIB at 3.7.0, pinned to the commit of tag v3.7.0, and the
+release-history event is recorded. The bundle was re-emitted at v3.8.0 to answer the contract's findings (the stated
+version of each file is the release in which it last changed; bare file names; the dependency list); the bundle is
+`pib_orcp_submission_v3_1_0.ttl` with its builder, pinned by `BUNDLE_MANIFEST_round3_v1_1_0.txt`. The earlier
+submissions are kept in git history under their release tags; `archive/` holds the latest superseded one, as the
+structure rule allows one.
 
 The table and notes below describe round one, and are kept as its record.
 

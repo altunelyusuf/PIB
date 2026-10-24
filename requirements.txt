@@ -1,0 +1,6 @@
+# PIB's gates and builders need these Python packages (versions are the ones the gates were last run with).
+# Install:  pip install -r requirements.txt
+rdflib==7.6.0
+pyshacl==0.40.1
+owlrl==7.6.2
+pyoxigraph==0.5.12
